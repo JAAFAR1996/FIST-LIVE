@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { EasterEggs } from "@/components/effects/easter-eggs";
 
 export default function Navbar() {
   const [location] = useLocation();
@@ -19,6 +20,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-colors duration-300">
+      <EasterEggs />
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Mobile Menu */}
         <div className="md:hidden">
