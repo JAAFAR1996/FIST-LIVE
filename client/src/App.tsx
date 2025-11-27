@@ -8,7 +8,8 @@ import Products from "@/pages/products";
 import Calculators from "@/pages/calculators";
 import Journey from "@/pages/journey";
 import FishFinder from "@/pages/fish-finder";
-import Sustainability from "@/pages/sustainability"; // New Page
+import Sustainability from "@/pages/sustainability";
+import FeaturedProduct from "@/pages/products-featured";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/ar" component={Home} />
       <Route path="/products" component={Products} />
+      <Route path="/products/featured" component={FeaturedProduct} />
       <Route path="/calculators" component={Calculators} />
       <Route path="/journey" component={Journey} />
       <Route path="/fish-finder" component={FishFinder} />
