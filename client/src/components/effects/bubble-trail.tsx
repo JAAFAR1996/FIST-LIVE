@@ -1,94 +1,60 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface Particle {
+interface Bubble {
+  id: number;
   x: number;
   y: number;
   size: number;
-  speedY: number;
-  opacity: number;
 }
 
 export function BubbleTrail() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let particles: Particle[] = [];
-    let mouseX = 0;
-    let mouseY = 0;
-    let isMoving = false;
-    let timeout: NodeJS.Timeout;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const createParticle = (x: number, y: number) => {
-      particles.push({
-        x,
-        y,
-        size: Math.random() * 4 + 1,
-        speedY: Math.random() * 2 + 0.5,
-        opacity: 1
-      });
-    };
-
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      isMoving = true;
-      createParticle(mouseX, mouseY);
-      
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        isMoving = false;
-      }, 100);
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.y -= p.speedY;
-        p.opacity -= 0.01;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(100, 200, 255, ${p.opacity})`;
-        ctx.fill();
-
-        if (p.opacity <= 0) {
-          particles.splice(i, 1);
-          i--;
-        }
+      if (Math.random() > 0.9) { // Only create bubbles occasionally
+        const newBubble = {
+          id: Date.now(),
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 15 + 5,
+        };
+        setBubbles(prev => [...prev.slice(-20), newBubble]);
       }
-
-      requestAnimationFrame(animate);
     };
 
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    resize();
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none z-50 mix-blend-screen opacity-50"
-    />
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      <AnimatePresence>
+        {bubbles.map(bubble => (
+          <motion.div
+            key={bubble.id}
+            initial={{ opacity: 0.6, y: bubble.y, x: bubble.x, scale: 0 }}
+            animate={{ 
+              opacity: 0, 
+              y: bubble.y - 100, 
+              x: bubble.x + (Math.random() * 20 - 10),
+              scale: 1 
+            }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="absolute rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm"
+            style={{ 
+              width: bubble.size, 
+              height: bubble.size,
+              boxShadow: "0 0 10px rgba(6, 182, 212, 0.3)"
+            }}
+            onAnimationComplete={() => {
+              setBubbles(prev => prev.filter(b => b.id !== bubble.id));
+            }}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
   );
 }

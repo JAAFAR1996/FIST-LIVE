@@ -2,6 +2,8 @@ import { Product } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, ArrowRight } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
 
 interface ProductOfTheWeekProps {
   product: Product;
@@ -16,7 +18,12 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           {/* Image Section with Effects */}
-          <div className="w-full lg:w-1/2 relative group perspective-1000">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="w-full lg:w-1/2 relative group perspective-1000"
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-3xl -rotate-3 scale-95 group-hover:rotate-0 transition-transform duration-700 ease-out blur-xl opacity-50" />
             <img 
               src={product.image} 
@@ -29,10 +36,15 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
                 <span className="text-sm font-bold">متوفر في المخزن</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Content Section */}
-          <div className="w-full lg:w-1/2 space-y-8">
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full lg:w-1/2 space-y-8"
+          >
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary text-primary-foreground text-sm font-bold rounded-full uppercase tracking-wider shadow-lg shadow-primary/20 animate-pulse-glow">
                 <Star className="w-4 h-4 fill-current" />
@@ -54,13 +66,13 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
             </div>
 
             <p className="text-lg text-muted-foreground leading-relaxed border-l-4 border-primary/30 pl-4">
-              منتج متكامل ومركز للمياه العذبة والمالحة. يزيل الكلور والكلورامين ويزيل سمية الأمونيا والنتريت والنترات. الخيار الأمثل للمحترفين والمبتدئين.
+              {product.specs}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
               <div className="flex flex-col">
                 <span className="text-sm text-muted-foreground line-through">
-                  {(product.price * 1.1).toLocaleString()} د.ع
+                  {product.originalPrice ? product.originalPrice.toLocaleString() : (product.price * 1.1).toLocaleString()} د.ع
                 </span>
                 <span className="text-4xl font-bold text-primary">
                   {product.price.toLocaleString()} <span className="text-lg text-foreground">د.ع</span>
@@ -72,12 +84,14 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   أضف إلى العربة
                 </Button>
-                <Button size="lg" variant="outline" className="h-14 px-6 border-2">
-                  تفاصيل <ArrowRight className="mr-2 h-4 w-4" />
-                </Button>
+                <Link href={`/products/${product.id}`}>
+                  <Button size="lg" variant="outline" className="h-14 px-6 border-2">
+                    تفاصيل <ArrowRight className="mr-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
