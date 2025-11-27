@@ -1,7 +1,8 @@
-import seachemImg from "@assets/stock_images/aquarium_water_condi_76f4e911.jpg";
-import filterImg from "@assets/stock_images/aquarium_canister_fi_ebe5d7af.jpg";
-import heaterImg from "@assets/stock_images/aquarium_heater_prod_b5512720.jpg";
-import plantImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
+import seachemImg from "@assets/stock_images/seachem_prime_500ml__b70abe42.jpg";
+import fluvalImg from "@assets/stock_images/fluval_407_canister__4d80d974.jpg";
+import heaterImg from "@assets/stock_images/eheim_jager_aquarium_f65664bd.jpg";
+import aquaClearImg from "@assets/stock_images/aquaclear_70_power_f_dfd543e8.jpg";
+import plantImg from "@assets/stock_images/anubias_nana_aquariu_554af5dc.jpg";
 
 export interface Product {
   id: string;
@@ -38,7 +39,7 @@ export const products: Product[] = [
     price: 285000,
     rating: 4.9,
     reviewCount: 45,
-    image: filterImg,
+    image: fluvalImg,
     category: "Filters",
     specs: "التدفق: ١٤٥٠ لتر/ساعة | القدرة: ٢٠ واط",
     isBestSeller: true,
@@ -63,7 +64,7 @@ export const products: Product[] = [
     originalPrice: 145000,
     rating: 4.6,
     reviewCount: 32,
-    image: filterImg, // Reusing filter img for mockup
+    image: aquaClearImg,
     category: "Filters",
     specs: "التدفق: ١١٣٥ لتر/ساعة | القدرة: ٨ واط",
     isBestSeller: true,
