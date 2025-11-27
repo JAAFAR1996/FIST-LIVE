@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant neon-ocean (&:is([data-theme='neon-ocean'] *));
+@custom-variant pastel (&:is([data-theme='pastel'] *));
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -36,7 +38,7 @@
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
 
-  /* Chart Colors for Dashboard/Stats if needed */
+  /* Chart Colors */
   --color-chart-1: hsl(var(--chart-1));
   --color-chart-2: hsl(var(--chart-2));
   --color-chart-3: hsl(var(--chart-3));
@@ -44,40 +46,58 @@
   --color-chart-5: hsl(var(--chart-5));
   
   --font-sans: 'Cairo', sans-serif;
+
+  /* Animations */
+  --animate-wave: wave 2s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-rise: rise 4s ease-in infinite;
 }
 
-/* Light Mode - Aquatic Theme */
-:root {
-  --background: 210 40% 98%; /* Very light cool blue-grey */
-  --foreground: 222 47% 11%; /* Deep navy */
+/* Keyframes */
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 20px var(--color-primary); }
+  50% { opacity: 0.5; box-shadow: 0 0 10px var(--color-primary); }
+}
+
+@keyframes rise {
+  0% { transform: translateY(100%) scale(0.5); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-20%) scale(1); opacity: 0; }
+}
+
+/* Default (Light) Theme */
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
-
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
-
-  --primary: 199 89% 48%; /* Ocean Blue/Cyan */
+  --primary: 199 89% 48%;
   --primary-foreground: 210 40% 98%;
-
   --secondary: 210 40% 96%;
   --secondary-foreground: 222 47% 11%;
-
   --muted: 210 40% 96%;
   --muted-foreground: 215 16% 47%;
-
   --accent: 199 89% 48%;
   --accent-foreground: 210 40% 98%;
-
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
-
   --border: 214 32% 91%;
   --input: 214 32% 91%;
   --ring: 199 89% 48%;
-
   --radius: 0.75rem;
-
   --chart-1: 199 89% 48%;
   --chart-2: 173 80% 40%;
   --chart-3: 197 37% 24%;
@@ -85,35 +105,27 @@
   --chart-5: 27 87% 67%;
 }
 
-.dark {
+/* Dark Theme */
+.dark, [data-theme='dark'] {
   --background: 222 47% 11%;
   --foreground: 210 40% 98%;
-
   --card: 217 33% 17%;
   --card-foreground: 210 40% 98%;
-
   --popover: 217 33% 17%;
   --popover-foreground: 210 40% 98%;
-
   --primary: 199 89% 48%;
   --primary-foreground: 210 40% 98%;
-
   --secondary: 217 19% 27%;
   --secondary-foreground: 210 40% 98%;
-
   --muted: 217 19% 27%;
   --muted-foreground: 215 20% 65%;
-
   --accent: 199 89% 48%;
   --accent-foreground: 210 40% 98%;
-
   --destructive: 0 62% 30%;
   --destructive-foreground: 210 40% 98%;
-
   --border: 217 19% 27%;
   --input: 217 19% 27%;
   --ring: 199 89% 48%;
-  
   --chart-1: 199 89% 48%;
   --chart-2: 173 80% 40%;
   --chart-3: 210 40% 98%;
@@ -121,11 +133,76 @@
   --chart-5: 27 87% 67%;
 }
 
+/* Neon Ocean Theme */
+[data-theme='neon-ocean'] {
+  --background: 230 50% 5%;
+  --foreground: 180 100% 90%;
+  --card: 230 40% 10%;
+  --card-foreground: 180 100% 90%;
+  --popover: 230 40% 10%;
+  --popover-foreground: 180 100% 90%;
+  --primary: 170 100% 50%; /* Neon Cyan */
+  --primary-foreground: 230 50% 5%;
+  --secondary: 260 100% 60%; /* Neon Purple */
+  --secondary-foreground: 210 40% 98%;
+  --muted: 230 40% 20%;
+  --muted-foreground: 180 50% 60%;
+  --accent: 320 100% 60%; /* Neon Pink */
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 170 50% 30%;
+  --input: 170 50% 30%;
+  --ring: 170 100% 50%;
+}
+
+/* Pastel Theme */
+[data-theme='pastel'] {
+  --background: 330 50% 98%; /* Soft Pinkish White */
+  --foreground: 330 20% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 330 20% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 330 20% 20%;
+  --primary: 340 80% 75%; /* Pastel Pink */
+  --primary-foreground: 330 20% 20%;
+  --secondary: 190 70% 80%; /* Pastel Blue */
+  --secondary-foreground: 330 20% 20%;
+  --muted: 330 20% 95%;
+  --muted-foreground: 330 10% 50%;
+  --accent: 45 90% 80%; /* Pastel Yellow */
+  --accent-foreground: 330 20% 20%;
+  --destructive: 0 70% 70%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 330 20% 90%;
+  --input: 330 20% 90%;
+  --ring: 340 80% 75%;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
+  }
+}
+
+/* Utility Classes for Animations */
+@layer utilities {
+  .underwater-glow {
+    box-shadow: 0 0 30px -5px hsla(var(--primary) / 0.3);
+  }
+  
+  .text-shadow-glow {
+    text-shadow: 0 0 10px hsla(var(--primary) / 0.5);
+  }
+
+  .animate-wave {
+    animation: wave 3s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }

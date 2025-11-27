@@ -3,21 +3,7 @@ import fluvalImg from "@assets/stock_images/fluval_407_canister__4d80d974.jpg";
 import heaterImg from "@assets/stock_images/eheim_jager_aquarium_f65664bd.jpg";
 import aquaClearImg from "@assets/stock_images/aquaclear_70_power_f_dfd543e8.jpg";
 import plantImg from "@assets/stock_images/anubias_nana_aquariu_554af5dc.jpg";
-
-export interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviewCount: number;
-  image: string;
-  category: string;
-  specs: string;
-  isNew?: boolean;
-  isBestSeller?: boolean;
-}
+import { Product } from "@/types";
 
 export const products: Product[] = [
   {
@@ -31,6 +17,8 @@ export const products: Product[] = [
     category: "Conditioners",
     specs: "التوافق: جميع الأحجام",
     isBestSeller: true,
+    difficulty: "easy",
+    ecoFriendly: true,
   },
   {
     id: "fluval-407",
@@ -43,6 +31,8 @@ export const products: Product[] = [
     category: "Filters",
     specs: "التدفق: ١٤٥٠ لتر/ساعة | القدرة: ٢٠ واط",
     isBestSeller: true,
+    difficulty: "medium",
+    videoUrl: "https://example.com/fluval-407-demo",
   },
   {
     id: "eheim-jager",
@@ -55,6 +45,7 @@ export const products: Product[] = [
     category: "Heaters",
     specs: "القدرة: ٢٠٠ واط | للأحواض ١٥٠-٣٠٠ لتر",
     isBestSeller: true,
+    difficulty: "easy",
   },
   {
     id: "aquaclear-70",
@@ -68,6 +59,7 @@ export const products: Product[] = [
     category: "Filters",
     specs: "التدفق: ١١٣٥ لتر/ساعة | القدرة: ٨ واط",
     isBestSeller: true,
+    difficulty: "easy",
   },
   {
     id: "anubias-nana",
@@ -80,5 +72,7 @@ export const products: Product[] = [
     category: "Plants",
     specs: "للأحواض ٢٠-٥٠٠ لتر",
     isNew: true,
+    ecoFriendly: true,
+    difficulty: "easy",
   }
 ];
