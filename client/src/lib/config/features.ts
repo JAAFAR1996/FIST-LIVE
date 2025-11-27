@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 // Feature Flags
 export const FEATURES = {
   enhanced3D: true,
