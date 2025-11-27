@@ -66,6 +66,10 @@ export function ThemeSwitcher() {
           <Palette className="mr-2 h-4 w-4" />
           <span>Pastel</span>
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeTheme("monochrome")}>
+          <div className="mr-2 h-4 w-4 rounded-full border border-current bg-zinc-500" />
+          <span>Monochrome</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
