@@ -7,7 +7,8 @@ import Home from "@/pages/home";
 import Products from "@/pages/products";
 import Calculators from "@/pages/calculators";
 import Journey from "@/pages/journey";
-import FishFinder from "@/pages/fish-finder"; // New Page
+import FishFinder from "@/pages/fish-finder";
+import Sustainability from "@/pages/sustainability"; // New Page
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/calculators" component={Calculators} />
       <Route path="/journey" component={Journey} />
       <Route path="/fish-finder" component={FishFinder} />
+      <Route path="/sustainability" component={Sustainability} />
       <Route component={NotFound} />
     </Switch>
   );
