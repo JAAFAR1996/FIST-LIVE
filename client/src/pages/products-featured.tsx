@@ -1,14 +1,29 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { LuxuryProductShowcase } from "@/components/products/luxury-product-showcase";
-import { products } from "@/lib/mock-data";
+import { products as fallbackProducts } from "@/lib/mock-data";
 import { ProductVideo } from "@/components/products/product-video";
 import { ARViewer } from "@/components/products/ar-viewer";
 import { BundleRecommendation } from "@/components/products/bundle-recommendation";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProduct, fetchProducts } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FeaturedProduct() {
-  // Select a high-end product for the showcase (e.g., the Fluval Filter)
-  const featuredProduct = products.find(p => p.id === "fluval-407") || products[0];
+  const { data: listData } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: featuredData, isLoading } = useQuery({
+    queryKey: ["product", "fluval-407"],
+    queryFn: () => fetchProduct("fluval-407"),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const featuredProduct =
+    featuredData || listData?.products.find((p) => p.id === "fluval-407") || fallbackProducts[0];
   
   const bundle = {
     id: "b1",
@@ -23,7 +38,13 @@ export default function FeaturedProduct() {
     <div className="min-h-screen flex flex-col bg-background font-sans">
       <Navbar />
       <main className="flex-1">
-        <LuxuryProductShowcase product={featuredProduct} />
+        {featuredProduct ? (
+          <LuxuryProductShowcase product={featuredProduct} />
+        ) : (
+          <div className="container mx-auto px-4 py-12">
+            <Skeleton className="w-full h-[420px] rounded-3xl" />
+          </div>
+        )}
         
         {/* Bundle Recommendation */}
         <section className="py-12 bg-primary/5">

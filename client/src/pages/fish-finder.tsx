@@ -1,8 +1,20 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import FishFinderWizard from "@/components/fish-finder/fish-finder-wizard";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/lib/api";
+import { products as fallbackProducts } from "@/lib/mock-data";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FishFinder() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const products = data?.products ?? fallbackProducts;
+
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
       <Navbar />
@@ -17,7 +29,11 @@ export default function FishFinder() {
         </div>
 
         <div className="animate-in fade-in zoom-in-95 duration-700 delay-200">
-          <FishFinderWizard />
+          {isLoading ? (
+            <Skeleton className="w-full h-[600px] rounded-3xl" />
+          ) : (
+            <FishFinderWizard productsList={products} />
+          )}
         </div>
       </main>
       <Footer />

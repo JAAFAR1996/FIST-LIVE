@@ -3,13 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { products } from "@/lib/mock-data";
+import { products as fallbackProducts } from "@/lib/mock-data";
 import { ArrowRight, ArrowLeft, Sparkles, Fish, Ruler, Zap, Droplets } from "lucide-react";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/products/product-card";
+import type { Product } from "@/types";
 
-export default function FishFinderWizard() {
+interface FishFinderWizardProps {
+  productsList?: Product[];
+}
+
+export default function FishFinderWizard({ productsList }: FishFinderWizardProps) {
   const [step, setStep] = useState(() => {
     const saved = localStorage.getItem("fishFinderState");
     return saved ? JSON.parse(saved).step : 1;
@@ -50,7 +55,8 @@ export default function FishFinderWizard() {
     if (step > 1) setStep(step - 1);
   };
 
-  const recommendedProducts = products.slice(0, 3);
+  const allProducts = productsList && productsList.length ? productsList : fallbackProducts;
+  const recommendedProducts = allProducts.slice(0, 3);
 
   const steps = [
     { id: 1, title: "الحجم", icon: Ruler },

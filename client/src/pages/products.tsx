@@ -1,14 +1,25 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { products } from "@/lib/mock-data";
+import { products as fallbackProducts } from "@/lib/mock-data";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { ProductComparison } from "@/components/products/product-comparison";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Products() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const products = data?.products ?? fallbackProducts;
+
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
       <Navbar />
@@ -27,14 +38,25 @@ export default function Products() {
            </div>
 
            <TabsContent value="grid">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-              {products.map((product) => (
-                <ProductCard key={`${product.id}-dup`} product={product} />
-              ))}
-            </div>
+            {isLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <Skeleton key={i} className="h-72 w-full rounded-xl" />
+                ))}
+              </div>
+            )}
+            {!isLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+            {isError && (
+              <p className="text-center text-destructive mt-6">
+                تعذر تحميل المنتجات، تم عرض البيانات الاحتياطية.
+              </p>
+            )}
            </TabsContent>
            
            <TabsContent value="compare">

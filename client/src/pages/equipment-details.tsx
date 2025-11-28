@@ -1,16 +1,27 @@
 import { useRoute } from "wouter";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { products } from "@/lib/mock-data";
+import { products as fallbackProducts } from "@/lib/mock-data";
 import { ExplodedView } from "@/components/equipment/exploded-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Cog, Gauge, Zap, Shield } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProduct } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Product } from "@/types";
 
 export default function EquipmentDetails() {
   const [, params] = useRoute("/equipment/:slug");
   const slug = params?.slug;
-  const product = products.find((p) => p.id === slug) || products[0];
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => fetchProduct(slug || ""),
+    enabled: Boolean(slug),
+    staleTime: 1000 * 60 * 5,
+  });
+  const fallbackProduct = fallbackProducts.find((p) => p.id === slug) || fallbackProducts[0];
+  const product: Product | undefined = data || fallbackProduct;
 
   if (!product) {
     return (
@@ -64,11 +75,15 @@ export default function EquipmentDetails() {
               </div>
             </div>
             <div className="flex-1 flex justify-center">
-              <img 
-                src={product.image} 
-                alt={product.name} 
-                className="max-w-[400px] drop-shadow-[0_0_50px_rgba(255,255,255,0.2)]" 
-              />
+              {isLoading ? (
+                <Skeleton className="w-full max-w-[400px] h-[320px] rounded-3xl" />
+              ) : (
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="max-w-[400px] drop-shadow-[0_0_50px_rgba(255,255,255,0.2)]" 
+                />
+              )}
             </div>
           </div>
         </section>

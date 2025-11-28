@@ -1,7 +1,7 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { products } from "@/lib/mock-data";
+import { products as fallbackProducts } from "@/lib/mock-data";
 import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package } from "lucide-react";
 import { Link } from "wouter";
 import heroImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
@@ -11,10 +11,19 @@ import { MasonryGalleryGrid } from "@/components/gallery/masonry-gallery-grid";
 import { WaterRippleButton } from "@/components/effects/water-ripple-button";
 import { ProductCard } from "@/components/products/product-card";
 import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/lib/api";
 
 export default function Home() {
-  const featuredProduct = products.find(p => p.id === "seachem-prime");
-  const bestSellers = products.filter(p => p.isBestSeller);
+  const { data } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const products = data?.products ?? fallbackProducts;
+  const featuredProduct = products.find((p) => p.id === "seachem-prime");
+  const bestSellers = products.filter((p) => p.isBestSeller);
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
