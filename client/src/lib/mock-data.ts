@@ -32,7 +32,7 @@ export const products: Product[] = [
     specs: "التدفق: ١٤٥٠ لتر/ساعة | القدرة: ٢٠ واط",
     isBestSeller: true,
     difficulty: "medium",
-    videoUrl: "https://example.com/fluval-407-demo",
+    videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
   },
   {
     id: "eheim-jager",

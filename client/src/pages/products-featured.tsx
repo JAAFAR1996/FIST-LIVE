@@ -56,14 +56,15 @@ export default function FeaturedProduct() {
                
                <div className="space-y-6">
                  <h3 className="text-2xl font-bold">شاهده في منزلك (AR)</h3>
-                 <p className="text-lg text-muted-foreground leading-relaxed">
-                   استخدم تقنية الواقع المعزز لرؤية كيف سيبدو المنتج في مساحتك الخاصة قبل الشراء.
-                 </p>
-                 <ARViewer 
-                   posterUrl={featuredProduct.image}
-                   className="aspect-square shadow-2xl border-4 border-card"
-                 />
-               </div>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    استخدم تقنية الواقع المعزز لرؤية كيف سيبدو المنتج في مساحتك الخاصة قبل الشراء.
+                  </p>
+                  <ARViewer 
+                    modelUrl="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                    posterUrl={featuredProduct.image}
+                    className="aspect-square shadow-2xl border-4 border-card"
+                  />
+                </div>
              </div>
            </div>
         </section>

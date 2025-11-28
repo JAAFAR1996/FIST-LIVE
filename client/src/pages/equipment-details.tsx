@@ -9,9 +9,26 @@ import { ShoppingCart, Cog, Gauge, Zap, Shield } from "lucide-react";
 
 export default function EquipmentDetails() {
   const [, params] = useRoute("/equipment/:slug");
-  // In a real app, we'd use params.slug to fetch data. 
-  // For now, we'll just use the Fluval filter as a mock "equipment" page example
-  const product = products.find(p => p.id === "fluval-407") || products[0];
+  const slug = params?.slug;
+  const product = products.find((p) => p.id === slug) || products[0];
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background font-sans">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-20 text-center space-y-6">
+          <h1 className="text-3xl font-bold">المنتج غير موجود</h1>
+          <p className="text-muted-foreground">
+            تأكد من صحة الرابط أو عُد لصفحة المنتجات.
+          </p>
+          <Button asChild>
+            <a href="/products">العودة للمنتجات</a>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   // Mock parts data for exploded view if not present
   const parts = (product.explodedViewParts || [
