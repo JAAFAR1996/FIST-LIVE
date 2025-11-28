@@ -22,8 +22,9 @@ export default function FeaturedProduct() {
     staleTime: 1000 * 60 * 5,
   });
 
+  const listProducts = listData?.products ?? fallbackProducts;
   const featuredProduct =
-    featuredData || listData?.products.find((p) => p.id === "fluval-407") || fallbackProducts[0];
+    featuredData || listProducts.find((p) => p.id === "fluval-407") || fallbackProducts[0];
   
   const bundle = {
     id: "b1",
@@ -51,7 +52,10 @@ export default function FeaturedProduct() {
           <div className="container mx-auto px-4 max-w-3xl">
             <BundleRecommendation 
               bundle={bundle}
-              products={[featuredProduct, products.find(p => p.id === "seachem-prime") || products[1]]}
+              products={[
+                featuredProduct,
+                listProducts.find((p) => p.id === "seachem-prime") || listProducts[1],
+              ]}
               onAddToCart={() => console.log("Bundle added")}
             />
           </div>

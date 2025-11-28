@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema } from "../shared/schema";
+import { insertUserSchema, type InsertProduct } from "../shared/schema";
 import crypto from "crypto";
 
 declare module "express-session" {
@@ -10,11 +10,18 @@ declare module "express-session" {
   }
 }
 
-interface ApiError extends Error {
-  status?: number;
+const ASSET_BASE =
+  process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
+  "https://images.unsplash.com";
+
+function imageUrl(unsplashPath: string, r2Filename: string) {
+  if (ASSET_BASE.includes("unsplash.com")) {
+    return `${ASSET_BASE}${unsplashPath}`;
+  }
+  return `${ASSET_BASE.replace(/\/$/, "")}/${r2Filename}`;
 }
 
-const demoProducts = [
+const seedProducts: InsertProduct[] = [
   {
     id: "seachem-prime",
     name: "Seachem Prime Water Conditioner 500ml",
@@ -22,8 +29,10 @@ const demoProducts = [
     price: 55000,
     rating: 4.8,
     reviewCount: 67,
-    image:
-      "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=800&q=80&auto=format&fit=crop",
+    image: imageUrl(
+      "/photo-1522069169874-c58ec4b76be5?w=1200&q=90&auto=format&fit=crop",
+      "seachem_prime_500ml__b70abe42.jpg",
+    ),
     category: "Conditioners",
     specs: "التوافق: جميع الأحجام",
     isBestSeller: true,
@@ -37,8 +46,10 @@ const demoProducts = [
     price: 285000,
     rating: 4.9,
     reviewCount: 45,
-    image:
-      "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80&auto=format&fit=crop",
+    image: imageUrl(
+      "/photo-1524704654690-b56c05c78a00?w=1200&q=90&auto=format&fit=crop",
+      "fluval_407_canister__4d80d974.jpg",
+    ),
     category: "Filters",
     specs: "التدفق: ١٤٥٠ لتر/ساعة | القدرة: ٢٠ واط",
     isBestSeller: true,
@@ -53,8 +64,10 @@ const demoProducts = [
     price: 95000,
     rating: 4.7,
     reviewCount: 28,
-    image:
-      "https://images.unsplash.com/photo-1520990269667-98a1d1d9d6b0?w=800&q=80&auto=format&fit=crop",
+    image: imageUrl(
+      "/photo-1520990269667-98a1d1d9d6b0?w=1200&q=90&auto=format&fit=crop",
+      "eheim_jager_aquarium_f65664bd.jpg",
+    ),
     category: "Heaters",
     specs: "القدرة: ٢٠٠ واط | للأحواض ١٥٠-٣٠٠ لتر",
     isBestSeller: true,
@@ -68,8 +81,10 @@ const demoProducts = [
     originalPrice: 145000,
     rating: 4.6,
     reviewCount: 32,
-    image:
-      "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=800&q=80&auto=format&fit=crop",
+    image: imageUrl(
+      "/photo-1535591273668-578e31182c4f?w=1200&q=90&auto=format&fit=crop",
+      "aquaclear_70_power_f_dfd543e8.jpg",
+    ),
     category: "Filters",
     specs: "التدفق: ١١٣٥ لتر/ساعة | القدرة: ٨ واط",
     isBestSeller: true,
@@ -82,8 +97,10 @@ const demoProducts = [
     price: 35000,
     rating: 4.5,
     reviewCount: 18,
-    image:
-      "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?w=800&q=80&auto=format&fit=crop",
+    image: imageUrl(
+      "/photo-1497250681960-ef046c08a56e?w=1200&q=90&auto=format&fit=crop",
+      "anubias_nana_aquariu_554af5dc.jpg",
+    ),
     category: "Plants",
     specs: "للأحواض ٢٠-٥٠٠ لتر",
     isNew: true,
@@ -123,21 +140,36 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
+  await storage.seedProducts(seedProducts);
+
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", timestamp: Date.now() });
   });
 
   app.get("/api/products", (_req, res) => {
-    res.json({ products: demoProducts });
+    storage
+      .listProducts()
+      .then((products) => res.json({ products }))
+      .catch((err) => {
+        res.status(500).json({ message: "Failed to load products" });
+        throw err;
+      });
   });
 
   app.get("/api/products/:id", (req, res) => {
-    const product = demoProducts.find((p) => p.id === req.params.id);
-    if (!product) {
-      res.status(404).json({ message: "Product not found" });
-      return;
-    }
-    res.json(product);
+    storage
+      .getProduct(req.params.id)
+      .then((product) => {
+        if (!product) {
+          res.status(404).json({ message: "Product not found" });
+          return;
+        }
+        res.json(product);
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Failed to load product" });
+        throw err;
+      });
   });
 
   app.post("/api/users", async (req, res, next) => {

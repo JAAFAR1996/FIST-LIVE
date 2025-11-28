@@ -2,10 +2,35 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Box, Smartphone, RefreshCw } from "lucide-react";
 
+export {};
+
 const MODEL_VIEWER_SRC =
   "https://cdn.jsdelivr.net/npm/@google/model-viewer@3.4.0/dist/model-viewer.min.js";
 const DEFAULT_MODEL_URL =
+  import.meta.env.VITE_AR_MODEL_URL ||
   "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "model-viewer": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        src: string;
+        poster?: string;
+        ar?: boolean;
+        "ar-modes"?: string;
+        "camera-controls"?: boolean;
+        "touch-action"?: string;
+        "auto-rotate"?: boolean | string;
+        "shadow-intensity"?: number | string;
+        exposure?: number | string;
+        "quick-look-browsers"?: string;
+      };
+    }
+  }
+}
 
 let modelViewerLoader: Promise<void> | null = null;
 
