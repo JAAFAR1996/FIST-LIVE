@@ -1,0 +1,49 @@
+# Environment variables for FISH WEB
+# Copy this file to .env.local and replace the placeholder values.
+# Files named .env*.local are ignored by git; never commit real credentials.
+
+# Database URL (Neon PostgreSQL connection)
+# Format: postgresql://[user]:[password]@[host]:[port]/[database]?sslmode=require
+DATABASE_URL=postgresql://neondb_owner:npg_2hbE5zHAaLnv@ep-quiet-moon-a4h7tdze.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+# JWT Secret for authentication (min 32 characters)
+# Generate a secure random string: openssl rand -base64 32
+JWT_SECRET=0Q7FwJ8ZOG6z5WT9JizE1myTxMf42FOria4LAI52qj/TDSYymlPc2qs/hux1ZxIkZzTmU3vVKPOjvvxSVjPtAQ==
+
+# Site URL for absolute URLs in emails and social sharing
+NEXT_PUBLIC_SITE_URL=https://fishweb.iq
+
+# Resend API for transactional emails (order confirmations, etc.)
+# Get your API key from https://resend.com/api-keys
+RESEND_API_KEY=re_Ym7tc4SR_C3rVKznKG36ydLDwnazQ3T3y
+
+# Cloudflare R2 Storage Configuration
+# Generate an API token in Cloudflare Dashboard > R2 > Manage R2 API Tokens
+R2_ACCOUNT_ID=437b94b7c116f757f2a1f76afdccc81c
+R2_ACCESS_KEY_ID=d799a34b275806aa2bd9b075ce150b54
+R2_SECRET_ACCESS_KEY=4ee014b9f2bd1b8907dffadfdd07eb22eef23279d2f0a5fafa198c3807fce44d
+
+# Public URL for R2 buckets (default R2.dev URL or custom domain)
+# Example: https://pub-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.r2.dev
+NEXT_PUBLIC_R2_PUBLIC_URL=https://pub-a4b6f72ec4db47098ef8158544ad8451.r2.dev
+
+# Email configuration
+FROM_EMAIL=orders@fishweb.iq
+SUPPORT_EMAIL=support@fishweb.iq
+
+# Analytics Configuration (Plausible)
+# Your website domain for Plausible tracking
+NEXT_PUBLIC_PLAUSIBLE_DOMAIN=fishweb.iq
+
+# Plausible script URL (default: https://plausible.io/js/script.js)
+# Use custom domain if self-hosting Plausible
+NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL=https://plausible.io/js/script.js
+
+# PWA (Progressive Web App) Configuration
+# Enable service worker, offline caching, and manifest integration
+NEXT_PUBLIC_PWA_ENABLED=true
+
+# Show the install prompt (Add to Home Screen)
+NEXT_PUBLIC_SHOW_INSTALL_PROMPT=true
+
+# Enable offline caching for products (IndexedDB)
+NEXT_PUBLIC_OFFLINE_MODE_ENABLED=true

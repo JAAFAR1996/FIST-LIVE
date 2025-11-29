@@ -1,7 +1,6 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package } from "lucide-react";
 import { Link } from "wouter";
 import heroImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
@@ -13,16 +12,17 @@ import { ProductCard } from "@/components/products/product-card";
 import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
     staleTime: 1000 * 60 * 5,
   });
 
-  const products = data?.products ?? fallbackProducts;
-  const featuredProduct = products.find((p) => p.id === "seachem-prime");
+  const products = data?.products ?? [];
+  const featuredProduct = products.find((p) => p.id === "seachem-prime") || products[0];
   const bestSellers = products.filter((p) => p.isBestSeller);
 
   return (

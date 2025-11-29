@@ -1,111 +1,143 @@
-import { db } from "./db";
-import {
-  type User,
-  type InsertUser,
-  type Product,
-  type InsertProduct,
-  users,
-  products,
-  queries,
-} from "@shared/schema";
-import { eq, count, sql } from "drizzle-orm";
+import { type User, type InsertUser, type Product, type Order, type Review, users, products, orders, reviews } from "@shared/schema";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL not set");
+}
+
+const client = neon(process.env.DATABASE_URL);
+export const db = drizzle(client);
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-
-  listProducts(): Promise<Product[]>;
+  getProducts(filters?: ProductFilters): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
-  seedProducts(seed: InsertProduct[]): Promise<void>;
+  getProductBySlug(slug: string): Promise<Product | undefined>;
+  createProduct(product: Partial<Product>): Promise<Product>;
+  updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
+  getOrders(userId?: string): Promise<Order[]>;
+  getOrder(id: string): Promise<Order | undefined>;
+  createOrder(order: Partial<Order>): Promise<Order>;
+  updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined>;
+  getReviews(productId: string): Promise<Review[]>;
+  createReview(review: Partial<Review>): Promise<Review>;
+}
+
+export interface ProductFilters {
+  category?: string;
+  subcategory?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  isNew?: boolean;
+  isBestSeller?: boolean;
+  search?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export class DbStorage implements IStorage {
-  private ready: Promise<void>;
-
-  constructor() {
-    this.ready = this.ensureTables();
-  }
-
-  private async ensureTables() {
-    await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
-    await db.execute(sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id varchar(255) PRIMARY KEY DEFAULT gen_random_uuid(),
-        username text UNIQUE NOT NULL,
-        password text NOT NULL,
-        created_at timestamptz DEFAULT now()
-      );
-    `);
-
-    await db.execute(sql`
-      CREATE TABLE IF NOT EXISTS products (
-        id varchar(255) PRIMARY KEY,
-        name text NOT NULL,
-        brand text NOT NULL,
-        category text NOT NULL,
-        specs text NOT NULL,
-        price integer NOT NULL,
-        original_price integer,
-        rating double precision NOT NULL,
-        review_count integer DEFAULT 0,
-        image text NOT NULL,
-        video_url text,
-        difficulty text,
-        eco_friendly boolean DEFAULT false,
-        is_new boolean DEFAULT false,
-        is_best_seller boolean DEFAULT false,
-        created_at timestamptz DEFAULT now()
-      );
-    `);
-  }
-
   async getUser(id: string): Promise<User | undefined> {
-    await this.ready;
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
     return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    await this.ready;
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
     return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    await this.ready;
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
-  }
-
-  async listProducts(): Promise<Product[]> {
-    await this.ready;
-    return db.select().from(products).orderBy(products.createdAt);
-  }
-
-  async getProduct(id: string): Promise<Product | undefined> {
-    await this.ready;
-    const result = await db
-      .select()
-      .from(products)
-      .where(eq(products.id, id))
-      .limit(1);
+    const result = await db.insert(users).values(insertUser).returning();
     return result[0];
   }
 
-  async seedProducts(seed: InsertProduct[]): Promise<void> {
-    await this.ready;
-    const [{ count: existing }] = await db.select({ count: count() }).from(products);
-    if (Number(existing) > 0) return;
-    await db.insert(products).values(seed);
+  async getProducts(filters?: ProductFilters): Promise<Product[]> {
+    let query = db.select().from(products);
+    
+    const conditions = [];
+    if (filters?.category) conditions.push(eq(products.category, filters.category));
+    if (filters?.subcategory) conditions.push(eq(products.subcategory, filters.subcategory));
+    if (filters?.brand) conditions.push(eq(products.brand, filters.brand));
+    if (filters?.isNew !== undefined) conditions.push(eq(products.isNew, filters.isNew));
+    if (filters?.isBestSeller !== undefined) conditions.push(eq(products.isBestSeller, filters.isBestSeller));
+    if (filters?.minPrice) conditions.push(gte(products.price, filters.minPrice.toString()));
+    if (filters?.maxPrice) conditions.push(lte(products.price, filters.maxPrice.toString()));
+    if (filters?.search) {
+      conditions.push(
+        sql`(${products.name} ILIKE ${`%${filters.search}%`} OR ${products.description} ILIKE ${`%${filters.search}%`})`
+      );
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    query = query.orderBy(desc(products.createdAt)) as any;
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit) as any;
+    }
+    if (filters?.offset) {
+      query = query.offset(filters.offset) as any;
+    }
+
+    return await query;
+  }
+
+  async getProduct(id: string): Promise<Product | undefined> {
+    const result = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getProductBySlug(slug: string): Promise<Product | undefined> {
+    const result = await db.select().from(products).where(eq(products.slug, slug)).limit(1);
+    return result[0];
+  }
+
+  async createProduct(product: Partial<Product>): Promise<Product> {
+    const result = await db.insert(products).values(product as any).returning();
+    return result[0];
+  }
+
+  async updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined> {
+    const result = await db.update(products).set(updates).where(eq(products.id, id)).returning();
+    return result[0];
+  }
+
+  async getOrders(userId?: string): Promise<Order[]> {
+    if (userId) {
+      return await db.select().from(orders).where(eq(orders.userId, userId)).orderBy(desc(orders.createdAt));
+    }
+    return await db.select().from(orders).orderBy(desc(orders.createdAt));
+  }
+
+  async getOrder(id: string): Promise<Order | undefined> {
+    const result = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createOrder(order: Partial<Order>): Promise<Order> {
+    const result = await db.insert(orders).values(order as any).returning();
+    return result[0];
+  }
+
+  async updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined> {
+    const result = await db.update(orders).set(updates).where(eq(orders.id, id)).returning();
+    return result[0];
+  }
+
+  async getReviews(productId: string): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.productId, productId)).orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(review: Partial<Review>): Promise<Review> {
+    const result = await db.insert(reviews).values(review as any).returning();
+    return result[0];
   }
 }
 

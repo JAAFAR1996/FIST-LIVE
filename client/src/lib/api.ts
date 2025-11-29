@@ -22,3 +22,7 @@ export function fetchProducts(): Promise<{ products: Product[] }> {
 export function fetchProduct(id: string): Promise<Product> {
   return getJson<Product>(`/api/products/${id}`);
 }
+
+export function fetchProductBySlug(slug: string): Promise<Product> {
+  return getJson<Product>(`/api/products/slug/${slug}`);
+}

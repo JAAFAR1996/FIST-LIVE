@@ -1,36 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Box, Smartphone, RefreshCw } from "lucide-react";
-
-export {};
+import "@/types/model-viewer";
 
 const MODEL_VIEWER_SRC =
   "https://cdn.jsdelivr.net/npm/@google/model-viewer@3.4.0/dist/model-viewer.min.js";
 const DEFAULT_MODEL_URL =
-  import.meta.env.VITE_AR_MODEL_URL ||
   "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "model-viewer": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      > & {
-        src: string;
-        poster?: string;
-        ar?: boolean;
-        "ar-modes"?: string;
-        "camera-controls"?: boolean;
-        "touch-action"?: string;
-        "auto-rotate"?: boolean | string;
-        "shadow-intensity"?: number | string;
-        exposure?: number | string;
-        "quick-look-browsers"?: string;
-      };
-    }
-  }
-}
 
 let modelViewerLoader: Promise<void> | null = null;
 
@@ -51,28 +27,6 @@ function loadModelViewer(): Promise<void> {
   return modelViewerLoader;
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "model-viewer": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      > & {
-        src: string;
-        poster?: string;
-        ar?: boolean;
-        "ar-modes"?: string;
-        "camera-controls"?: boolean;
-        "touch-action"?: string;
-        "auto-rotate"?: boolean | string;
-        "shadow-intensity"?: number | string;
-        exposure?: number | string;
-        "quick-look-browsers"?: string;
-      };
-    }
-  }
-}
-
 interface ARViewerProps {
   modelUrl?: string;
   posterUrl: string;
@@ -82,6 +36,7 @@ interface ARViewerProps {
 export function ARViewer({ modelUrl, posterUrl, className }: ARViewerProps) {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const ModelViewer: any = "model-viewer";
   const effectiveModelUrl = useMemo(
     () => modelUrl || DEFAULT_MODEL_URL,
     [modelUrl],
@@ -102,7 +57,7 @@ export function ARViewer({ modelUrl, posterUrl, className }: ARViewerProps) {
       className={`relative group rounded-xl overflow-hidden bg-muted border border-border ${className}`}
     >
       {isReady && !error ? (
-        <model-viewer
+        <ModelViewer
           src={effectiveModelUrl}
           poster={posterUrl}
           ar

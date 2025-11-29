@@ -1,7 +1,6 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { LuxuryProductShowcase } from "@/components/products/luxury-product-showcase";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { ProductVideo } from "@/components/products/product-video";
 import { ARViewer } from "@/components/products/ar-viewer";
 import { BundleRecommendation } from "@/components/products/bundle-recommendation";
@@ -22,9 +21,21 @@ export default function FeaturedProduct() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const listProducts = listData?.products ?? fallbackProducts;
+  const products = listData?.products ?? [];
   const featuredProduct =
-    featuredData || listProducts.find((p) => p.id === "fluval-407") || fallbackProducts[0];
+    featuredData || products.find((p) => p.id === "fluval-407") || products[0];
+  
+  if (!featuredProduct) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background font-sans">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-12">
+          <Skeleton className="w-full h-[420px] rounded-3xl" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   const bundle = {
     id: "b1",
@@ -50,14 +61,22 @@ export default function FeaturedProduct() {
         {/* Bundle Recommendation */}
         <section className="py-12 bg-primary/5">
           <div className="container mx-auto px-4 max-w-3xl">
-            <BundleRecommendation 
-              bundle={bundle}
-              products={[
+            {(() => {
+              const bundleProducts = [
                 featuredProduct,
-                listProducts.find((p) => p.id === "seachem-prime") || listProducts[1],
-              ]}
-              onAddToCart={() => console.log("Bundle added")}
-            />
+                products.find(p => p.id === "seachem-prime") || products[1]
+              ].filter(Boolean);
+              
+              if (bundleProducts.length < 2) return null;
+              
+              return (
+                <BundleRecommendation 
+                  bundle={bundle}
+                  products={bundleProducts}
+                  onAddToCart={() => console.log("Bundle added")}
+                />
+              );
+            })()}
           </div>
         </section>
 

@@ -3,7 +3,6 @@ import Footer from "@/components/footer";
 import FishFinderWizard from "@/components/fish-finder/fish-finder-wizard";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FishFinder() {
@@ -13,7 +12,7 @@ export default function FishFinder() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const products = data?.products ?? fallbackProducts;
+  const products = data?.products ?? [];
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">

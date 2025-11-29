@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -25,14 +26,7 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 
 const MemoryStore = createMemoryStore(session);
-const sessionSecret =
-  process.env.SESSION_SECRET ||
-  process.env.JWT_SECRET ||
-  (process.env.NODE_ENV === "production"
-    ? (() => {
-        throw new Error("SESSION_SECRET is required in production");
-      })()
-    : "dev-secret-change-me");
+const sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-me";
 
 app.use(
   session({

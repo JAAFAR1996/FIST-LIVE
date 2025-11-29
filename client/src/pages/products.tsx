@@ -1,15 +1,15 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
+import { Star, AlertCircle } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { ProductComparison } from "@/components/products/product-comparison";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Products() {
   const { data, isLoading, isError } = useQuery({
@@ -18,7 +18,7 @@ export default function Products() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const products = data?.products ?? fallbackProducts;
+  const products = data?.products ?? [];
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
@@ -53,8 +53,17 @@ export default function Products() {
               </div>
             )}
             {isError && (
-              <p className="text-center text-destructive mt-6">
-                تعذر تحميل المنتجات، تم عرض البيانات الاحتياطية.
+              <Alert variant="destructive" className="mt-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>خطأ في تحميل المنتجات</AlertTitle>
+                <AlertDescription>
+                  تعذر تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقاً.
+                </AlertDescription>
+              </Alert>
+            )}
+            {!isLoading && !isError && products.length === 0 && (
+              <p className="text-center text-muted-foreground mt-6">
+                لا توجد منتجات متاحة حالياً.
               </p>
             )}
            </TabsContent>

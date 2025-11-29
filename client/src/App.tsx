@@ -12,6 +12,9 @@ import Sustainability from "@/pages/sustainability";
 import FeaturedProduct from "@/pages/products-featured";
 import EquipmentDetails from "@/pages/equipment-details";
 import EcoFriendlyGuide from "@/pages/guides-eco-friendly";
+import ReturnPolicy from "@/pages/return-policy";
+import FAQ from "@/pages/faq";
+import OrderTracking from "@/pages/order-tracking";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,6 +30,9 @@ function Router() {
       <Route path="/journey" component={Journey} />
       <Route path="/fish-finder" component={FishFinder} />
       <Route path="/sustainability" component={Sustainability} />
+      <Route path="/return-policy" component={ReturnPolicy} />
+      <Route path="/faq" component={FAQ} />
+      <Route path="/order-tracking" component={OrderTracking} />
       <Route component={NotFound} />
     </Switch>
   );

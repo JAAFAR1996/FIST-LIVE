@@ -1,13 +1,12 @@
 import { useRoute } from "wouter";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { ExplodedView } from "@/components/equipment/exploded-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Cog, Gauge, Zap, Shield } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProduct } from "@/lib/api";
+import { fetchProductBySlug } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Product } from "@/types";
 
@@ -16,12 +15,11 @@ export default function EquipmentDetails() {
   const slug = params?.slug;
   const { data, isLoading, isError } = useQuery({
     queryKey: ["product", slug],
-    queryFn: () => fetchProduct(slug || ""),
+    queryFn: () => fetchProductBySlug(slug || ""),
     enabled: Boolean(slug),
     staleTime: 1000 * 60 * 5,
   });
-  const fallbackProduct = fallbackProducts.find((p) => p.id === slug) || fallbackProducts[0];
-  const product: Product | undefined = data || fallbackProduct;
+  const product: Product | undefined = data;
 
   if (!product) {
     return (

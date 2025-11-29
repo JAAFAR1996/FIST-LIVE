@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { products as fallbackProducts } from "@/lib/mock-data";
 import { ArrowRight, ArrowLeft, Sparkles, Fish, Ruler, Zap, Droplets } from "lucide-react";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,7 +54,7 @@ export default function FishFinderWizard({ productsList }: FishFinderWizardProps
     if (step > 1) setStep(step - 1);
   };
 
-  const allProducts = productsList && productsList.length ? productsList : fallbackProducts;
+  const allProducts = productsList || [];
   const recommendedProducts = allProducts.slice(0, 3);
 
   const steps = [
