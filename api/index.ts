@@ -21,7 +21,7 @@ function buildSessionSecret() {
 
 type RawBodyRequest = Request & { rawBody?: Buffer };
 
-function buildApp() {
+async function buildApp() {
   const app = express();
   const httpServer = createServer(app);
 
@@ -73,13 +73,16 @@ function buildApp() {
     next();
   });
 
-  const ready = registerRoutes(httpServer, app);
-  return { app, ready };
+  await registerRoutes(httpServer, app);
+  return app;
 }
 
-const { app, ready } = buildApp();
+let appPromise: Promise<express.Express> | null = null;
 
 export default async function handler(req: Request, res: Response) {
-  await ready;
-  return app(req, res);
+  if (!appPromise) {
+    appPromise = buildApp();
+  }
+  const app = await appPromise;
+  return app(req as any, res as any);
 }
