@@ -16,13 +16,6 @@ interface ApiError extends Error {
   status?: number;
 }
 
-// Ensure session is visible on Request even if express-session augmentation is skipped.
-declare module "express-serve-static-core" {
-  interface Request {
-    session?: session.Session & Partial<session.SessionData>;
-  }
-}
-
 const getSession = (req: express.Request): (session.Session & Partial<session.SessionData>) | undefined =>
   (req as express.Request & { session?: session.Session & Partial<session.SessionData> }).session;
 
