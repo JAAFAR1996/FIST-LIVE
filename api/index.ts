@@ -23,8 +23,8 @@ function buildApp() {
 
   app.use(
     express.json({
-      verify: (req, _res, buf) => {
-        (req as any).rawBody = buf;
+      verify: (req: Request & { rawBody?: Buffer }, _res: Response, buf: Buffer) => {
+        req.rawBody = buf;
       },
     }),
   );
@@ -45,14 +45,14 @@ function buildApp() {
     }),
   );
 
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
-    let capturedJsonResponse: Record<string, any> | undefined = undefined;
+    let capturedJsonResponse: unknown | undefined = undefined;
 
     const originalResJson = res.json;
-    res.json = function (bodyJson, ...args) {
+    res.json = function (bodyJson: unknown, ...args: unknown[]) {
       capturedJsonResponse = bodyJson;
-      return originalResJson.apply(res, [bodyJson, ...args]);
+      return originalResJson.apply(res, [bodyJson, ...(args as [any])]);
     };
 
     res.on("finish", () => {
