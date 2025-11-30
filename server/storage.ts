@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Product, type Order, type Review, users, products, orders, reviews } from "@shared/schema";
+import { type User, type InsertUser, type Product, type Order, type Review, users, products, orders, reviews } from "../shared/schema.js";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
