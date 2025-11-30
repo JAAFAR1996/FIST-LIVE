@@ -51,7 +51,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 
 export async function registerRoutes(
   httpServer: Server,
-  app: express.Express,
+  app: express.Application,
 ): Promise<Server> {
   app.get("/api/health", (_req: express.Request, res: express.Response) => {
     res.json({ status: "ok", timestamp: Date.now() });
