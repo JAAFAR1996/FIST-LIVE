@@ -1,12 +1,7 @@
-import express, {
-  type Application,
-  type NextFunction,
-  type Request,
-  type RequestHandler,
-  type Response,
-} from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
+import type { Server } from "http";
+import type session from "express-session";
 import "express-session";
-import { type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema } from "../shared/schema";
 import crypto from "crypto";
@@ -20,6 +15,16 @@ declare module "express-session" {
 interface ApiError extends Error {
   status?: number;
 }
+
+// Ensure session is visible on Request even if express-session augmentation is skipped.
+declare module "express-serve-static-core" {
+  interface Request {
+    session?: session.Session & Partial<session.SessionData>;
+  }
+}
+
+const getSession = (req: express.Request): (session.Session & Partial<session.SessionData>) | undefined =>
+  (req as express.Request & { session?: session.Session & Partial<session.SessionData> }).session;
 
 function derivePassword(password: string, salt: string) {
   return crypto
@@ -40,19 +45,22 @@ function verifyPassword(password: string, stored: string) {
   return crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(check, "hex"));
 }
 
-function requireAuth(req: Request, res: Response, next: NextFunction) {
-  if (!req.session?.userId) {
+function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const session = getSession(req);
+  if (!session?.userId) {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
+  // attach for downstream usage
+  (req as express.Request).session = session;
   next();
 }
 
 export async function registerRoutes(
   httpServer: Server,
-  app: Application,
+  app: express.Express,
 ): Promise<Server> {
-  app.get("/api/health", (_req: Request, res: Response) => {
+  app.get("/api/health", (_req: express.Request, res: express.Response) => {
     res.json({ status: "ok", timestamp: Date.now() });
   });
 
@@ -78,7 +86,7 @@ export async function registerRoutes(
     };
   }
 
-  app.get("/api/products", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/api/products", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const { category, subcategory, brand, minPrice, maxPrice, isNew, isBestSeller, search, limit, offset } = req.query;
       
@@ -102,7 +110,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/products/:id", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/api/products/:id", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const product = await storage.getProduct(req.params.id);
       if (!product) {
@@ -115,7 +123,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/products/slug/:slug", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/api/products/slug/:slug", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const product = await storage.getProductBySlug(req.params.slug);
       if (!product) {
@@ -128,7 +136,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/users", async (req: Request, res: Response, next: NextFunction) => {
+  app.post("/api/users", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const payload = insertUserSchema.parse(req.body);
       const existing = await storage.getUserByUsername(payload.username);
@@ -142,14 +150,19 @@ export async function registerRoutes(
         password: hashPassword(payload.password),
       });
 
-      req.session.userId = user.id;
+      const session = getSession(req);
+      if (!session) {
+        res.status(500).json({ message: "Session not initialized" });
+        return;
+      }
+      session.userId = user.id;
       res.status(201).json({ id: user.id, username: user.username });
     } catch (err) {
       next(err);
     }
   });
 
-  app.post("/api/auth/login", async (req: Request, res: Response, next: NextFunction) => {
+  app.post("/api/auth/login", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const payload = insertUserSchema.parse(req.body);
       const user = await storage.getUserByUsername(payload.username);
@@ -157,28 +170,40 @@ export async function registerRoutes(
         res.status(401).json({ message: "Invalid credentials" });
         return;
       }
-      req.session.userId = user.id;
+      const session = getSession(req);
+      if (!session) {
+        res.status(500).json({ message: "Session not initialized" });
+        return;
+      }
+      session.userId = user.id;
       res.json({ id: user.id, username: user.username });
     } catch (err) {
       next(err);
     }
   });
 
-  app.post("/api/auth/logout", (req: Request, res: Response) => {
-    if (!req.session) {
+  app.post("/api/auth/logout", (req: express.Request, res: express.Response) => {
+    const sess = getSession(req);
+    if (!sess) {
       res.status(200).json({ message: "ok" });
       return;
     }
-    req.session.destroy(() => {
+    sess.destroy(() => {
       res.status(200).json({ message: "ok" });
     });
   });
 
   app.get(
     "/api/auth/me",
-    requireAuth as RequestHandler,
-    async (req: Request, res: Response) => {
-    const user = await storage.getUser(req.session.userId as string);
+    requireAuth as express.RequestHandler,
+    async (req: express.Request, res: express.Response) => {
+    const sess = getSession(req);
+    const userId = sess?.userId as string | undefined;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+    const user = await storage.getUser(userId);
     if (!user) {
       res.status(401).json({ message: "Unauthorized" });
       return;

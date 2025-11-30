@@ -1,8 +1,9 @@
-import express, { type Request, type Response, type NextFunction } from "express";
+import express, { Request, Response, NextFunction, type Express } from "express";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { createServer } from "http";
 import { registerRoutes } from "../server/routes";
+import "express-session";
 
 const MemoryStore = createMemoryStore(session);
 
@@ -17,13 +18,15 @@ function buildSessionSecret() {
   return secret;
 }
 
+type RawBodyRequest = Request & { rawBody?: Buffer };
+
 function buildApp() {
-  const app = express();
+  const app: Express = express();
   const httpServer = createServer(app);
 
   app.use(
     express.json({
-      verify: (req: Request & { rawBody?: Buffer }, _res: Response, buf: Buffer) => {
+      verify: (req: RawBodyRequest, _res: Response, buf: Buffer) => {
         req.rawBody = buf;
       },
     }),
