@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { createServer } from "http";
-import { registerRoutes } from "../server/routes";
+import { registerRoutes } from "../server/routes.js";
 import "express-session";
 
 const MemoryStore = createMemoryStore(session);

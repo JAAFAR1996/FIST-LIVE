@@ -2,8 +2,8 @@ import express, { type Express, type Request, type Response, type NextFunction }
 import type { Server } from "http";
 import type session from "express-session";
 import "express-session";
-import { storage } from "./storage";
-import { insertUserSchema } from "../shared/schema";
+import { storage } from "./storage.js";
+import { insertUserSchema } from "../shared/schema.js";
 import crypto from "crypto";
 
 declare module "express-session" {
