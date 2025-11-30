@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, type Express } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { createServer } from "http";
@@ -21,7 +21,7 @@ function buildSessionSecret() {
 type RawBodyRequest = Request & { rawBody?: Buffer };
 
 function buildApp() {
-  const app: Express = express();
+  const app = express();
   const httpServer = createServer(app);
 
   app.use(
