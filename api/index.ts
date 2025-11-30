@@ -1,5 +1,5 @@
 import express from "express";
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import { createServer } from "http";
@@ -27,7 +27,7 @@ function buildApp() {
 
   app.use(
     express.json({
-      verify: (req: RawBodyRequest, _res, buf) => {
+      verify: (req: RawBodyRequest, _res: Response, buf: Buffer) => {
         req.rawBody = buf;
       },
     }),
@@ -49,14 +49,14 @@ function buildApp() {
     }),
   );
 
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
     let capturedJsonResponse: unknown | undefined = undefined;
 
-    const originalResJson = res.json;
-    res.json = function (bodyJson: unknown, ...args: unknown[]) {
+    const originalResJson = res.json.bind(res);
+    res.json = function (bodyJson: any) {
       capturedJsonResponse = bodyJson;
-      return originalResJson.apply(res, [bodyJson, ...(args as [any])]);
+      return originalResJson(bodyJson);
     };
 
     res.on("finish", () => {
@@ -79,7 +79,7 @@ function buildApp() {
 
 const { app, ready } = buildApp();
 
-export default async function handler(req, res) {
+export default async function handler(req: Request, res: Response) {
   await ready;
   return app(req, res);
 }
