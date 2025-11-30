@@ -1695,7 +1695,7 @@ async function seed() {
 
     console.log("✅ Database seeded successfully with professional product data!");
     console.log("📊 Features included:");
-    console.log("  - 20 products from user's actual spreadsheet");
+    console.log("  - 51 products from user's actual spreadsheet");
     console.log("  - SEO-optimized bilingual descriptions (Arabic & English)");
     console.log("  - Researched specifications based on 2025 data");
     console.log("  - Emotional copywriting using proven psychological triggers");
