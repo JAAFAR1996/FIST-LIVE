@@ -1,10 +1,5 @@
-import type {
-  Application,
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from "express";
+import type { Express, NextFunction, Request, RequestHandler, Response } from "express";
+import "express-session";
 import { type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema } from "../shared/schema";
@@ -49,7 +44,7 @@ function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 export async function registerRoutes(
   httpServer: Server,
-  app: Application,
+  app: Express,
 ): Promise<Server> {
   app.get("/api/health", (_req: Request, res: Response) => {
     res.json({ status: "ok", timestamp: Date.now() });
