@@ -1,4 +1,4 @@
-import express, { type Request, type Response, type NextFunction } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import type { Server } from "http";
 import type session from "express-session";
 import "express-session";
@@ -51,7 +51,7 @@ function requireAuth(req: express.Request, res: express.Response, next: express.
 
 export async function registerRoutes(
   httpServer: Server,
-  app: express.Application,
+  app: Express,
 ): Promise<Server> {
   app.get("/api/health", (_req: express.Request, res: express.Response) => {
     res.json({ status: "ok", timestamp: Date.now() });
@@ -204,7 +204,7 @@ export async function registerRoutes(
     res.json({ id: user.id, username: user.username });
   });
 
-  app.use("/api", (_req: Request, res: Response) => {
+  app.use("/api", (_req: express.Request, res: express.Response) => {
     res.status(404).json({ message: "Not Found" });
   });
 
