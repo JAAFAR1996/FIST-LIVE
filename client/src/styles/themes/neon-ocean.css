@@ -1,0 +1,23 @@
+@custom-variant neon-ocean (&:is([data-theme='neon-ocean'] *));
+
+[data-theme='neon-ocean'] {
+  --background: 230 50% 5%;
+  --foreground: 180 100% 90%;
+  --card: 230 40% 10%;
+  --card-foreground: 180 100% 90%;
+  --popover: 230 40% 10%;
+  --popover-foreground: 180 100% 90%;
+  --primary: 170 100% 50%; /* Neon Cyan */
+  --primary-foreground: 230 50% 5%;
+  --secondary: 260 100% 60%; /* Neon Purple */
+  --secondary-foreground: 210 40% 98%;
+  --muted: 230 40% 20%;
+  --muted-foreground: 180 50% 60%;
+  --accent: 320 100% 60%; /* Neon Pink */
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 170 50% 30%;
+  --input: 170 50% 30%;
+  --ring: 170 100% 50%;
+}

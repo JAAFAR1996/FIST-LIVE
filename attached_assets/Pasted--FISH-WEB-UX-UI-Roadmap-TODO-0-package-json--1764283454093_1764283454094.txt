@@ -1,0 +1,373 @@
+✅ FISH WEB – UX / UI Roadmap (TODO)
+🧱 المرحلة 0 – تجهيز البنية (قبل أي شيء)
+
+ تحديث package.json وإضافة المكتبات:
+
+ react-masonry-css
+
+ @react-spring/web
+
+ react-compare-slider
+
+ @use-gesture/react
+
+ canvas-confetti
+
+ react-intersection-observer
+
+ تحديث tailwind.config.ts:
+
+ إضافة ألوان neon + pastel.
+
+ إضافة animations الجديدة (wave-scroll, bubble-rise, glow-pulse, fish-swim, luxury-fade).
+
+ إضافة utilities مثل backdrop-blur-heavy, text-shadow-glow.
+
+ تحديث globals.css:
+
+ استيراد ملفات الثيمات الجديدة.
+
+ إضافة الكلاسات العامة (.underwater-glow, .wave-scroll, .water-ripple, .slow-zoom, .luxury-fade).
+
+ إضافة keyframes للحركات (wave, bubble-rise, glow-pulse, fish-swim).
+
+ تحديث Types في src/types/index.ts:
+
+ إضافة DifficultyLevel, ThemeOption.
+
+ إضافة Types لـ Fish Finder, Journey, Bundles, Equipment Parts.
+
+ تحديث Product لتشمل:
+difficulty?, ecoFriendly?, videoUrl?, explodedViewParts?, bundleProducts?.
+
+ تحديث i18n (messages/en.json, messages/ar.json):
+
+ مفاتيح Fish Finder.
+
+ مفاتيح Journey.
+
+ مفاتيح Difficulty.
+
+ مفاتيح Sustainability.
+
+ مفاتيح Themes.
+
+ مفاتيح Product (AR, bundle, eco-friendly, product of week).
+
+ Feature Flags – src/lib/config/features.ts:
+
+ إضافة جميع الـ flags الجديدة (enhanced3D, fishFinder, journey, … إلخ).
+
+ افتراضيًا: AR = false، الباقي true أو حسب أولوياتك.
+
+🎨 المرحلة 1 – الثيمات والهوية البصرية
+
+هدف المرحلة: شكل الموقع يتحول لشيء مميز حتى قبل التفاعلات الثقيلة.
+
+ ثيمات CSS:
+
+ إنشاء src/styles/themes/neon-ocean.css
+
+ إنشاء src/styles/themes/monochrome.css
+
+ إنشاء src/styles/themes/pastel.css
+
+ ربطها عبر data-theme على <body>.
+
+ مبدّل الثيمات:
+
+ src/components/ui/theme-switcher.tsx
+
+ دعم ثيمات: light, dark, neon-ocean, monochrome, pastel.
+
+ حفظ الخيار في localStorage.
+
+ تكامل مع ThemeProvider.
+
+ تطبيق الثيمات على الصفحة الرئيسية وباقي الصفحات الأساسية:
+
+ تمرير الـ theme من الـ provider واختبار التبديل.
+
+🧠 المرحلة 2 – Core UX: Fish Finder + Journey + Difficulty + Comparison
+
+هذه أهم مرحلة لها تأثير مباشر على تجربة الشراء.
+
+ Fish Finder Wizard:
+
+ صفحة: src/app/[locale]/fish-finder/page.tsx
+
+ مكوّن: src/components/fish-finder/FishFinderWizard.tsx
+
+ 4 خطوات + state management.
+
+ Animations بين الخطوات (GSAP).
+
+ منطق التوصيات + استهلاك products API.
+
+ تخزين النتائج في localStorage.
+
+ رحلة العميل (Journey):
+
+ صفحة: src/app/[locale]/journey/page.tsx
+
+ مكوّن Progress: src/components/journey/JourneyProgress.tsx
+
+ 4 خطوات (حوض → نباتات → أسماك → معدات).
+
+ حفظ التقدم في localStorage.
+
+ إمكانية الرجوع للخطوات السابقة.
+
+ تصنيف الصعوبة (Difficulty Badges):
+
+ مكوّن: src/components/ui/difficulty-badge.tsx
+
+ دمجه في: src/components/products/product-card.tsx
+
+ دعم الفلترة لاحقًا (Step 2.5 لو حبيت).
+
+ جدول مقارنة المنتجات:
+
+ مكوّن: src/components/products/ProductComparison.tsx
+
+ اختيار 2–4 منتجات.
+
+ عرض: صورة، سعر، صعوبة، حجم الحوض، الإضاءة، الحرارة.
+
+ Sticky header + scroll أفقي للموبايل.
+
+ استخدام react-compare-slider عند الحاجة.
+
+👥 المرحلة 3 – Social Proof: عملاءك + المراجعات
+
+هنا تبدأ تبني ثقة قوية.
+
+ معرض أحواض العملاء Masonry:
+
+ مكوّن: src/components/gallery/MasonryGalleryGrid.tsx
+
+ استبدال gallery-grid.tsx القديم.
+
+ Lazy loading للصور، overlay بالمعلومات عند hover، صفحة تفصيل للحوض.
+
+ مراجعات بالصور:
+
+ مكوّن: src/components/reviews/ReviewWithImages.tsx
+
+ تعديل استخدامه في reviews الحالي.
+
+ دعم:
+
+ صور متعددة لكل مراجعة (Lightbox).
+
+ badge "عميل موثوق".
+
+ فلتر "مع صور فقط".
+
+ أسلوب كتابة ودي:
+
+ إعادة صياغة نصوص المنتجات والواجهات اعتمادًا على مفاتيح i18n الجديدة (أسلوب Glossier / friendly).
+
+🌍 المرحلة 4 – البيئة والقصة (Sustainability & Guides & Transparency)
+
+ صفحة الاستدامة:
+
+ src/app/[locale]/sustainability/page.tsx
+
+ Storytelling + صور طبيعة + ذكر 1% للتبرع.
+
+ دليل الحوض الصديق للبيئة:
+
+ src/app/[locale]/guides/eco-friendly-aquarium/page.tsx
+
+ محتوى تعليمي منظم (ماء، طاقة، نباتات، التخلص من المياه).
+
+ شفافية المنتج:
+
+ مكوّن: src/components/products/ProductTransparency.tsx
+
+ دمجه في pdp/product-info.tsx
+
+ عرض: بلد المنشأ، المواد، استهلاك الطاقة، العمر، شهادات بيئية، أيقونة 🌿 عند ecoFriendly.
+
+💎 المرحلة 5 – High-End Product Experience (Cartier + Terminal)
+
+ صفحة منتج واحد فاخر:
+
+ src/app/[locale]/products/featured/page.tsx
+
+ مكوّن: LuxuryProductShowcase.tsx
+
+ صورة 4K، نص قصير، زر "اكتشف"، أسهم للمنتج التالي/السابق.
+
+ حركات بطيئة (600–800ms).
+
+ Hero فاخر / بديل:
+
+ src/components/products/LuxuryProductShowcase.tsx في الهيرو.
+
+ صفحة المعدات الصناعية:
+
+ src/app/[locale]/equipment/[slug]/page.tsx
+
+ خلفيات معدنية/زجاجية.
+
+ صور 45° + أرقام المواصفات كبيرة.
+
+ مكوّن الأيقونات: src/components/equipment/TechnicalIcons.tsx
+
+ Exploded view: src/components/equipment/ExplodedView.tsx
+
+🎣 المرحلة 6 – Hero + Home Layout + Core Visual Experience
+
+ Hero Variants:
+
+ MinimalHero.tsx – نسخة Allbirds.
+
+ ربط LuxuryProductShowcase كـ hero بديل.
+
+ EnhancedAquariumScene.tsx (3D) كخيار ثالث.
+
+ إعادة بناء الصفحة الرئيسية:
+
+ تعديل src/app/[locale]/page.tsx ليحتوي:
+
+ Hero (اختيار واحد من الثلاثة).
+
+ ProductOfTheWeek.
+
+ CTA للـ Fish Finder.
+
+ Journey section.
+
+ MasonryGalleryGrid.
+
+ Sustainability CTA.
+
+ Equipment Showcase.
+
+ BestSellers.
+
+ منتج الأسبوع:
+
+ مكوّن: src/components/home/ProductOfTheWeek.tsx
+
+ اختيار المنتج عبر admin/config.
+
+ دمجه في الصفحة الرئيسية.
+
+🌊 المرحلة 7 – Animations & Micro-Interactions (Igloo + Ocean + Ribbit)
+
+ حوض السمك 3D:
+
+ src/components/3d/EnhancedAquariumScene.tsx
+
+ تفاعل الماوس (raycasting).
+
+ فقاعات، نباتات، Parallax.
+
+ Optimization (instancing + LOD).
+
+ Bubble Trail:
+
+ src/components/effects/BubbleTrail.tsx
+
+ فقاعات تتبع المؤشر + انفجار عند النقر.
+
+ إعداد خيار تشغيل/إيقاف (settings).
+
+ Water Ripple Button:
+
+ src/components/effects/WaterRippleButton.tsx
+
+ دمجه مع ui/button.tsx.
+
+ Fish swim to cart:
+
+ src/components/cart/FishSwimToCart.tsx
+
+ ربطه مع cart-toast.tsx + Header cart icon.
+
+ Underwater Glow للصور:
+
+ UnderwaterGlowImage.tsx
+
+ دمجه في product-card.tsx مع ثيم neon-ocean.
+
+ Wave Scroll Effect:
+
+ WaveScrollEffect.tsx
+
+ تطبيقه على أقسام الصفحة الرئيسية.
+
+ تحسين ProductCard:
+
+ إضافة:
+
+ DifficultyBadge.
+
+ UnderwaterGlowImage (بثيم نيون).
+
+ تأثيرات Hover (موجة، ارتفاع، حركة أيقونة).
+
+ زر “قارن” + أيقونة eco-friendly.
+
+ Easter Eggs:
+
+ src/components/effects/EasterEggs.tsx
+
+ ربطه في Header.tsx و not-found.tsx.
+
+📱 المرحلة 8 – Advanced E-commerce Features (AR + Video + Bundles)
+
+ AR Viewer:
+
+ src/components/products/ARViewer.tsx
+
+ ربطه في pdp/product-info.tsx للأحواض.
+
+ إعداد models + fallback للمتصفحات غير المدعومة.
+
+ فتح Flag: FEATURES.arViewer = true بعد الاختبار.
+
+ فيديوهات المنتجات:
+
+ ProductVideo.tsx في pdp/product-media.tsx.
+
+ دعم autoplay عند scroll + subtitles عربية.
+
+ Bundle Recommendation:
+
+ BundleRecommendation.tsx في pdp/related-products.tsx.
+
+ دعم: “اشترِ المجموعة كاملة” مع حساب الخصم + إضافة كل المنتجات للسلة.
+
+📚 المرحلة 9 – Documentation & Checklist
+
+ تحديث README.md:
+
+ إضافة قسم "Award-Winning Design Features".
+
+ شرح الثيمات وكيفية التبديل بينها.
+
+ ذكر الـ Feature Flags.
+
+ إنشاء IMPLEMENTATION_CHECKLIST.md:
+
+ وضع الـ33 Task (أو المراحل اللي فوق) مع مربعات [ ].
+
+ تحديث التقدم يدويًا مع كل Feature/PR.
+
+👊 الخلاصة
+
+نعم، حولت الخطة العملاقة إلى TODO واضح بمراحل.
+
+كل مرحلة تقدر تكون Sprint لوحدها.
+
+لما تشتغل مع AI / مطورين، تعطيهم phase / chunk محدد بدل ما ترمي عليهم المستند كله.
+
+لو حاب، أقدر الآن:
+
+أختار لك مرحلة البداية المثالية حسب وضع الكود الحالي (مثلاً Phase 2 أو 3)،
+
+وأحوّلها إلى GitHub Issues جاهزة (عنوان + وصف + Acceptance Criteria) جاهزة للنسخ. 🧠🐠
