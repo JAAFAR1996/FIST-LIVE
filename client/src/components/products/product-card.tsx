@@ -7,7 +7,7 @@ import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { Heart, ShoppingCart, Leaf } from "lucide-react";
 import { UnderwaterGlowImage } from "@/components/effects/underwater-glow-image";
 import { FishSwimToCart } from "@/components/cart/fish-swim-to-cart";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.ts";
 import { useCart } from "@/contexts/cart-context";
 import { Link } from "wouter";
 

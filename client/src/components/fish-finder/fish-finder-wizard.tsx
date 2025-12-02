@@ -8,7 +8,7 @@ import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/products/product-card";
 import { useCart } from "@/contexts/cart-context";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.ts";
 import type { Product } from "@/types";
 
 interface FishFinderWizardProps {

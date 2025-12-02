@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast.ts";
 
 export default function ProductDetails() {
   const params = useParams();
