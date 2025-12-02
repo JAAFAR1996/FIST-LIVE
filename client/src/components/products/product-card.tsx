@@ -83,7 +83,7 @@ export const ProductCard = memo(function ProductCard({ product, onCompare }: Pro
           <div className="text-sm text-muted-foreground">{product.brand}</div>
           <DifficultyBadge level={product.difficulty} className="scale-90 origin-left" />
         </div>
-        <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-2 h-14">
+        <h3 className="font-bold text-lg leading-tight transition-colors line-clamp-2 h-14">
           {product.name}
         </h3>
       </CardHeader>
