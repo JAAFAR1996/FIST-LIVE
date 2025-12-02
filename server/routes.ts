@@ -38,7 +38,7 @@ function verifyPassword(password: string, stored: string) {
   return crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(check, "hex"));
 }
 
-function requireAuth(req, res, next) {
+function requireAuth(req: any, res: any, next: any) {
   const sess = getSession(req);
   if (!sess?.userId) {
     res.status(401).json({ message: "Unauthorized" });
@@ -52,7 +52,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: express.Application,
 ): Promise<Server> {
-  app.get("/api/health", (_req, res) => {
+  (app as any).get("/api/health", (_req: any, res: any) => {
     res.json({ status: "ok", timestamp: Date.now() });
   });
 
@@ -78,7 +78,7 @@ export async function registerRoutes(
     };
   }
 
-  app.get("/api/products", async (req, res, next) => {
+  (app as any).get("/api/products", async (req: any, res: any, next: any) => {
     try {
       const { category, subcategory, brand, minPrice, maxPrice, isNew, isBestSeller, search, limit, offset } = req.query;
 
@@ -102,7 +102,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/products/:id", async (req, res, next) => {
+  (app as any).get("/api/products/:id", async (req: any, res: any, next: any) => {
     try {
       const product = await storage.getProduct(req.params.id);
       if (!product) {
@@ -115,7 +115,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/products/slug/:slug", async (req, res, next) => {
+  (app as any).get("/api/products/slug/:slug", async (req: any, res: any, next: any) => {
     try {
       const product = await storage.getProductBySlug(req.params.slug);
       if (!product) {
@@ -128,7 +128,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/users", async (req, res, next) => {
+  (app as any).post("/api/users", async (req: any, res: any, next: any) => {
     try {
       const payload = insertUserSchema.parse(req.body);
       const existing = await storage.getUserByUsername(payload.username);
@@ -154,7 +154,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/auth/login", async (req, res, next) => {
+  (app as any).post("/api/auth/login", async (req: any, res: any, next: any) => {
     try {
       const payload = insertUserSchema.parse(req.body);
       const user = await storage.getUserByUsername(payload.username);
@@ -174,7 +174,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/auth/logout", (req, res) => {
+  (app as any).post("/api/auth/logout", (req: any, res: any) => {
     const sess = getSession(req);
     if (!sess) {
       res.status(200).json({ message: "ok" });
@@ -185,10 +185,10 @@ export async function registerRoutes(
     });
   });
 
-  app.get(
+  (app as any).get(
     "/api/auth/me",
     requireAuth as express.RequestHandler,
-    async (req, res) => {
+    async (req: any, res: any) => {
     const sess = getSession(req);
     const userId = sess?.userId as string | undefined;
     if (!userId) {
@@ -203,7 +203,7 @@ export async function registerRoutes(
     res.json({ id: user.id, username: user.username });
   });
 
-  app.use("/api", (_req, res) => {
+  (app as any).use("/api", (_req: any, res: any) => {
     res.status(404).json({ message: "Not Found" });
   });
 

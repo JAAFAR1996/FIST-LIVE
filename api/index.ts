@@ -39,7 +39,7 @@ async function buildApp() {
     }),
   );
 
-  app.use((req, res, next) => {
+  app.use((req: any, res: any, next: any) => {
     const start = Date.now();
 
     res.on("finish", () => {
