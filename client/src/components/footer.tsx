@@ -231,13 +231,13 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Fish Web. جميع الحقوق محفوظة.
             </p>
             <div className="flex items-center gap-6 text-xs text-slate-500">
-              <Link href="#">
+              <Link href="/privacy-policy">
                 <span className="hover:text-primary transition-colors cursor-pointer">سياسة الخصوصية</span>
               </Link>
-              <Link href="#">
+              <Link href="/terms">
                 <span className="hover:text-primary transition-colors cursor-pointer">الشروط والأحكام</span>
               </Link>
-              <Link href="#">
+              <Link href="/return-policy">
                 <span className="hover:text-primary transition-colors cursor-pointer">سياسة الإرجاع</span>
               </Link>
             </div>

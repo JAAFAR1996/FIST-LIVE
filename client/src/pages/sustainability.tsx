@@ -13,9 +13,9 @@ export default function Sustainability() {
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1583212231861-af4aa4ed60e0?w=1600&q=80" 
-            alt="Ocean Conservation" 
+          <img
+            src="/stock_images/sustainable_eco_frie_c88ff0b1.jpg"
+            alt="Ocean Conservation"
             className="w-full h-full object-cover opacity-80"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
@@ -66,9 +66,9 @@ export default function Sustainability() {
               </ul>
             </div>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-              <img 
-                src="https://images.unsplash.com/photo-1544551763-46a8e3d17118?w=800&q=80" 
-                alt="Coral Restoration" 
+              <img
+                src="/stock_images/clean_river_ecosyste_f6301bd2.jpg"
+                alt="Coral Restoration"
                 className="w-full h-full object-cover"
               />
             </div>

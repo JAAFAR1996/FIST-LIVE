@@ -53,10 +53,10 @@ export default function Journey() {
 
   // Images for steps
   const stepImages = {
-    planning: "https://images.unsplash.com/photo-1520990269667-98a1d1d9d6b0?w=800&q=80",
-    equipment: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800&q=80",
-    decor: "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?w=800&q=80",
-    cycling: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=800&q=80"
+    planning: "/stock_images/planted_aquarium_tan_46df6ed7.jpg",
+    equipment: "/stock_images/aquarium_canister_fi_ebe5d7af.jpg",
+    decor: "/stock_images/anubias_nana_aquariu_554af5dc.jpg",
+    cycling: "/stock_images/clean_river_ecosyste_f6301bd2.jpg"
   };
 
   const handleNext = () => {

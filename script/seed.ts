@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import XLSX from "xlsx";
-import { db } from "../server/storage";
+import { db } from "../server/db.js";
 import { products } from "../shared/schema";
 
 type RawProduct = {

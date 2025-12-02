@@ -6,7 +6,15 @@
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(npm run build:*)",
-      "Bash(pnpm install)"
+      "Bash(pnpm install)",
+      "WebFetch(domain:fist-live.vercel.app)",
+      "Bash(tree:*)",
+      "Bash(pnpm run seed:*)",
+      "Bash(tsx script/seed.ts:*)",
+      "Bash(pnpm exec tsx:*)",
+      "Bash(pnpm exec dotenv:*)",
+      "Bash(DATABASE_URL='postgresql://neondb_owner:npg_2hbE5zHAaLnv@ep-quiet-moon-a4h7tdze.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' pnpm exec tsx:*)",
+      "Bash(pnpm run check:*)"
     ],
     "deny": [],
     "ask": []
