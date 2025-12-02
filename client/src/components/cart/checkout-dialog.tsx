@@ -7,14 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Phone, User, MapPin, CheckCircle2, AlertCircle } from "lucide-react";
 import { formatIQD } from "@/lib/utils";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { CartItem } from "@/contexts/cart-context";
 
 interface CustomerInfo {
   name: string;

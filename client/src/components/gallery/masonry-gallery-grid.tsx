@@ -2,6 +2,7 @@ import Masonry from "react-masonry-css";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Heart, Expand, User } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 // Mock gallery data
 const galleryItems = [
@@ -30,12 +31,11 @@ export function MasonryGalleryGrid() {
         <div key={item.id} className="mb-4 group relative overflow-hidden rounded-xl bg-muted">
           <Dialog>
             <DialogTrigger asChild>
-              <div className="cursor-pointer">
-                <img 
-                  src={item.image} 
-                  alt={item.tank} 
+              <div className="cursor-pointer relative">
+                <OptimizedImage
+                  src={item.image}
+                  alt={item.tank}
                   className="w-full h-auto transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
                   <p className="font-bold">{item.tank}</p>
@@ -47,7 +47,12 @@ export function MasonryGalleryGrid() {
               </div>
             </DialogTrigger>
             <DialogContent className="max-w-4xl p-0 overflow-hidden bg-transparent border-none shadow-none">
-              <img src={item.image} alt={item.tank} className="w-full h-auto rounded-lg shadow-2xl" />
+              <OptimizedImage
+                src={item.image}
+                alt={item.tank}
+                className="w-full h-auto rounded-lg shadow-2xl"
+                priority={true}
+              />
             </DialogContent>
           </Dialog>
         </div>

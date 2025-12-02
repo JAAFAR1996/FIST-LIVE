@@ -31,8 +31,8 @@ export function EasterEggs() {
         colors: ['#FFD700', '#FF69B4', '#00CED1']
       });
       toast({
-        title: "🎮 CHEAT CODE ACTIVATED!",
-        description: "You found the secret developer mode!",
+        title: "🎮 تم تفعيل الكود السري!",
+        description: "لقد وجدت وضع المطور السري!",
       });
       setKeys([]);
     }
@@ -40,8 +40,8 @@ export function EasterEggs() {
     // "fish" typed
     if (code.includes('fish')) {
       toast({
-        title: "🐟 Blub blub!",
-        description: "Something fishy is going on here...",
+        title: "🐟 بلوب بلوب!",
+        description: "هناك شيء مريب يحدث هنا...",
       });
       setKeys([]);
     }

@@ -1,5 +1,6 @@
 import { useScroll, useTransform, motion } from "framer-motion";
 import { useRef } from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface MinimalHeroProps {
   title: string;
@@ -21,12 +22,18 @@ export function MinimalHero({ title, subtitle, image, onCtaClick }: MinimalHeroP
   return (
     <div ref={ref} className="relative h-[90vh] overflow-hidden bg-background flex items-center justify-center">
       {/* Background Image with Parallax */}
-      <motion.div 
+      <motion.div
         style={{ y, opacity }}
         className="absolute inset-0 z-0"
       >
         <div className="absolute inset-0 bg-black/20 z-10" />
-        <img src={image} alt="Hero" className="w-full h-full object-cover" />
+        <OptimizedImage
+          src={image}
+          alt="Hero"
+          className="w-full h-full"
+          priority={true}
+          objectFit="cover"
+        />
       </motion.div>
 
       {/* Content */}

@@ -61,8 +61,8 @@ export default function FeaturedProduct() {
 
   const handleBundleAdd = () => {
     toast({
-      title: "Bundle added to cart",
-      description: `Added ${bundle.products.length} items from the recommendation.`,
+      title: "تمت إضافة المجموعة للسلة",
+      description: `تم إضافة ${bundle.products.length} منتجات من التوصيات.`,
     });
   };
 

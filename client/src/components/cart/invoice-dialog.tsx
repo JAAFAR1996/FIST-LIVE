@@ -7,14 +7,7 @@ import { formatIQD, generateOrderNumber, formatDate, formatShortDate } from "@/l
 import { useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { clientEnv } from "@/lib/config/env";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { CartItem } from "@/contexts/cart-context";
 
 interface CustomerInfo {
   name: string;
@@ -49,12 +42,12 @@ export function InvoiceDialog({ open, onOpenChange, orderData }: InvoiceDialogPr
   };
 
   const handleShare = async () => {
-    const shareText = `Fish Web Invoice
-Order: ${orderData.orderNumber}
-Total: ${formatIQD(grandTotal)}
-Customer: ${orderData.customerInfo.name}
-Date: ${formatShortDate(orderData.orderDate)}
-${clientEnv.siteUrl ? `Link: ${clientEnv.siteUrl}` : ""}`.trim();
+    const shareText = `فاتورة Fish Web
+رقم الطلب: ${orderData.orderNumber}
+المجموع: ${formatIQD(grandTotal)}
+العميل: ${orderData.customerInfo.name}
+التاريخ: ${formatShortDate(orderData.orderDate)}
+${clientEnv.siteUrl ? `الرابط: ${clientEnv.siteUrl}` : ""}`.trim();
 
     if (navigator.share) {
       try {
@@ -64,16 +57,16 @@ ${clientEnv.siteUrl ? `Link: ${clientEnv.siteUrl}` : ""}`.trim();
           url: clientEnv.siteUrl || undefined,
         });
       } catch {
-        toast({ title: "Share canceled", description: "We could not share this invoice." });
+        toast({ title: "تم إلغاء المشاركة", description: "لم نتمكن من مشاركة هذه الفاتورة." });
       }
     } else {
       try {
         await navigator.clipboard.writeText(shareText);
-        toast({ title: "Invoice copied", description: "Invoice details copied to clipboard." });
+        toast({ title: "تم النسخ", description: "تم نسخ تفاصيل الفاتورة للحافظة." });
       } catch {
         toast({
-          title: "Share unavailable",
-          description: "Copy to clipboard is not available in this browser.",
+          title: "المشاركة غير متاحة",
+          description: "النسخ للحافظة غير متاح في هذا المتصفح.",
           variant: "destructive",
         });
       }

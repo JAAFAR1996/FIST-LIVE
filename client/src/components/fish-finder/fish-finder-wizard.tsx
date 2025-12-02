@@ -7,6 +7,8 @@ import { ArrowRight, ArrowLeft, Sparkles, Fish, Ruler, Zap, Droplets } from "luc
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/products/product-card";
+import { useCart } from "@/contexts/cart-context";
+import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/types";
 
 interface FishFinderWizardProps {
@@ -14,6 +16,8 @@ interface FishFinderWizardProps {
 }
 
 export default function FishFinderWizard({ productsList }: FishFinderWizardProps) {
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const [step, setStep] = useState(() => {
     const saved = localStorage.getItem("fishFinderState");
     return saved ? JSON.parse(saved).step : 1;
@@ -56,6 +60,25 @@ export default function FishFinderWizard({ productsList }: FishFinderWizardProps
 
   const allProducts = productsList || [];
   const recommendedProducts = allProducts.slice(0, 3);
+
+  const handleAddBundleToCart = () => {
+    recommendedProducts.forEach((product) => {
+      addItem(product);
+    });
+
+    confetti({
+      particleCount: 200,
+      spread: 120,
+      origin: { y: 0.6 },
+      colors: ['#06b6d4', '#8b5cf6', '#ec4899', '#10b981']
+    });
+
+    toast({
+      title: "تمت الإضافة بنجاح! 🎉",
+      description: `تم إضافة ${recommendedProducts.length} منتجات إلى سلة المشتريات بخصم 10%`,
+      duration: 5000,
+    });
+  };
 
   const steps = [
     { id: 1, title: "الحجم", icon: Ruler },
@@ -231,7 +254,7 @@ export default function FishFinderWizard({ productsList }: FishFinderWizardProps
                 </div>
               </CardContent>
               <CardFooter className="justify-center pb-8 pt-4">
-                 <Button size="lg" className="w-full md:w-auto text-lg h-12 px-8 animate-pulse-glow bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                 <Button size="lg" onClick={handleAddBundleToCart} className="w-full md:w-auto text-lg h-12 px-8 animate-pulse-glow bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
                    إضافة المجموعة للسلة (خصم 10%)
                  </Button>
               </CardFooter>

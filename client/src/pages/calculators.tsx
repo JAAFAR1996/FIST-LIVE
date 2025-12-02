@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
-import { Thermometer, Droplets, Waves } from "lucide-react";
+import { Thermometer, Droplets, Waves, Wrench, Clock, Info } from "lucide-react";
 
 export default function Calculators() {
   return (
@@ -113,12 +114,24 @@ function FilterCalculator() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>حاسبة الفلترة</CardTitle>
-        <CardDescription>قريباً</CardDescription>
+        <CardTitle className="flex items-center gap-2">
+          <Droplets className="h-6 w-6 text-primary" />
+          حاسبة الفلترة
+        </CardTitle>
+        <CardDescription>احسب معدل التدفق المناسب للفلتر بناءً على حجم الحوض ونوع الأسماك</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="p-12 text-center text-slate-400">
-          هذه الحاسبة قيد التطوير حالياً
+        <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-950/20">
+          <Clock className="h-5 w-5 text-orange-600" />
+          <AlertTitle className="text-orange-900 dark:text-orange-100 font-bold text-lg mb-2">قيد التطوير</AlertTitle>
+          <AlertDescription className="text-orange-800 dark:text-orange-200 space-y-2">
+            <p>هذه الحاسبة قيد التطوير حالياً ⚡</p>
+            <p className="text-sm">سنوفر لك قريباً أداة دقيقة لحساب معدل التدفق المناسب لحوضك</p>
+          </AlertDescription>
+        </Alert>
+        <div className="mt-6 p-8 text-center space-y-4">
+          <Wrench className="h-16 w-16 mx-auto text-muted-foreground opacity-30" />
+          <p className="text-muted-foreground">نعمل على توفير هذه الميزة قريباً</p>
         </div>
       </CardContent>
     </Card>
@@ -129,12 +142,24 @@ function SaltCalculator() {
    return (
     <Card>
       <CardHeader>
-        <CardTitle>حاسبة الملوحة</CardTitle>
-        <CardDescription>قريباً</CardDescription>
+        <CardTitle className="flex items-center gap-2">
+          <Waves className="h-6 w-6 text-primary" />
+          حاسبة الملوحة
+        </CardTitle>
+        <CardDescription>احسب كمية الملح المطلوبة للوصول إلى مستوى الملوحة المناسب</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="p-12 text-center text-slate-400">
-          هذه الحاسبة قيد التطوير حالياً
+        <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-950/20">
+          <Clock className="h-5 w-5 text-orange-600" />
+          <AlertTitle className="text-orange-900 dark:text-orange-100 font-bold text-lg mb-2">قيد التطوير</AlertTitle>
+          <AlertDescription className="text-orange-800 dark:text-orange-200 space-y-2">
+            <p>هذه الحاسبة قيد التطوير حالياً ⚡</p>
+            <p className="text-sm">سنوفر لك قريباً أداة لحساب الملوحة بدقة لأحواض المياه المالحة</p>
+          </AlertDescription>
+        </Alert>
+        <div className="mt-6 p-8 text-center space-y-4">
+          <Wrench className="h-16 w-16 mx-auto text-muted-foreground opacity-30" />
+          <p className="text-muted-foreground">نعمل على توفير هذه الميزة قريباً</p>
         </div>
       </CardContent>
     </Card>

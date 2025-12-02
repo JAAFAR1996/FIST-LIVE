@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Product } from "@/types";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,21 +8,24 @@ import { Heart, ShoppingCart, Leaf } from "lucide-react";
 import { UnderwaterGlowImage } from "@/components/effects/underwater-glow-image";
 import { FishSwimToCart } from "@/components/cart/fish-swim-to-cart";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/cart-context";
 
 interface ProductCardProps {
   product: Product;
   onCompare?: (product: Product) => void;
 }
 
-export function ProductCard({ product, onCompare }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, onCompare }: ProductCardProps) {
   const [triggerFish, setTriggerFish] = useState(false);
   const { toast } = useToast();
+  const { addItem } = useCart();
 
   const handleAddToCart = () => {
+    addItem(product);
     setTriggerFish(true);
     toast({
-      title: "تمت الإضافة للسلة",
-      description: `تم إضافة ${product.name} بنجاح`,
+      title: "تمت الإضافة للسلة ✓",
+      description: `تم إضافة ${product.name} إلى سلة المشتريات`,
     });
   };
 
@@ -43,19 +46,34 @@ export function ProductCard({ product, onCompare }: ProductCardProps) {
 
       {/* Image */}
       <div className="relative pt-[100%] bg-muted/20 overflow-hidden">
-        <UnderwaterGlowImage 
-          src={product.image} 
-          alt={product.name} 
+        <UnderwaterGlowImage
+          src={product.image}
+          alt={`صورة منتج ${product.name} من ${product.brand}`}
           className="absolute inset-0 w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110 mix-blend-multiply dark:mix-blend-normal"
         />
-        
+
         {/* Quick Actions Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-background/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-center gap-2 z-20">
-          <Button size="sm" variant="secondary" className="rounded-full shadow-md" onClick={() => onCompare?.(product)}>
+        <div
+          className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-background/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-center gap-2 z-20"
+          role="group"
+          aria-label="إجراءات سريعة"
+        >
+          <Button
+            size="sm"
+            variant="secondary"
+            className="rounded-full shadow-md"
+            onClick={() => onCompare?.(product)}
+            aria-label={`إضافة ${product.name} للمقارنة`}
+          >
             مقارنة
           </Button>
-          <Button size="icon" variant="secondary" className="rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 shadow-md">
-            <Heart className="w-4 h-4" />
+          <Button
+            size="icon"
+            variant="secondary"
+            className="rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 shadow-md"
+            aria-label={`إضافة ${product.name} للمفضلة`}
+          >
+            <Heart className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -81,24 +99,29 @@ export function ProductCard({ product, onCompare }: ProductCardProps) {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1 text-sm text-amber-500">
-          <span>★</span>
+        <div
+          className="flex items-center gap-1 text-sm text-amber-500"
+          role="group"
+          aria-label={`التقييم ${product.rating} من 5 بناءً على ${product.reviewCount} تقييم`}
+        >
+          <span aria-hidden="true">★</span>
           <span className="font-medium text-foreground">{product.rating}</span>
           <span className="text-muted-foreground">({product.reviewCount})</span>
         </div>
       </CardContent>
 
       <CardFooter className="pt-0">
-        <Button 
+        <Button
           className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all"
           onClick={handleAddToCart}
+          aria-label={`إضافة ${product.name} إلى سلة المشتريات بسعر ${product.price.toLocaleString()} دينار عراقي`}
         >
-          <ShoppingCart className="w-4 h-4" />
+          <ShoppingCart className="w-4 h-4" aria-hidden="true" />
           أضف للسلة
         </Button>
       </CardFooter>
     </Card>
     </>
   );
-}
+});
 

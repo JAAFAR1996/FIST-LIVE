@@ -4,12 +4,25 @@ import { Star, ShoppingCart, ArrowRight } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { useCart } from "@/contexts/cart-context";
+import { useToast } from "@/hooks/use-toast";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface ProductOfTheWeekProps {
   product: Product;
 }
 
 export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addItem(product);
+    toast({
+      title: "تمت الإضافة للسلة ✓",
+      description: `تم إضافة ${product.name} إلى سلة المشتريات`,
+    });
+  };
   return (
     <section className="py-16 relative overflow-hidden">
       {/* Background with subtle pattern/gradient */}
@@ -25,10 +38,12 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
             className="w-full lg:w-1/2 relative group perspective-1000"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-3xl -rotate-3 scale-95 group-hover:rotate-0 transition-transform duration-700 ease-out blur-xl opacity-50" />
-            <img 
-              src={product.image} 
-              alt={product.name} 
-              className="relative w-full rounded-3xl shadow-2xl object-cover aspect-square transform transition-transform duration-700 hover:scale-[1.02] hover:rotate-1"
+            <OptimizedImage
+              src={product.image}
+              alt={product.name}
+              className="relative w-full rounded-3xl shadow-2xl aspect-square transform transition-transform duration-700 hover:scale-[1.02] hover:rotate-1"
+              priority={true}
+              objectFit="cover"
             />
             <div className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl animate-float hidden md:block">
               <div className="flex items-center gap-2">
@@ -80,11 +95,11 @@ export function ProductOfTheWeek({ product }: ProductOfTheWeekProps) {
               </div>
 
               <div className="flex-1 w-full sm:w-auto flex gap-3">
-                <Button size="lg" className="flex-1 h-14 text-lg font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1">
+                <Button size="lg" className="flex-1 h-14 text-lg font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1" onClick={handleAddToCart}>
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   أضف إلى العربة
                 </Button>
-                <Link href={`/products/${product.id}`}>
+                <Link href={`/products/${product.slug}`}>
                   <Button size="lg" variant="outline" className="h-14 px-6 border-2">
                     تفاصيل <ArrowRight className="mr-2 h-4 w-4" />
                   </Button>

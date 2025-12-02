@@ -4,24 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useState } from "react";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { FontSizeControllerCompact } from "@/components/ui/font-size-controller";
 import { EasterEggs } from "@/components/effects/easter-eggs";
 import { Separator } from "@/components/ui/separator";
 import { CheckoutDialog } from "@/components/cart/checkout-dialog";
 import { InvoiceDialog } from "@/components/cart/invoice-dialog";
 import { formatIQD, generateOrderNumber } from "@/lib/utils";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-const initialCartItems: CartItem[] = [
-  { id: 1, name: "فلتر Fluval 407 الخارجي", price: 285000, quantity: 1, image: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=100" },
-  { id: 2, name: "سيكم برايم 500مل", price: 55000, quantity: 1, image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=100" },
-];
+import { useCart, CartItem } from "@/contexts/cart-context";
 
 interface OrderData {
   customerInfo: {
@@ -43,13 +32,8 @@ export default function Navbar() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
 
-  const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const removeFromCart = (itemId: number) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
-  };
+  const { items: cartItems, removeItem, totalItems, totalPrice } = useCart();
 
   const handleCheckoutComplete = (data: { customerInfo: OrderData['customerInfo']; items: CartItem[]; total: number }) => {
     const newOrderData: OrderData = {
@@ -72,15 +56,24 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-colors duration-300">
+    <nav
+      className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-colors duration-300"
+      role="navigation"
+      aria-label="التنقل الرئيسي"
+    >
       <EasterEggs />
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Mobile Menu */}
         <div className="md:hidden">
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="فتح قائمة التنقل"
+                aria-expanded={isMenuOpen}
+              >
+                <Menu className="h-6 w-6" aria-hidden="true" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -101,10 +94,10 @@ export default function Navbar() {
         </div>
 
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" aria-label="الصفحة الرئيسية - Fish Web">
           <div className="flex items-center gap-2 cursor-pointer group">
             <div className="bg-primary/10 p-2 rounded-full group-hover:animate-pulse">
-              <Fish className="h-6 w-6 text-primary" />
+              <Fish className="h-6 w-6 text-primary" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-l from-primary to-blue-600 group-hover:to-purple-500 transition-all">
               Fish Web
@@ -129,18 +122,32 @@ export default function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeSwitcher />
-          
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Search className="h-5 w-5" />
+          <FontSizeControllerCompact />
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden sm:flex"
+            aria-label="البحث"
+          >
+            <Search className="h-5 w-5" aria-hidden="true" />
           </Button>
-          
+
           <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {cartItems.length}
+              <Button
+                variant="outline"
+                size="icon"
+                className="relative"
+                aria-label={`سلة المشتريات${totalItems > 0 ? ` - ${totalItems} منتج` : " - فارغة"}`}
+              >
+                <ShoppingCart className="h-5 w-5" aria-hidden="true" />
+                {totalItems > 0 && (
+                  <span
+                    className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
+                    aria-label={`${totalItems} منتج في السلة`}
+                  >
+                    {totalItems}
                   </span>
                 )}
               </Button>
@@ -163,10 +170,11 @@ export default function Navbar() {
                     <div className="flex-1 overflow-auto space-y-4">
                       {cartItems.map((item) => (
                         <div key={item.id} className="flex gap-3 p-3 rounded-lg border bg-card">
-                          <img 
-                            src={item.image} 
-                            alt={item.name}
+                          <img
+                            src={item.image}
+                            alt={`صورة منتج ${item.name}`}
                             className="w-16 h-16 object-cover rounded-md"
+                            loading="lazy"
                           />
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium text-sm truncate">{item.name}</h4>
@@ -175,13 +183,14 @@ export default function Navbar() {
                             </p>
                             <div className="flex items-center justify-between mt-2">
                               <span className="text-xs text-muted-foreground">الكمية: {item.quantity}</span>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
+                              <Button
+                                variant="ghost"
+                                size="icon"
                                 className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                onClick={() => removeFromCart(item.id)}
+                                onClick={() => removeItem(item.id)}
+                                aria-label={`إزالة ${item.name} من السلة`}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-4 w-4" aria-hidden="true" />
                               </Button>
                             </div>
                           </div>
@@ -192,7 +201,7 @@ export default function Navbar() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
                         <span className="font-medium">المجموع:</span>
-                        <span className="text-xl font-bold text-primary">{formatIQD(cartTotal)}</span>
+                        <span className="text-xl font-bold text-primary">{formatIQD(totalPrice)}</span>
                       </div>
                       <Button className="w-full" size="lg" onClick={() => setIsCheckoutOpen(true)}>
                         إتمام الشراء
@@ -210,7 +219,7 @@ export default function Navbar() {
         open={isCheckoutOpen}
         onOpenChange={setIsCheckoutOpen}
         cartItems={cartItems}
-        cartTotal={cartTotal}
+        cartTotal={totalPrice}
         onCheckoutComplete={handleCheckoutComplete}
       />
 

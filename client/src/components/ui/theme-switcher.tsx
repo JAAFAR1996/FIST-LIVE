@@ -41,34 +41,39 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          {theme === "light" && <Sun className="h-5 w-5" />}
-          {theme === "dark" && <Moon className="h-5 w-5" />}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
+        >
+          {theme === "light" && <Sun className="h-5 w-5 text-yellow-500" />}
+          {theme === "dark" && <Moon className="h-5 w-5 text-slate-400" />}
           {theme === "neon-ocean" && <Zap className="h-5 w-5 text-cyan-400" />}
           {theme === "pastel" && <Palette className="h-5 w-5 text-pink-400" />}
-          <span className="sr-only">Toggle theme</span>
+          {theme === "monochrome" && <div className="h-5 w-5 rounded-full border-2 border-current bg-zinc-500" />}
+          <span className="sr-only">تغيير السمة</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => changeTheme("light")}>
-          <Sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
+      <DropdownMenuContent align="end" className="min-w-[160px]">
+        <DropdownMenuItem onClick={() => changeTheme("light")} className="cursor-pointer">
+          <Sun className="ml-2 h-4 w-4 text-yellow-500" />
+          <span>فاتح</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("dark")}>
-          <Moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
+        <DropdownMenuItem onClick={() => changeTheme("dark")} className="cursor-pointer">
+          <Moon className="ml-2 h-4 w-4 text-slate-400" />
+          <span>داكن</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("neon-ocean")}>
-          <Zap className="mr-2 h-4 w-4" />
-          <span>Neon Ocean</span>
+        <DropdownMenuItem onClick={() => changeTheme("neon-ocean")} className="cursor-pointer">
+          <Zap className="ml-2 h-4 w-4 text-cyan-400" />
+          <span>محيط نيون</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("pastel")}>
-          <Palette className="mr-2 h-4 w-4" />
-          <span>Pastel</span>
+        <DropdownMenuItem onClick={() => changeTheme("pastel")} className="cursor-pointer">
+          <Palette className="ml-2 h-4 w-4 text-pink-400" />
+          <span>باستيل</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("monochrome")}>
-          <div className="mr-2 h-4 w-4 rounded-full border border-current bg-zinc-500" />
-          <span>Monochrome</span>
+        <DropdownMenuItem onClick={() => changeTheme("monochrome")} className="cursor-pointer">
+          <div className="ml-2 h-4 w-4 rounded-full border border-current bg-zinc-500" />
+          <span>أحادي اللون</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

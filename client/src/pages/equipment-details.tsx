@@ -41,9 +41,9 @@ export default function EquipmentDetails() {
 
   // Mock parts data for exploded view if not present
   const parts = (product.explodedViewParts || [
-    { id: "1", name: "Motor Head", imageUrl: product.image, description: "Powerful silent motor" },
-    { id: "2", name: "Impeller Cover", imageUrl: product.image, description: "Protects the impeller" },
-    { id: "3", name: "Filter Case", imageUrl: product.image, description: "Large capacity media storage" },
+    { id: "1", name: "رأس المحرك", imageUrl: product.image, description: "محرك قوي وصامت" },
+    { id: "2", name: "غطاء المروحة", imageUrl: product.image, description: "يحمي المروحة" },
+    { id: "3", name: "علبة الفلتر", imageUrl: product.image, description: "مساحة كبيرة لتخزين الوسائط" },
   ]).map((part, index) => ({
     ...part,
     x: (index + 1) * 25, // Mock positions
@@ -60,15 +60,15 @@ export default function EquipmentDetails() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
           <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1 space-y-6">
-              <Badge variant="outline" className="text-zinc-400 border-zinc-700">Industrial Grade</Badge>
+              <Badge variant="outline" className="text-zinc-400 border-zinc-700">درجة صناعية</Badge>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tighter">{product.name}</h1>
               <p className="text-xl text-zinc-400 max-w-xl">{product.specs}</p>
               <div className="flex gap-4 pt-4">
                 <Button size="lg" className="bg-white text-black hover:bg-zinc-200 font-bold">
-                  <ShoppingCart className="mr-2 h-5 w-5" /> Buy Now
+                  <ShoppingCart className="mr-2 h-5 w-5" /> اشترِ الآن
                 </Button>
                 <Button size="lg" variant="outline" className="border-zinc-700 text-white hover:bg-zinc-800">
-                  Download Manual
+                  تحميل الدليل
                 </Button>
               </div>
             </div>
@@ -91,10 +91,10 @@ export default function EquipmentDetails() {
           <div className="container mx-auto px-4">
              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
-                  { icon: Gauge, label: "Flow Rate", value: "1450 L/h" },
-                  { icon: Zap, label: "Power", value: "23 Watts" },
-                  { icon: Shield, label: "Warranty", value: "3 Years" },
-                  { icon: Cog, label: "Media Vol", value: "4.2 Liters" },
+                  { icon: Gauge, label: "معدل التدفق", value: "1450 L/h" },
+                  { icon: Zap, label: "القوة", value: "23 واط" },
+                  { icon: Shield, label: "الضمان", value: "3 سنوات" },
+                  { icon: Cog, label: "سعة الوسائط", value: "4.2 لتر" },
                 ].map((spec, i) => (
                   <div key={i} className="bg-card border p-6 rounded-xl flex flex-col items-center text-center gap-2 hover:border-primary transition-colors">
                     <spec.icon className="h-8 w-8 text-primary mb-2" />
@@ -110,8 +110,8 @@ export default function EquipmentDetails() {
         <section className="py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Anatomy of Performance</h2>
-              <p className="text-muted-foreground">Explore the components that make this filter superior.</p>
+              <h2 className="text-3xl font-bold mb-4">تشريح الأداء</h2>
+              <p className="text-muted-foreground">استكشف المكونات التي تجعل هذا الفلتر متفوقاً.</p>
             </div>
             
             <ExplodedView imageUrl={product.image} parts={parts} />
