@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getProducts(filters?: ProductFilters): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
@@ -52,8 +52,8 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
     return result[0];
   }
 
@@ -211,18 +211,21 @@ class MockStorage implements IStorage {
     return this.users.find((u) => u.id === id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return this.users.find((u) => u.username === username);
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.users.find((u) => u.email === email);
   }
 
   async createUser(user: InsertUser): Promise<User> {
     const newUser: User = {
       id: randomUUID(),
-      username: user.username,
-      password: user.password,
-      email: user.email ?? null,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      fullName: user.fullName ?? null,
       role: user.role || "user",
+      emailVerified: false,
+      verificationToken: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.users.push(newUser);
     return newUser;

@@ -5,11 +5,14 @@ import { z } from "zod";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-  email: text("email"),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  fullName: text("full_name"),
   role: text("role").notNull().default("user"), // user, admin
+  emailVerified: boolean("email_verified").default(false),
+  verificationToken: text("verification_token"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const products = pgTable("products", {
@@ -91,13 +94,14 @@ export const auditLogs = pgTable("audit_logs", {
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
   email: true,
+  passwordHash: true,
+  fullName: true,
   role: true,
 }).extend({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Valid email is required"),
+  passwordHash: z.string().min(1, "Password is required"),
+  fullName: z.string().optional(),
   role: z.enum(["user", "admin"]).optional(),
 });
 

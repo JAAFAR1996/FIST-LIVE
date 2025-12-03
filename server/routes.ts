@@ -133,15 +133,15 @@ export async function registerRoutes(
   (app as any).post("/api/users", async (req: any, res: any, next: any) => {
     try {
       const payload = insertUserSchema.parse(req.body);
-      const existing = await storage.getUserByUsername(payload.username);
+      const existing = await storage.getUserByEmail(payload.email);
       if (existing) {
-        res.status(409).json({ message: "Username already exists" });
+        res.status(409).json({ message: "Email already exists" });
         return;
       }
 
       const user = await storage.createUser({
         ...payload,
-        password: hashPassword(payload.password),
+        passwordHash: hashPassword(payload.passwordHash),
       });
 
       const sess = getSession(req);
@@ -150,7 +150,7 @@ export async function registerRoutes(
         return;
       }
       sess.userId = user.id;
-      res.status(201).json({ id: user.id, username: user.username });
+      res.status(201).json({ id: user.id, email: user.email });
     } catch (err) {
       next(err);
     }
@@ -159,8 +159,8 @@ export async function registerRoutes(
   (app as any).post("/api/auth/login", async (req: any, res: any, next: any) => {
     try {
       const payload = insertUserSchema.parse(req.body);
-      const user = await storage.getUserByUsername(payload.username);
-      if (!user || !verifyPassword(payload.password, user.password)) {
+      const user = await storage.getUserByEmail(payload.email);
+      if (!user || !verifyPassword(payload.passwordHash, user.passwordHash)) {
         res.status(401).json({ message: "Invalid credentials" });
         return;
       }
@@ -170,7 +170,7 @@ export async function registerRoutes(
         return;
       }
       sess.userId = user.id;
-      res.json({ id: user.id, username: user.username });
+      res.json({ id: user.id, email: user.email });
     } catch (err) {
       next(err);
     }
@@ -202,7 +202,7 @@ export async function registerRoutes(
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
-    res.json({ id: user.id, username: user.username, role: user.role });
+    res.json({ id: user.id, email: user.email, fullName: user.fullName, role: user.role });
   });
 
   // ============ ADMIN ENDPOINTS ============

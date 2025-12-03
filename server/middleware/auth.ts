@@ -1,4 +1,3 @@
-import type { Request, Response, NextFunction } from "express";
 import type session from "express-session";
 import { storage } from "../storage.js";
 
@@ -8,10 +7,10 @@ declare module "express-session" {
   }
 }
 
-const getSession = (req: Request): (session.Session & Partial<session.SessionData>) | undefined =>
-  (req as any).session;
+const getSession = (req: any): (session.Session & Partial<session.SessionData>) | undefined =>
+  req.session;
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
+export function requireAuth(req: any, res: any, next: any) {
   const sess = getSession(req);
   if (!sess?.userId) {
     res.status(401).json({ message: "Unauthorized" });
@@ -20,7 +19,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
+export async function requireAdmin(req: any, res: any, next: any) {
   const sess = getSession(req);
   if (!sess?.userId) {
     res.status(401).json({ message: "Unauthorized" });
@@ -33,7 +32,7 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
       res.status(403).json({ message: "Forbidden: Admin access required" });
       return;
     }
-    (req as any).user = user;
+    req.user = user;
     next();
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });

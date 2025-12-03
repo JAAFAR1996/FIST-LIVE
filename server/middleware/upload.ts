@@ -1,11 +1,10 @@
-import type { Request, Response, NextFunction } from "express";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 
 // Simple file upload handler without multer
 // For production, consider using multer or similar library
-export function handleImageUpload(req: Request, res: Response, next: NextFunction) {
+export function handleImageUpload(req: any, res: any, next: any) {
   // This is a placeholder for image upload functionality
   // In production, you would:
   // 1. Use multer for multipart/form-data parsing
