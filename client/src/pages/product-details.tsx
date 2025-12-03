@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ShoppingCart, Star, Truck, RotateCcw, Shield, Info, Heart, Share2, Leaf } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { useCart } from "@/contexts/cart-context";

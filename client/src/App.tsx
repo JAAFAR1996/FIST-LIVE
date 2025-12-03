@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/cart-context";
+import { AuthProvider } from "@/contexts/auth-context";
+import { RequireAdmin } from "@/components/auth/require-admin";
 import Home from "@/pages/home";
 import Products from "@/pages/products";
 import ProductDetails from "@/pages/product-details";
@@ -19,6 +21,7 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import Terms from "@/pages/terms";
 import FAQ from "@/pages/faq";
 import OrderTracking from "@/pages/order-tracking";
+import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -41,7 +44,14 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/faq" component={FAQ} />
       <Route path="/order-tracking" component={OrderTracking} />
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin">
+        {() => (
+          <RequireAdmin>
+            <AdminDashboard />
+          </RequireAdmin>
+        )}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
@@ -50,16 +60,18 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <TooltipProvider>
-          {/* Skip to main content for keyboard navigation */}
-          <a href="#main-content" className="skip-to-main">
-            الانتقال إلى المحتوى الرئيسي
-          </a>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <TooltipProvider>
+            {/* Skip to main content for keyboard navigation */}
+            <a href="#main-content" className="skip-to-main">
+              الانتقال إلى المحتوى الرئيسي
+            </a>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

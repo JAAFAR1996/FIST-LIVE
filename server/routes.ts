@@ -5,7 +5,7 @@ import { storage } from "./storage.js";
 import { insertUserSchema, insertProductSchema, insertDiscountSchema } from "../shared/schema.js";
 import crypto from "crypto";
 import express from "express";
-import { requireAuth, requireAdmin } from "./middleware/auth.js";
+import { requireAdmin } from "./middleware/auth.js";
 import { saveBase64Image, deleteImage } from "./middleware/upload.js";
 
 declare module "express-session" {

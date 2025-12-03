@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/auth-context";
+import { ImageUpload } from "@/components/admin/image-upload";
+import { OrdersManagement } from "@/components/admin/orders-management";
 import {
   Plus,
   Pencil,
@@ -43,6 +46,10 @@ import {
   AlertCircle,
   Image as ImageIcon,
   Percent,
+  LogOut,
+  User,
+  Upload,
+  Wand2,
 } from "lucide-react";
 
 interface Product {
@@ -81,6 +88,56 @@ interface Discount {
   updatedAt: string;
 }
 
+// Available categories
+const CATEGORIES = [
+  "إضاءات",
+  "طعام الأسماك",
+  "الأدوية",
+  "معالجة المياه",
+  "مجموعات الاختبار",
+  "الملح والمعادن",
+  "البكتيريا النافعة",
+  "مكافحة الطحالب",
+  "فيتامينات المياه العذبة",
+  "مكملات غذائية",
+  "اكسسوارات",
+  "ادوات فلتر",
+  "أجهزة القياس والحرارة",
+  "سخانات",
+  "فلاتر ماء",
+  "مضخات هواء",
+  "ديكور",
+  "صخور",
+  "خلفيات أحواض",
+  "ترب نباتية",
+];
+
+const BRANDS = [
+  "Aqua",
+  "Tetra",
+  "Fluval",
+  "Marina",
+  "API",
+  "Seachem",
+  "JBL",
+  "Hikari",
+  "Eheim",
+  "AquaClear",
+];
+
+// Slugify function
+function slugify(text: string): string {
+  return text
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+}
+
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [discounts, setDiscounts] = useState<Discount[]>([]);
@@ -89,7 +146,9 @@ export default function AdminDashboard() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [imageBase64, setImageBase64] = useState<string>("");
   const { toast } = useToast();
+  const { user, logout } = useAuth();
 
   // Form state
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -134,12 +193,22 @@ export default function AdminDashboard() {
 
   const handleCreateProduct = async () => {
     try {
+      // Generate slug if not provided
+      const slug = formData.slug || slugify(formData.name || '');
+
+      const productPayload = {
+        ...formData,
+        slug,
+        imageBase64: imageBase64 || undefined,
+      };
+
       const response = await fetch("/api/admin/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        credentials: "include",
+        body: JSON.stringify(productPayload),
       });
 
       if (response.ok) {
@@ -172,12 +241,18 @@ export default function AdminDashboard() {
     if (!selectedProduct) return;
 
     try {
+      const productPayload = {
+        ...formData,
+        imageBase64: imageBase64 || undefined,
+      };
+
       const response = await fetch(`/api/admin/products/${selectedProduct.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        credentials: "include",
+        body: JSON.stringify(productPayload),
       });
 
       if (response.ok) {
@@ -207,11 +282,12 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
+    if (!confirm("هل أنت متأكد من حذف هذا المنتج؟ هذا الإجراء لا يمكن التراجع عنه.")) return;
 
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -241,6 +317,7 @@ export default function AdminDashboard() {
   const openEditDialog = (product: Product) => {
     setSelectedProduct(product);
     setFormData(product);
+    setImageBase64("");
     setIsEditMode(true);
     setIsDialogOpen(true);
   };
@@ -271,6 +348,16 @@ export default function AdminDashboard() {
       specifications: {},
     });
     setSelectedProduct(null);
+    setImageBase64("");
+  };
+
+  // Auto-generate slug when name changes
+  const handleNameChange = (name: string) => {
+    setFormData({
+      ...formData,
+      name,
+      slug: slugify(name),
+    });
   };
 
   const filteredProducts = products.filter(
@@ -287,9 +374,24 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto py-8 px-4" dir="rtl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">لوحة تحكم الإدارة</h1>
-        <p className="text-gray-600">إدارة شاملة للمنتجات والمخزون</p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold mb-2">لوحة تحكم الإدارة</h1>
+          <p className="text-gray-600">إدارة شاملة للمنتجات والمخزون</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm text-gray-500">مرحباً</p>
+            <p className="font-semibold flex items-center gap-2">
+              <User className="w-4 h-4" />
+              {user?.email}
+            </p>
+          </div>
+          <Button variant="outline" onClick={logout} className="gap-2">
+            <LogOut className="w-4 h-4" />
+            تسجيل الخروج
+          </Button>
+        </div>
       </div>
 
       {/* Statistics Cards */}
@@ -487,13 +589,10 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>إدارة الطلبات</CardTitle>
-              <CardDescription>عرض وإدارة طلبات العملاء</CardDescription>
+              <CardDescription>عرض وإدارة طلبات العملاء وتحديث حالاتها</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>لا توجد طلبات حالياً</p>
-              </div>
+              <OrdersManagement />
             </CardContent>
           </Card>
         </TabsContent>
@@ -514,24 +613,37 @@ export default function AdminDashboard() {
           </DialogHeader>
 
           <div className="space-y-4">
+            {/* Image Upload */}
+            <ImageUpload
+              value={formData.thumbnail || imageBase64}
+              onChange={(base64) => setImageBase64(base64)}
+              onRemove={() => setImageBase64("")}
+            />
+
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">اسم المنتج *</Label>
+              <div className="space-y-2 col-span-2">
+                <Label htmlFor="name" className="flex items-center gap-2">
+                  اسم المنتج *
+                  <Wand2 className="w-3 h-3 text-purple-500" />
+                  <span className="text-xs text-gray-500">(سيتم توليد الرابط تلقائياً)</span>
+                </Label>
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => handleNameChange(e.target.value)}
                   placeholder="أدخل اسم المنتج"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="slug">الرابط (Slug) *</Label>
+              <div className="space-y-2 col-span-2">
+                <Label htmlFor="slug">الرابط (Slug)</Label>
                 <Input
                   id="slug"
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  placeholder="product-slug"
+                  placeholder="سيتم توليده تلقائياً من الاسم"
+                  className="font-mono text-sm"
+                  dir="ltr"
                 />
               </div>
             </div>
@@ -539,33 +651,61 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="brand">العلامة التجارية *</Label>
-                <Input
-                  id="brand"
+                <Select
                   value={formData.brand}
-                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                  placeholder="أدخل العلامة التجارية"
-                />
+                  onValueChange={(value) => setFormData({ ...formData, brand: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="اختر العلامة التجارية" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BRANDS.map((brand) => (
+                      <SelectItem key={brand} value={brand}>
+                        {brand}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="other">أخرى</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="category">الفئة *</Label>
-                <Input
-                  id="category"
+                <Select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="أدخل الفئة"
-                />
+                  onValueChange={(value) => setFormData({ ...formData, category: value, subcategory: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="اختر الفئة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="subcategory">الفئة الفرعية *</Label>
-              <Input
-                id="subcategory"
+              <Select
                 value={formData.subcategory}
-                onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-                placeholder="أدخل الفئة الفرعية"
-              />
+                onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="اختر الفئة الفرعية" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -621,6 +761,7 @@ export default function AdminDashboard() {
                 <Input
                   id="stock"
                   type="number"
+                  min="0"
                   value={formData.stock}
                   onChange={(e) =>
                     setFormData({ ...formData, stock: Number(e.target.value) })
@@ -634,6 +775,7 @@ export default function AdminDashboard() {
                 <Input
                   id="lowStockThreshold"
                   type="number"
+                  min="0"
                   value={formData.lowStockThreshold}
                   onChange={(e) =>
                     setFormData({
@@ -646,40 +788,38 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* Status Badges */}
             <div className="space-y-2">
-              <Label htmlFor="thumbnail">رابط الصورة المميزة</Label>
-              <Input
-                id="thumbnail"
-                value={formData.thumbnail}
-                onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
+              <Label>حالة المنتج</Label>
+              <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                <label className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={formData.isNew}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isNew: e.target.checked })
+                    }
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <Badge variant={formData.isNew ? "secondary" : "outline"}>
+                    منتج جديد
+                  </Badge>
+                </label>
 
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={formData.isNew}
-                  onChange={(e) =>
-                    setFormData({ ...formData, isNew: e.target.checked })
-                  }
-                  className="rounded"
-                />
-                <span>منتج جديد</span>
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={formData.isBestSeller}
-                  onChange={(e) =>
-                    setFormData({ ...formData, isBestSeller: e.target.checked })
-                  }
-                  className="rounded"
-                />
-                <span>الأكثر مبيعاً</span>
-              </label>
+                <label className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={formData.isBestSeller}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isBestSeller: e.target.checked })
+                    }
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <Badge variant={formData.isBestSeller ? "default" : "outline"}>
+                    الأكثر مبيعاً
+                  </Badge>
+                </label>
+              </div>
             </div>
           </div>
 

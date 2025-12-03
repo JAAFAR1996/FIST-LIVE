@@ -110,7 +110,7 @@ export function sanitizeBody(req: Request, res: Response, next: NextFunction) {
     // Remove dangerous properties
     const dangerousProps = ['__proto__', 'constructor', 'prototype'];
 
-    function cleanObject(obj: any): any {
+    const cleanObject = (obj: any): any => {
       if (!obj || typeof obj !== 'object') return obj;
 
       for (const key of dangerousProps) {
@@ -124,7 +124,7 @@ export function sanitizeBody(req: Request, res: Response, next: NextFunction) {
       }
 
       return obj;
-    }
+    };
 
     req.body = cleanObject(req.body);
   }
