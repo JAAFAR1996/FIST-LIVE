@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductBySlug } from "@/lib/api";
+import { fetchProductBySlug, fetchProducts } from "@/lib/api";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,6 +27,15 @@ export default function ProductDetails() {
     enabled: !!slug,
   });
 
+  const { data: allProductsData } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+
+  const relatedProducts = allProductsData?.products
+    ?.filter((p) => p.id !== product?.id && p.category === product?.category)
+    ?.slice(0, 4) || [];
+
   const handleAddToCart = () => {
     if (product) {
       for (let i = 0; i < quantity; i++) {
@@ -36,6 +45,41 @@ export default function ProductDetails() {
         title: "تمت الإضافة للسلة ✓",
         description: `تم إضافة ${quantity} من ${product.name} إلى سلة المشتريات.`,
       });
+    }
+  };
+
+  const handleShare = async () => {
+    if (!product) return;
+
+    const shareData = {
+      title: product.name,
+      text: `${product.name} - ${product.price.toLocaleString()} د.ع`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast({
+          title: "تمت المشاركة بنجاح",
+          description: "شكراً لمشاركة المنتج!",
+        });
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "تم نسخ الرابط",
+          description: "تم نسخ رابط المنتج إلى الحافظة",
+        });
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        toast({
+          title: "خطأ",
+          description: "تعذرت مشاركة المنتج",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -168,7 +212,7 @@ export default function ProductDetails() {
                       <Heart className="ml-2 w-5 h-5" />
                       المفضلة
                     </Button>
-                    <Button size="lg" variant="outline">
+                    <Button size="lg" variant="outline" onClick={handleShare}>
                       <Share2 className="w-5 h-5" />
                     </Button>
                   </div>
@@ -214,6 +258,7 @@ export default function ProductDetails() {
               <Tabs defaultValue="specs" className="mb-12">
                 <TabsList className="w-full justify-start">
                   <TabsTrigger value="specs">المواصفات الفنية</TabsTrigger>
+                  <TabsTrigger value="reviews">التقييمات ({product.reviewCount})</TabsTrigger>
                   <TabsTrigger value="shipping">الشحن والإرجاع</TabsTrigger>
                   <TabsTrigger value="usage">إرشادات الاستخدام</TabsTrigger>
                 </TabsList>
@@ -256,6 +301,118 @@ export default function ProductDetails() {
                           </p>
                         </div>
                       </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="reviews" className="mt-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                        تقييمات العملاء
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {/* Overall Rating */}
+                      <div className="flex flex-col md:flex-row gap-8 pb-6 border-b">
+                        <div className="text-center md:text-right space-y-2">
+                          <div className="text-5xl font-bold text-primary">{product.rating}</div>
+                          <div className="flex text-amber-400 justify-center md:justify-start">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-5 h-5 ${i < Math.floor(product.rating) ? "fill-current" : ""}`}
+                              />
+                            ))}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            بناءً على {product.reviewCount} تقييم
+                          </div>
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          {[5, 4, 3, 2, 1].map((stars) => {
+                            const percentage = stars === 5 ? 70 : stars === 4 ? 20 : stars === 3 ? 8 : stars === 2 ? 2 : 0;
+                            return (
+                              <div key={stars} className="flex items-center gap-2">
+                                <span className="text-sm w-12">{stars} نجوم</span>
+                                <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                                  <div
+                                    className="bg-amber-400 h-full"
+                                    style={{ width: `${percentage}%` }}
+                                  />
+                                </div>
+                                <span className="text-sm text-muted-foreground w-12 text-left">
+                                  {percentage}%
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Sample Reviews */}
+                      <div className="space-y-4">
+                        {[
+                          {
+                            name: "أحمد محمد",
+                            rating: 5,
+                            date: "منذ أسبوع",
+                            comment: "منتج ممتاز وبجودة عالية جداً. استخدمه في حوضي منذ شهرين ولم ألاحظ أي مشاكل. التوصيل كان سريع والتغليف محترف.",
+                            verified: true,
+                          },
+                          {
+                            name: "فاطمة علي",
+                            rating: 5,
+                            date: "منذ أسبوعين",
+                            comment: "ممتاز للمبتدئين! كنت قلقة من استخدامه لكن التعليمات واضحة جداً. أسماكي سعيدة والماء نظيف جداً.",
+                            verified: true,
+                          },
+                          {
+                            name: "محمد حسن",
+                            rating: 4,
+                            date: "منذ شهر",
+                            comment: "جيد جداً لكن السعر كان يمكن أن يكون أفضل. بشكل عام راضي عن الشراء والأداء ممتاز.",
+                            verified: false,
+                          },
+                        ].map((review, idx) => (
+                          <div key={idx} className="p-4 border rounded-lg space-y-2">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-semibold">{review.name}</span>
+                                  {review.verified && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      ✓ عملية شراء مؤكدة
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <div className="flex text-amber-400">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star
+                                        key={i}
+                                        className={`w-3 h-3 ${i < review.rating ? "fill-current" : ""}`}
+                                      />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs text-muted-foreground">{review.date}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-muted-foreground text-sm leading-relaxed">
+                              {review.comment}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <Alert className="bg-blue-50 border-blue-200">
+                        <Info className="h-4 w-4 text-blue-600" />
+                        <AlertDescription className="text-sm text-blue-900">
+                          اشتريت هذا المنتج؟ شاركنا تجربتك لمساعدة العملاء الآخرين!
+                        </AlertDescription>
+                      </Alert>
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -322,6 +479,72 @@ export default function ProductDetails() {
                   </Card>
                 </TabsContent>
               </Tabs>
+
+              {/* Related Products */}
+              {relatedProducts.length > 0 && (
+                <div className="mt-16">
+                  <h2 className="text-3xl font-bold mb-8">منتجات ذات صلة</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {relatedProducts.map((relatedProduct) => (
+                      <Card key={relatedProduct.id} className="group overflow-hidden hover:shadow-lg transition-shadow">
+                        <div className="relative aspect-square bg-muted/20 overflow-hidden">
+                          <img
+                            src={relatedProduct.image}
+                            alt={relatedProduct.name}
+                            className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
+                          />
+                          {relatedProduct.isNew && (
+                            <Badge className="absolute top-2 right-2 bg-blue-500">جديد</Badge>
+                          )}
+                        </div>
+                        <CardContent className="p-4">
+                          <div className="text-xs text-muted-foreground mb-1">{relatedProduct.brand}</div>
+                          <h3 className="font-semibold text-sm line-clamp-2 h-10 mb-2">
+                            {relatedProduct.name}
+                          </h3>
+                          <div className="flex items-center gap-1 mb-2">
+                            <div className="flex text-amber-400">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-3 h-3 ${i < Math.floor(relatedProduct.rating) ? "fill-current" : ""}`}
+                                />
+                              ))}
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              ({relatedProduct.reviewCount})
+                            </span>
+                          </div>
+                          <div className="flex items-baseline gap-2 mb-3">
+                            <span className="text-lg font-bold text-primary">
+                              {relatedProduct.price.toLocaleString()} <span className="text-xs">د.ع</span>
+                            </span>
+                            {relatedProduct.originalPrice && (
+                              <span className="text-xs text-muted-foreground line-through">
+                                {relatedProduct.originalPrice.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
+                          <Button
+                            size="sm"
+                            className="w-full"
+                            onClick={() => {
+                              addItem(relatedProduct);
+                              toast({
+                                title: "تمت الإضافة للسلة ✓",
+                                description: `تم إضافة ${relatedProduct.name} إلى السلة`,
+                              });
+                            }}
+                          >
+                            <ShoppingCart className="w-4 h-4 ml-2" />
+                            أضف للسلة
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

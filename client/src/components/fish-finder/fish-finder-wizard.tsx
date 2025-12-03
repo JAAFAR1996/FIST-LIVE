@@ -45,10 +45,12 @@ export default function FishFinderWizard({ productsList }: FishFinderWizardProps
         setLoading(false);
         setStep(4);
         confetti({
-          particleCount: 150,
-          spread: 100,
-          origin: { y: 0.6 },
-          colors: ['#06b6d4', '#8b5cf6', '#ec4899']
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.3 },
+          colors: ['#06b6d4', '#8b5cf6', '#ec4899'],
+          ticks: 100,
+          gravity: 1.2
         });
       }, 1500);
     }
@@ -67,10 +69,12 @@ export default function FishFinderWizard({ productsList }: FishFinderWizardProps
     });
 
     confetti({
-      particleCount: 200,
-      spread: 120,
-      origin: { y: 0.6 },
-      colors: ['#06b6d4', '#8b5cf6', '#ec4899', '#10b981']
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.2 },
+      colors: ['#06b6d4', '#8b5cf6', '#ec4899', '#10b981'],
+      ticks: 80,
+      gravity: 1.5
     });
 
     toast({
