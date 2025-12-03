@@ -2,9 +2,11 @@ import type { Server } from "http";
 import type session from "express-session";
 import "express-session";
 import { storage } from "./storage.js";
-import { insertUserSchema } from "../shared/schema.js";
+import { insertUserSchema, insertProductSchema, insertDiscountSchema } from "../shared/schema.js";
 import crypto from "crypto";
 import express from "express";
+import { requireAuth, requireAdmin } from "./middleware/auth.js";
+import { saveBase64Image, deleteImage } from "./middleware/upload.js";
 
 declare module "express-session" {
   interface SessionData {
@@ -38,7 +40,7 @@ function verifyPassword(password: string, stored: string) {
   return crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(check, "hex"));
 }
 
-function requireAuth(req: any, res: any, next: any) {
+function localRequireAuth(req: any, res: any, next: any) {
   const sess = getSession(req);
   if (!sess?.userId) {
     res.status(401).json({ message: "Unauthorized" });
@@ -187,7 +189,7 @@ export async function registerRoutes(
 
   (app as any).get(
     "/api/auth/me",
-    requireAuth as express.RequestHandler,
+    localRequireAuth as express.RequestHandler,
     async (req: any, res: any) => {
     const sess = getSession(req);
     const userId = sess?.userId as string | undefined;
@@ -200,8 +202,260 @@ export async function registerRoutes(
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
-    res.json({ id: user.id, username: user.username });
+    res.json({ id: user.id, username: user.username, role: user.role });
   });
+
+  // ============ ADMIN ENDPOINTS ============
+
+  // Create Product (Admin only)
+  (app as any).post(
+    "/api/admin/products",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const productData = req.body;
+
+        // Handle image upload if base64 provided
+        if (productData.imageBase64) {
+          const imageUrl = saveBase64Image(productData.imageBase64);
+          productData.thumbnail = imageUrl;
+          if (!productData.images) productData.images = [];
+          productData.images.push(imageUrl);
+          delete productData.imageBase64;
+        }
+
+        const product = await storage.createProduct(productData);
+
+        // Create audit log
+        await storage.createAuditLog({
+          userId: req.user.id,
+          action: "create",
+          entityType: "product",
+          entityId: product.id,
+          changes: { created: productData },
+        });
+
+        res.status(201).json(product);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Update Product (Admin only)
+  (app as any).put(
+    "/api/admin/products/:id",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        // Handle image upload if base64 provided
+        if (updates.imageBase64) {
+          const imageUrl = saveBase64Image(updates.imageBase64);
+          updates.thumbnail = imageUrl;
+          if (!updates.images) updates.images = [];
+          updates.images.push(imageUrl);
+          delete updates.imageBase64;
+        }
+
+        const oldProduct = await storage.getProduct(id);
+        const product = await storage.updateProduct(id, updates);
+
+        if (!product) {
+          res.status(404).json({ message: "Product not found" });
+          return;
+        }
+
+        // Create audit log
+        await storage.createAuditLog({
+          userId: req.user.id,
+          action: "update",
+          entityType: "product",
+          entityId: id,
+          changes: { old: oldProduct, new: product },
+        });
+
+        res.json(product);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Delete Product (Admin only)
+  (app as any).delete(
+    "/api/admin/products/:id",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { id } = req.params;
+        const product = await storage.getProduct(id);
+
+        if (!product) {
+          res.status(404).json({ message: "Product not found" });
+          return;
+        }
+
+        // Delete product images
+        if (product.thumbnail) deleteImage(product.thumbnail);
+        if (product.images) {
+          (product.images as string[]).forEach((img: string) => deleteImage(img));
+        }
+
+        const success = await storage.deleteProduct(id);
+
+        if (success) {
+          // Create audit log
+          await storage.createAuditLog({
+            userId: req.user.id,
+            action: "delete",
+            entityType: "product",
+            entityId: id,
+            changes: { deleted: product },
+          });
+
+          res.json({ message: "Product deleted successfully" });
+        } else {
+          res.status(500).json({ message: "Failed to delete product" });
+        }
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // ============ DISCOUNT MANAGEMENT ============
+
+  // Get all discounts or by product
+  (app as any).get("/api/admin/discounts", requireAdmin as express.RequestHandler, async (req: any, res: any, next: any) => {
+    try {
+      const { productId } = req.query;
+      const discounts = await storage.getDiscounts(productId);
+      res.json(discounts);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Create Discount
+  (app as any).post(
+    "/api/admin/discounts",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const discount = await storage.createDiscount(req.body);
+
+        // Create audit log
+        await storage.createAuditLog({
+          userId: req.user.id,
+          action: "create",
+          entityType: "discount",
+          entityId: discount.id,
+          changes: { created: req.body },
+        });
+
+        res.status(201).json(discount);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Update Discount
+  (app as any).put(
+    "/api/admin/discounts/:id",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { id } = req.params;
+        const discount = await storage.updateDiscount(id, req.body);
+
+        if (!discount) {
+          res.status(404).json({ message: "Discount not found" });
+          return;
+        }
+
+        // Create audit log
+        await storage.createAuditLog({
+          userId: req.user.id,
+          action: "update",
+          entityType: "discount",
+          entityId: id,
+          changes: { updated: req.body },
+        });
+
+        res.json(discount);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Delete Discount
+  (app as any).delete(
+    "/api/admin/discounts/:id",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { id } = req.params;
+        const success = await storage.deleteDiscount(id);
+
+        if (success) {
+          // Create audit log
+          await storage.createAuditLog({
+            userId: req.user.id,
+            action: "delete",
+            entityType: "discount",
+            entityId: id,
+            changes: {},
+          });
+
+          res.json({ message: "Discount deleted successfully" });
+        } else {
+          res.status(404).json({ message: "Discount not found" });
+        }
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // ============ AUDIT LOGS ============
+
+  // Get Audit Logs (Admin only)
+  (app as any).get(
+    "/api/admin/audit-logs",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { userId, entityType, entityId } = req.query;
+        const logs = await storage.getAuditLogs({
+          userId: userId as string | undefined,
+          entityType: entityType as string | undefined,
+          entityId: entityId as string | undefined,
+        });
+        res.json(logs);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Get all orders (Admin only)
+  (app as any).get(
+    "/api/admin/orders",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const orders = await storage.getOrders();
+        res.json(orders);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
 
   (app as any).use("/api", (_req: any, res: any) => {
     res.status(404).json({ message: "Not Found" });

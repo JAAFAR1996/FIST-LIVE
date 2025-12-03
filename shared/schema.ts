@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email"),
+  role: text("role").notNull().default("user"), // user, admin
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -65,21 +66,51 @@ export const sessions = pgTable("sessions", {
   expireIdx: index("sessions_expire_idx").on(table.expire),
 }));
 
+// Discounts table for product discounts
+export const discounts = pgTable("discounts", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: text("product_id").references(() => products.id).notNull(),
+  type: text("type").notNull(), // percentage, fixed
+  value: numeric("value").notNull(),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Audit logs for tracking admin actions
+export const auditLogs = pgTable("audit_logs", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id).notNull(),
+  action: text("action").notNull(), // create, update, delete
+  entityType: text("entity_type").notNull(), // product, order, user
+  entityId: text("entity_id").notNull(),
+  changes: jsonb("changes").$type<Record<string, any>>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
   email: true,
+  role: true,
 }).extend({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
+  role: z.enum(["user", "admin"]).optional(),
 });
 
 export const insertProductSchema = createInsertSchema(products);
 export const insertOrderSchema = createInsertSchema(orders);
 export const insertReviewSchema = createInsertSchema(reviews);
+export const insertDiscountSchema = createInsertSchema(discounts);
+export const insertAuditLogSchema = createInsertSchema(auditLogs);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
+export type Discount = typeof discounts.$inferSelect;
+export type AuditLog = typeof auditLogs.$inferSelect;

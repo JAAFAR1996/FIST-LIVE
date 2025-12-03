@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Product, type Order, type Review, users, products, orders, reviews } from "../shared/schema.js";
+import { type User, type InsertUser, type Product, type Order, type Review, type Discount, type AuditLog, users, products, orders, reviews, discounts, auditLogs } from "../shared/schema.js";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { getDb } from "./db.js";
 import { mockProducts } from "../shared/mock-products.js";
@@ -13,12 +13,20 @@ export interface IStorage {
   getProductBySlug(slug: string): Promise<Product | undefined>;
   createProduct(product: Partial<Product>): Promise<Product>;
   updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
+  deleteProduct(id: string): Promise<boolean>;
   getOrders(userId?: string): Promise<Order[]>;
   getOrder(id: string): Promise<Order | undefined>;
   createOrder(order: Partial<Order>): Promise<Order>;
   updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined>;
   getReviews(productId: string): Promise<Review[]>;
   createReview(review: Partial<Review>): Promise<Review>;
+  getDiscounts(productId?: string): Promise<Discount[]>;
+  getDiscount(id: string): Promise<Discount | undefined>;
+  createDiscount(discount: Partial<Discount>): Promise<Discount>;
+  updateDiscount(id: string, updates: Partial<Discount>): Promise<Discount | undefined>;
+  deleteDiscount(id: string): Promise<boolean>;
+  createAuditLog(log: Partial<AuditLog>): Promise<AuditLog>;
+  getAuditLogs(filters?: { userId?: string; entityType?: string; entityId?: string }): Promise<AuditLog[]>;
 }
 
 export interface ProductFilters {
@@ -103,8 +111,13 @@ export class DbStorage implements IStorage {
   }
 
   async updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined> {
-    const result = await this.db.update(products).set(updates).where(eq(products.id, id)).returning();
+    const result = await this.db.update(products).set({...updates, updatedAt: new Date()}).where(eq(products.id, id)).returning();
     return result[0];
+  }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    const result = await this.db.delete(products).where(eq(products.id, id)).returning();
+    return result.length > 0;
   }
 
   async getOrders(userId?: string): Promise<Order[]> {
@@ -137,6 +150,53 @@ export class DbStorage implements IStorage {
     const result = await this.db.insert(reviews).values(review as any).returning();
     return result[0];
   }
+
+  async getDiscounts(productId?: string): Promise<Discount[]> {
+    if (productId) {
+      return await this.db.select().from(discounts).where(eq(discounts.productId, productId)).orderBy(desc(discounts.createdAt));
+    }
+    return await this.db.select().from(discounts).orderBy(desc(discounts.createdAt));
+  }
+
+  async getDiscount(id: string): Promise<Discount | undefined> {
+    const result = await this.db.select().from(discounts).where(eq(discounts.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createDiscount(discount: Partial<Discount>): Promise<Discount> {
+    const result = await this.db.insert(discounts).values(discount as any).returning();
+    return result[0];
+  }
+
+  async updateDiscount(id: string, updates: Partial<Discount>): Promise<Discount | undefined> {
+    const result = await this.db.update(discounts).set({...updates, updatedAt: new Date()}).where(eq(discounts.id, id)).returning();
+    return result[0];
+  }
+
+  async deleteDiscount(id: string): Promise<boolean> {
+    const result = await this.db.delete(discounts).where(eq(discounts.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async createAuditLog(log: Partial<AuditLog>): Promise<AuditLog> {
+    const result = await this.db.insert(auditLogs).values(log as any).returning();
+    return result[0];
+  }
+
+  async getAuditLogs(filters?: { userId?: string; entityType?: string; entityId?: string }): Promise<AuditLog[]> {
+    let query = this.db.select().from(auditLogs);
+
+    const conditions = [];
+    if (filters?.userId) conditions.push(eq(auditLogs.userId, filters.userId));
+    if (filters?.entityType) conditions.push(eq(auditLogs.entityType, filters.entityType));
+    if (filters?.entityId) conditions.push(eq(auditLogs.entityId, filters.entityId));
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    return await query.orderBy(desc(auditLogs.createdAt));
+  }
 }
 
 class MockStorage implements IStorage {
@@ -144,6 +204,8 @@ class MockStorage implements IStorage {
   private products: Product[] = [...mockProducts];
   private orders: Order[] = [];
   private reviews: Review[] = [];
+  private discounts: Discount[] = [];
+  private auditLogs: AuditLog[] = [];
 
   async getUser(id: string): Promise<User | undefined> {
     return this.users.find((u) => u.id === id);
@@ -159,6 +221,7 @@ class MockStorage implements IStorage {
       username: user.username,
       password: user.password,
       email: user.email ?? null,
+      role: user.role || "user",
       createdAt: new Date(),
     };
     this.users.push(newUser);
@@ -240,6 +303,13 @@ class MockStorage implements IStorage {
     return this.products[index];
   }
 
+  async deleteProduct(id: string): Promise<boolean> {
+    const index = this.products.findIndex((p) => p.id === id);
+    if (index === -1) return false;
+    this.products.splice(index, 1);
+    return true;
+  }
+
   async getOrders(userId?: string): Promise<Order[]> {
     if (!userId) return this.orders;
     return this.orders.filter((o) => o.userId === userId);
@@ -287,6 +357,69 @@ class MockStorage implements IStorage {
     };
     this.reviews.push(newReview);
     return newReview;
+  }
+
+  async getDiscounts(productId?: string): Promise<Discount[]> {
+    if (!productId) return this.discounts;
+    return this.discounts.filter((d) => d.productId === productId);
+  }
+
+  async getDiscount(id: string): Promise<Discount | undefined> {
+    return this.discounts.find((d) => d.id === id);
+  }
+
+  async createDiscount(discount: Partial<Discount>): Promise<Discount> {
+    const newDiscount: Discount = {
+      id: discount.id || randomUUID(),
+      productId: discount.productId as string,
+      type: discount.type || "percentage",
+      value: discount.value || "0",
+      startDate: discount.startDate ?? null,
+      endDate: discount.endDate ?? null,
+      isActive: discount.isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.discounts.push(newDiscount);
+    return newDiscount;
+  }
+
+  async updateDiscount(id: string, updates: Partial<Discount>): Promise<Discount | undefined> {
+    const index = this.discounts.findIndex((d) => d.id === id);
+    if (index === -1) return undefined;
+    this.discounts[index] = { ...this.discounts[index], ...updates, updatedAt: new Date() };
+    return this.discounts[index];
+  }
+
+  async deleteDiscount(id: string): Promise<boolean> {
+    const index = this.discounts.findIndex((d) => d.id === id);
+    if (index === -1) return false;
+    this.discounts.splice(index, 1);
+    return true;
+  }
+
+  async createAuditLog(log: Partial<AuditLog>): Promise<AuditLog> {
+    const newLog: AuditLog = {
+      id: log.id || randomUUID(),
+      userId: log.userId as string,
+      action: log.action as string,
+      entityType: log.entityType as string,
+      entityId: log.entityId as string,
+      changes: log.changes ?? null,
+      createdAt: new Date(),
+    };
+    this.auditLogs.push(newLog);
+    return newLog;
+  }
+
+  async getAuditLogs(filters?: { userId?: string; entityType?: string; entityId?: string }): Promise<AuditLog[]> {
+    let results = [...this.auditLogs];
+
+    if (filters?.userId) results = results.filter((l) => l.userId === filters.userId);
+    if (filters?.entityType) results = results.filter((l) => l.entityType === filters.entityType);
+    if (filters?.entityId) results = results.filter((l) => l.entityId === filters.entityId);
+
+    return results.sort((a, b) => (b.createdAt?.valueOf() || 0) - (a.createdAt?.valueOf() || 0));
   }
 }
 
