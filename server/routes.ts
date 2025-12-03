@@ -170,7 +170,21 @@ export async function registerRoutes(
         return;
       }
       sess.userId = user.id;
-      res.json({ id: user.id, email: user.email });
+
+      // Save session and return user data with role
+      sess.save((err: any) => {
+        if (err) {
+          console.error("Session save error:", err);
+          res.status(500).json({ message: "Session save failed" });
+          return;
+        }
+        res.json({
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          role: user.role
+        });
+      });
     } catch (err) {
       next(err);
     }
