@@ -1,15 +1,19 @@
+import { useMemo, useState } from "react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Star, AlertCircle } from "lucide-react";
-import { DifficultyBadge } from "@/components/ui/difficulty-badge";
+import { AlertCircle, ArrowUpDown } from "lucide-react";
 import { ProductComparison } from "@/components/products/product-comparison";
+import { ProductCard } from "@/components/products/product-card";
+import { ProductFilters, FilterState } from "@/components/products/product-filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { Product } from "@/types";
+
+type SortOption = "default" | "price-asc" | "price-desc" | "name-asc" | "rating-desc";
 
 export default function Products() {
   const { data, isLoading, isError } = useQuery({
@@ -19,6 +23,100 @@ export default function Products() {
   });
 
   const products = data?.products ?? [];
+
+  // Calculate max price
+  const maxPrice = useMemo(() => {
+    if (products.length === 0) return 1000000;
+    return Math.max(...products.map((p: Product) => p.price));
+  }, [products]);
+
+  // Initialize filters
+  const [filters, setFilters] = useState<FilterState>({
+    priceRange: [0, maxPrice],
+    categories: [],
+    brands: [],
+    difficulties: [],
+    tags: [],
+  });
+
+  const [sortBy, setSortBy] = useState<SortOption>("default");
+
+  // Get available categories and brands
+  const availableCategories = useMemo(() => {
+    const categories = new Set(products.map((p: Product) => p.category));
+    return Array.from(categories).sort();
+  }, [products]);
+
+  const availableBrands = useMemo(() => {
+    const brands = new Set(products.map((p: Product) => p.brand));
+    return Array.from(brands).sort();
+  }, [products]);
+
+  // Filter products
+  const filteredProducts = useMemo(() => {
+    return products.filter((product: Product) => {
+      // Price filter
+      if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) {
+        return false;
+      }
+
+      // Category filter
+      if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
+        return false;
+      }
+
+      // Brand filter
+      if (filters.brands.length > 0 && !filters.brands.includes(product.brand)) {
+        return false;
+      }
+
+      // Difficulty filter
+      if (filters.difficulties.length > 0 && product.difficulty && !filters.difficulties.includes(product.difficulty)) {
+        return false;
+      }
+
+      // Tags filter
+      if (filters.tags.length > 0) {
+        const hasTag = filters.tags.some((tag) => {
+          if (tag === "جديد") return product.isNew;
+          if (tag === "الأكثر مبيعاً") return product.isBestSeller;
+          if (tag === "صديق للبيئة") return product.ecoFriendly;
+          return false;
+        });
+        if (!hasTag) return false;
+      }
+
+      return true;
+    });
+  }, [products, filters]);
+
+  // Sort products
+  const sortedProducts = useMemo(() => {
+    const sorted = [...filteredProducts];
+    switch (sortBy) {
+      case "price-asc":
+        return sorted.sort((a, b) => a.price - b.price);
+      case "price-desc":
+        return sorted.sort((a, b) => b.price - a.price);
+      case "name-asc":
+        return sorted.sort((a, b) => a.name.localeCompare(b.name, "ar"));
+      case "rating-desc":
+        return sorted.sort((a, b) => b.rating - a.rating);
+      default:
+        return sorted;
+    }
+  }, [filteredProducts, sortBy]);
+
+  // Count active filters
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== maxPrice) count++;
+    count += filters.categories.length;
+    count += filters.brands.length;
+    count += filters.difficulties.length;
+    count += filters.tags.length;
+    return count;
+  }, [filters, maxPrice]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
@@ -30,105 +128,101 @@ export default function Products() {
         </div>
 
         <Tabs defaultValue="grid" className="mb-12">
-           <div className="flex justify-between items-center mb-6">
-             <TabsList>
-               <TabsTrigger value="grid">عرض الشبكة</TabsTrigger>
-               <TabsTrigger value="compare">مقارنة المنتجات</TabsTrigger>
-             </TabsList>
-           </div>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+            <TabsList>
+              <TabsTrigger value="grid">عرض الشبكة</TabsTrigger>
+              <TabsTrigger value="compare">مقارنة المنتجات</TabsTrigger>
+            </TabsList>
 
-           <TabsContent value="grid">
-            {isLoading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} className="h-72 w-full rounded-xl" />
-                ))}
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="ترتيب حسب" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">الافتراضي</SelectItem>
+                  <SelectItem value="price-asc">السعر: من الأقل للأعلى</SelectItem>
+                  <SelectItem value="price-desc">السعر: من الأعلى للأقل</SelectItem>
+                  <SelectItem value="name-asc">الاسم: أ - ي</SelectItem>
+                  <SelectItem value="rating-desc">الأعلى تقييماً</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <TabsContent value="grid">
+            <div className="flex gap-6">
+              {/* Filters Sidebar */}
+              <aside className="w-64 flex-shrink-0">
+                <ProductFilters
+                  filters={filters}
+                  onFilterChange={setFilters}
+                  availableCategories={availableCategories}
+                  availableBrands={availableBrands}
+                  maxPrice={maxPrice}
+                  activeFiltersCount={activeFiltersCount}
+                />
+              </aside>
+
+              {/* Products Grid */}
+              <div className="flex-1">
+                {isLoading && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.from({ length: 9 }).map((_, i) => (
+                      <Skeleton key={i} className="h-96 w-full rounded-xl" />
+                    ))}
+                  </div>
+                )}
+
+                {!isLoading && (
+                  <>
+                    {/* Results Count */}
+                    <div className="mb-4 text-sm text-muted-foreground">
+                      عرض {sortedProducts.length} من {products.length} منتج
+                    </div>
+
+                    {sortedProducts.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20 lg:pb-6">
+                        {sortedProducts.map((product) => (
+                          <ProductCard key={product.id} product={product} />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <p className="text-muted-foreground text-lg mb-4">
+                          لم يتم العثور على منتجات تطابق الفلاتر المحددة
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          جرب تغيير أو إزالة بعض الفلاتر
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {isError && (
+                  <Alert variant="destructive" className="mt-6">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>خطأ في تحميل المنتجات</AlertTitle>
+                    <AlertDescription>
+                      تعذر تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقاً.
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
-            )}
-            {!isLoading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )}
-            {isError && (
-              <Alert variant="destructive" className="mt-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>خطأ في تحميل المنتجات</AlertTitle>
-                <AlertDescription>
-                  تعذر تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقاً.
-                </AlertDescription>
-              </Alert>
-            )}
-            {!isLoading && !isError && products.length === 0 && (
-              <p className="text-center text-muted-foreground mt-6">
-                لا توجد منتجات متاحة حالياً.
-              </p>
-            )}
-           </TabsContent>
-           
-           <TabsContent value="compare">
-             <div className="animate-in fade-in slide-in-from-bottom-4">
-               <ProductComparison products={products} />
-             </div>
-           </TabsContent>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="compare">
+            <div className="animate-in fade-in slide-in-from-bottom-4">
+              <ProductComparison products={products} />
+            </div>
+          </TabsContent>
         </Tabs>
-
       </main>
       <Footer />
     </div>
-  );
-}
-
-function ProductCard({ product }: { product: any }) {
-  return (
-    <Card className="group border-none shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden bg-card">
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-        {product.originalPrice && (
-          <span className="absolute top-3 right-3 z-10 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-md">
-            خصم
-          </span>
-        )}
-        <div className="absolute top-3 left-3 z-10 flex gap-1">
-           {product.difficulty && <DifficultyBadge level={product.difficulty} className="text-[10px] px-1.5 py-0.5 h-5" />}
-        </div>
-        <img 
-          src={product.image} 
-          alt={product.name} 
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center">
-          <Button size="sm" className="w-full bg-white text-slate-900 hover:bg-white/90">
-            نظرة سريعة
-          </Button>
-        </div>
-      </div>
-      <CardContent className="p-4">
-        <div className="text-xs text-muted-foreground mb-1 font-medium">{product.brand}</div>
-        <h3 className="font-bold text-foreground line-clamp-2 mb-2 h-10 leading-tight group-hover:text-primary transition-colors">
-          {product.name}
-        </h3>
-        <div className="flex items-center gap-1 mb-3">
-          <div className="flex text-amber-400">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className={`h-3 w-3 ${i < Math.floor(product.rating) ? "fill-current" : "text-slate-200 dark:text-slate-700"}`} />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold text-primary">{product.price.toLocaleString()} د.ع.</span>
-          {product.originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">{product.originalPrice.toLocaleString()} د.ع.</span>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full hover:bg-primary transition-colors">
-          أضف إلى العربة
-        </Button>
-      </CardFooter>
-    </Card>
   );
 }

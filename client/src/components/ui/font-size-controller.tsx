@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Minus, Plus, RotateCcw, TextSize } from 'lucide-react';
+import { Minus, Plus, RotateCcw, Type } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -137,7 +137,7 @@ export function FontSizeControllerCompact() {
           className="rounded-full border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
           aria-label="التحكم بحجم الخط"
         >
-          <TextSize className="h-5 w-5" />
+          <Type className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="p-2">

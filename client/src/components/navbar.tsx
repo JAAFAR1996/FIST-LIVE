@@ -35,7 +35,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
-  const { items: cartItems, removeItem, totalItems, totalPrice } = useCart();
+  const { items: cartItems, removeItem, clearCart, totalItems, totalPrice } = useCart();
 
   const handleCheckoutComplete = (data: { customerInfo: OrderData['customerInfo']; items: CartItem[]; total: number }) => {
     const newOrderData: OrderData = {
@@ -46,6 +46,7 @@ export default function Navbar() {
     setOrderData(newOrderData);
     setIsCheckoutOpen(false);
     setIsCartOpen(false);
+    clearCart(); // Clear cart after successful checkout
     setIsInvoiceOpen(true);
   };
 
