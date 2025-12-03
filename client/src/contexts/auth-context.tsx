@@ -49,23 +49,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        email,
-        passwordHash: password, // Server expects this field name
-      }),
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          passwordHash: password, // Server expects this field name
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Login failed");
+      // Check if response is HTML (server error or not JSON)
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("Server returned non-JSON response:", await response.text());
+        throw new Error("خطأ في الخادم. تأكد من تشغيل السيرفر (pnpm run dev)");
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "فشل تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.");
+      }
+
+      const userData = await response.json();
+      console.log("✅ Login successful:", userData);
+      setUser(userData);
+    } catch (error: any) {
+      console.error("❌ Login error:", error);
+      throw error;
     }
-
-    const userData = await response.json();
-    setUser(userData);
   };
 
   const logout = async () => {
