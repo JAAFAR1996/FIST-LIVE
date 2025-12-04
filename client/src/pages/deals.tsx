@@ -52,12 +52,12 @@ export default function Deals() {
 
       <main className="flex-1 container mx-auto px-4 py-12" dir="rtl">
         {/* Hero Section */}
-        <div className="mb-12 text-center relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 p-12 border border-primary/20">
+        <div className="mb-12 text-center relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 p-12 border border-primary/20 shadow-lg">
           <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
           <div className="relative z-10">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Sparkles className="h-8 w-8 text-primary animate-pulse" />
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold text-foreground">
                 العروض والخصومات
               </h1>
               <Sparkles className="h-8 w-8 text-primary animate-pulse" />
@@ -84,11 +84,11 @@ export default function Deals() {
             </CardContent>
           </Card>
 
-          <Card className="border-green-500/20 bg-gradient-to-br from-green-500/5 to-transparent">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-green-500/10">
-                  <TrendingDown className="h-6 w-6 text-green-500" />
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <TrendingDown className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-foreground">70%</p>
@@ -98,11 +98,11 @@ export default function Deals() {
             </CardContent>
           </Card>
 
-          <Card className="border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-orange-500/10">
-                  <Timer className="h-6 w-6 text-orange-500" />
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Timer className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-foreground">محدودة</p>
@@ -255,7 +255,7 @@ export default function Deals() {
         )}
 
         {/* Call to Action */}
-        <Card className="mt-16 bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20">
+        <Card className="mt-16 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
           <CardContent className="p-12 text-center">
             <h2 className="text-3xl font-bold mb-4 text-foreground">
               لا تفوت عروضنا القادمة!

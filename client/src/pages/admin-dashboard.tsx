@@ -125,17 +125,42 @@ const BRANDS = [
   "AquaClear",
 ];
 
-// Slugify function
+// Slugify function with Arabic support
 function slugify(text: string): string {
-  return text
+  if (!text) return '';
+
+  // Arabic to Latin transliteration map (comprehensive)
+  const arabicToLatin: Record<string, string> = {
+    'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'aa', 'ء': 'a',
+    'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'h',
+    'خ': 'kh', 'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z',
+    'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd', 'ط': 't',
+    'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q',
+    'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h',
+    'و': 'w', 'ي': 'y', 'ى': 'a', 'ة': 'h', 'ئ': 'y',
+    'ؤ': 'w', 'ـ': '', ' ': '-',
+    // Additional Arabic characters
+    'ِ': '', 'ُ': '', 'ٓ': '', 'ٰ': '', 'ْ': '', 'ٌ': '', 'ٍ': '', 'ً': '',
+    'ّ': '', 'َ': '',
+  };
+
+  // Transliterate Arabic characters
+  let result = text
     .toString()
+    .trim()
+    .split('')
+    .map(char => arabicToLatin[char] !== undefined ? arabicToLatin[char] : char)
+    .join('');
+
+  // Apply standard slugification
+  return result
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
+    .replace(/\s+/g, '-')           // Replace spaces with hyphens
+    .replace(/[^\w\-]+/g, '')       // Remove non-word chars (except hyphens)
+    .replace(/\-\-+/g, '-')         // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, '');       // Remove leading/trailing hyphens
 }
 
 export default function AdminDashboard() {
@@ -147,6 +172,9 @@ export default function AdminDashboard() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [imageBase64, setImageBase64] = useState<string>("");
+  const [customBrand, setCustomBrand] = useState<string>("");
+  const [customCategory, setCustomCategory] = useState<string>("");
+  const [customSubcategory, setCustomSubcategory] = useState<string>("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
 
@@ -200,6 +228,43 @@ export default function AdminDashboard() {
 
   const handleCreateProduct = async () => {
     try {
+      // Validate required fields
+      if (!formData.name || formData.name.trim() === '') {
+        toast({
+          title: "خطأ",
+          description: "يرجى إدخال اسم المنتج",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.brand || formData.brand.trim() === '') {
+        toast({
+          title: "خطأ",
+          description: "يرجى اختيار أو إدخال العلامة التجارية",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.category || formData.category.trim() === '') {
+        toast({
+          title: "خطأ",
+          description: "يرجى اختيار أو إدخال الفئة",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.description || formData.description.trim() === '') {
+        toast({
+          title: "خطأ",
+          description: "يرجى إدخال وصف المنتج",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Generate slug if not provided
       const slug = formData.slug || slugify(formData.name || '');
 
@@ -208,6 +273,8 @@ export default function AdminDashboard() {
         slug,
         imageBase64: imageBase64 || undefined,
       };
+
+      console.log('Sending product data:', { ...productPayload, imageBase64: imageBase64 ? '[IMAGE DATA]' : 'none' });
 
       const response = await fetch("/api/admin/products", {
         method: "POST",
@@ -267,11 +334,35 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error("Error creating product:", error);
-      toast({
-        title: "خطأ",
-        description: "حدث خطأ أثناء إضافة المنتج. تأكد من الاتصال بالإنترنت.",
-        variant: "destructive",
-      });
+
+      // Check for network errors
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        toast({
+          title: "خطأ في الاتصال",
+          description: "لا يمكن الاتصال بالخادم. تأكد من: 1) اتصالك بالإنترنت، 2) الخادم يعمل على المنفذ الصحيح، 3) لا يوجد حاجز ناري يمنع الاتصال.",
+          variant: "destructive",
+        });
+      } else if (error instanceof Error) {
+        // More detailed error messages
+        let errorMessage = error.message;
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = "فشل الاتصال بالخادم. تأكد من أن الخادم يعمل وأن عنوان API صحيح.";
+        } else if (error.message.includes('NetworkError')) {
+          errorMessage = "خطأ في الشبكة. تحقق من اتصالك بالإنترنت.";
+        }
+
+        toast({
+          title: "خطأ",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "خطأ غير متوقع",
+          description: "حدث خطأ غير معروف أثناء إضافة المنتج. يرجى المحاولة مرة أخرى أو مراجعة Console للتفاصيل.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -311,11 +402,21 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error("Error updating product:", error);
-      toast({
-        title: "خطأ",
-        description: "حدث خطأ أثناء تحديث المنتج",
-        variant: "destructive",
-      });
+
+      // Check for network errors
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        toast({
+          title: "خطأ في الاتصال",
+          description: "تأكد من اتصالك بالإنترنت وأن الخادم يعمل.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "خطأ",
+          description: `حدث خطأ أثناء تحديث المنتج: ${error instanceof Error ? error.message : "خطأ غير معروف"}`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -387,6 +488,9 @@ export default function AdminDashboard() {
     });
     setSelectedProduct(null);
     setImageBase64("");
+    setCustomBrand("");
+    setCustomCategory("");
+    setCustomSubcategory("");
   };
 
   // Auto-generate slug when name changes
@@ -547,11 +651,21 @@ export default function AdminDashboard() {
                       filteredProducts.map((product) => (
                         <TableRow key={product.id}>
                           <TableCell>
-                            <img
-                              src={product.thumbnail || "/placeholder.jpg"}
-                              alt={product.name}
-                              className="w-12 h-12 object-cover rounded"
-                            />
+                            <div className="w-16 h-16 flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden border border-border">
+                              {product.thumbnail || product.images?.[0] ? (
+                                <img
+                                  src={product.thumbnail || product.images?.[0] || "/placeholder.jpg"}
+                                  alt={product.name}
+                                  className="w-full h-full object-contain p-2"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = "/placeholder.jpg";
+                                  }}
+                                />
+                              ) : (
+                                <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell className="font-medium">{product.name}</TableCell>
                           <TableCell>{product.brand}</TableCell>
@@ -690,8 +804,16 @@ export default function AdminDashboard() {
               <div className="space-y-2">
                 <Label htmlFor="brand">العلامة التجارية *</Label>
                 <Select
-                  value={formData.brand}
-                  onValueChange={(value) => setFormData({ ...formData, brand: value })}
+                  value={formData.brand === "other" || (formData.brand && !BRANDS.includes(formData.brand)) ? "other" : formData.brand}
+                  onValueChange={(value) => {
+                    if (value === "other") {
+                      setFormData({ ...formData, brand: "" });
+                      setCustomBrand("");
+                    } else {
+                      setFormData({ ...formData, brand: value });
+                      setCustomBrand("");
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="اختر العلامة التجارية" />
@@ -702,16 +824,35 @@ export default function AdminDashboard() {
                         {brand}
                       </SelectItem>
                     ))}
-                    <SelectItem value="other">أخرى</SelectItem>
+                    <SelectItem value="other">أخرى (إضافة جديدة)</SelectItem>
                   </SelectContent>
                 </Select>
+                {(formData.brand === "" || formData.brand === "other" || (formData.brand && !BRANDS.includes(formData.brand))) && (
+                  <Input
+                    placeholder="أدخل اسم العلامة التجارية"
+                    value={customBrand || formData.brand}
+                    onChange={(e) => {
+                      setCustomBrand(e.target.value);
+                      setFormData({ ...formData, brand: e.target.value });
+                    }}
+                    className="mt-2"
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="category">الفئة *</Label>
                 <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value, subcategory: value })}
+                  value={formData.category && CATEGORIES.includes(formData.category) ? formData.category : "other"}
+                  onValueChange={(value) => {
+                    if (value === "other") {
+                      setFormData({ ...formData, category: "", subcategory: "" });
+                      setCustomCategory("");
+                    } else {
+                      setFormData({ ...formData, category: value, subcategory: value });
+                      setCustomCategory("");
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="اختر الفئة" />
@@ -722,16 +863,36 @@ export default function AdminDashboard() {
                         {category}
                       </SelectItem>
                     ))}
+                    <SelectItem value="other">أخرى (إضافة جديدة)</SelectItem>
                   </SelectContent>
                 </Select>
+                {(formData.category === "" || !CATEGORIES.includes(formData.category)) && (
+                  <Input
+                    placeholder="أدخل اسم الفئة"
+                    value={customCategory || formData.category}
+                    onChange={(e) => {
+                      setCustomCategory(e.target.value);
+                      setFormData({ ...formData, category: e.target.value, subcategory: e.target.value });
+                    }}
+                    className="mt-2"
+                  />
+                )}
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="subcategory">الفئة الفرعية *</Label>
               <Select
-                value={formData.subcategory}
-                onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                value={formData.subcategory && CATEGORIES.includes(formData.subcategory) ? formData.subcategory : "other"}
+                onValueChange={(value) => {
+                  if (value === "other") {
+                    setFormData({ ...formData, subcategory: "" });
+                    setCustomSubcategory("");
+                  } else {
+                    setFormData({ ...formData, subcategory: value });
+                    setCustomSubcategory("");
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="اختر الفئة الفرعية" />
@@ -742,8 +903,20 @@ export default function AdminDashboard() {
                       {category}
                     </SelectItem>
                   ))}
+                  <SelectItem value="other">أخرى (إضافة جديدة)</SelectItem>
                 </SelectContent>
               </Select>
+              {(formData.subcategory === "" || !CATEGORIES.includes(formData.subcategory)) && (
+                <Input
+                  placeholder="أدخل اسم الفئة الفرعية"
+                  value={customSubcategory || formData.subcategory}
+                  onChange={(e) => {
+                    setCustomSubcategory(e.target.value);
+                    setFormData({ ...formData, subcategory: e.target.value });
+                  }}
+                  className="mt-2"
+                />
+              )}
             </div>
 
             <div className="space-y-2">

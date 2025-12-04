@@ -2,7 +2,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import heroImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
 import { BubbleTrail } from "@/components/effects/bubble-trail";
 import { ProductOfTheWeek } from "@/components/home/product-of-the-week";
@@ -15,6 +15,7 @@ import { fetchProducts } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const { data, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
@@ -53,10 +54,19 @@ export default function Home() {
             وجهتك الأولى للمعدات الاحترافية، النباتات النادرة، والنصائح الخبيرة لإنشاء حوض أحلامك.
           </p>
           <div className="flex flex-wrap gap-4 pt-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-            <WaterRippleButton size="lg" className="text-xl px-10 h-16 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25">
+            <WaterRippleButton
+              size="lg"
+              className="text-xl px-10 h-16 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25"
+              onClick={() => setLocation("/products")}
+            >
               ابدأ رحلتك الآن
             </WaterRippleButton>
-            <Button size="lg" variant="outline" className="text-xl px-10 h-16 bg-white/5 backdrop-blur-md border-white/20 text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-xl px-10 h-16 bg-white/5 backdrop-blur-md border-white/20 text-white hover:bg-white/10"
+              onClick={() => setLocation("/deals")}
+            >
               تصفح العروض
             </Button>
           </div>
