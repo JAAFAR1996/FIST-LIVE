@@ -12,6 +12,9 @@ import ProductDetails from "@/pages/product-details";
 import Calculators from "@/pages/calculators";
 import Journey from "@/pages/journey";
 import FishFinder from "@/pages/fish-finder";
+import FishFinderAdvanced from "@/pages/fish-finder-advanced";
+import FishEncyclopedia from "@/pages/fish-encyclopedia";
+import FishIdentifier from "@/pages/fish-identifier";
 import Deals from "@/pages/deals";
 import Sustainability from "@/pages/sustainability";
 import FeaturedProduct from "@/pages/products-featured";
@@ -39,6 +42,9 @@ function Router() {
       <Route path="/calculators" component={Calculators} />
       <Route path="/journey" component={Journey} />
       <Route path="/fish-finder" component={FishFinder} />
+      <Route path="/fish-finder-advanced" component={FishFinderAdvanced} />
+      <Route path="/fish-encyclopedia" component={FishEncyclopedia} />
+      <Route path="/fish-identifier" component={FishIdentifier} />
       <Route path="/deals" component={Deals} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/return-policy" component={ReturnPolicy} />

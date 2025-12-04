@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag } from "lucide-react";
+import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -54,9 +54,11 @@ export default function Navbar() {
     { href: "/", label: "الرئيسية", icon: Home },
     { href: "/products", label: "المنتجات", icon: Package },
     { href: "/deals", label: "العروض", icon: Tag },
+    { href: "/fish-encyclopedia", label: "موسوعة الأسماك", icon: BookOpen },
+    { href: "/fish-finder-advanced", label: "مخطط الحوض", icon: SearchIcon },
+    { href: "/fish-identifier", label: "تحديد الأسماك", icon: Camera },
     { href: "/calculators", label: "الحاسبات", icon: Calculator },
     { href: "/journey", label: "رحلتك", icon: Fish },
-    { href: "/fish-finder", label: "مكتشف الأسماك", icon: SearchIcon },
   ];
 
   return (

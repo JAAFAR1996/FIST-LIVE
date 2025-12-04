@@ -116,9 +116,9 @@ export default function Home() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { title: "حاسبة السخان", desc: "احسب القدرة المطلوبة للسخان", icon: Thermometer, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/20", link: "/calculators" },
-                { title: "حاسبة الفلترة", desc: "احسب معدل التدفق المناسب", icon: Droplets, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20", link: "/calculators" },
-                { title: "مكتشف الأسماك", desc: "اكتشف الأسماك المناسبة لحوضك", icon: Package, color: "text-primary", bg: "bg-primary/10", link: "/fish-finder" },
+                { title: "موسوعة الأسماك", desc: "اكتشف أكثر من 20 نوع من الأسماك", icon: Package, color: "text-primary", bg: "bg-primary/10", link: "/fish-encyclopedia" },
+                { title: "مخطط الحوض الذكي", desc: "خطط حوضك مع فحص التوافق", icon: Thermometer, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/20", link: "/fish-finder-advanced" },
+                { title: "تحديد الأسماك بالذكاء الاصطناعي", desc: "ارفع صورة وتعرف على السمكة", icon: Droplets, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20", link: "/fish-identifier" },
               ].map((tool, idx) => (
                 <Link key={idx} href={tool.link}>
                   <div className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer relative overflow-hidden">

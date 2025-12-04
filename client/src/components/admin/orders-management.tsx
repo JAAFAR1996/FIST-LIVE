@@ -76,6 +76,23 @@ export function OrdersManagement() {
       const response = await fetch("/api/admin/orders", {
         credentials: "include",
       });
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          // Authentication or authorization failed
+          console.error("Unauthorized access to orders");
+          toast({
+            title: "غير مصرح",
+            description: "يرجى تسجيل الدخول كمدير للوصول إلى الطلبات",
+            variant: "destructive",
+          });
+          setOrders([]);
+          setLoading(false);
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       setOrders(data || []);
       setLoading(false);
@@ -83,7 +100,7 @@ export function OrdersManagement() {
       console.error("Error fetching orders:", error);
       toast({
         title: "خطأ",
-        description: "فشل تحميل الطلبات",
+        description: "فشل تحميل الطلبات. يرجى التحقق من تسجيل الدخول.",
         variant: "destructive",
       });
       setLoading(false);
@@ -99,16 +116,25 @@ export function OrdersManagement() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (response.ok) {
-        toast({
-          title: "نجح",
-          description: "تم تحديث حالة الطلب بنجاح",
-        });
-        fetchOrders();
-      } else {
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          toast({
+            title: "غير مصرح",
+            description: "يرجى تسجيل الدخول كمدير",
+            variant: "destructive",
+          });
+          return;
+        }
         throw new Error("Failed to update order");
       }
+
+      toast({
+        title: "نجح",
+        description: "تم تحديث حالة الطلب بنجاح",
+      });
+      fetchOrders();
     } catch (error) {
+      console.error("Error updating order:", error);
       toast({
         title: "خطأ",
         description: "فشل تحديث حالة الطلب",
