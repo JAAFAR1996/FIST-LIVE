@@ -228,17 +228,48 @@ export default function AdminDashboard() {
         resetForm();
       } else {
         const error = await response.json();
-        toast({
-          title: "خطأ",
-          description: error.message || "فشل إضافة المنتج",
-          variant: "destructive",
-        });
+
+        // Handle specific error cases
+        if (response.status === 401) {
+          if (error.error === "NO_SESSION") {
+            toast({
+              title: "خطأ في إعداد الموقع",
+              description: "Environment Variables غير مضافة في Vercel. يرجى مراجعة ملف URGENT_VERCEL_SETUP.md",
+              variant: "destructive",
+            });
+          } else if (error.error === "NOT_LOGGED_IN") {
+            toast({
+              title: "غير مسجل دخول",
+              description: "يرجى تسجيل الدخول مرة أخرى",
+              variant: "destructive",
+            });
+            window.location.href = "/admin/login";
+          } else {
+            toast({
+              title: "غير مصرح",
+              description: error.message || "يرجى تسجيل الدخول كمدير",
+              variant: "destructive",
+            });
+          }
+        } else if (response.status === 403) {
+          toast({
+            title: "ممنوع",
+            description: "حسابك ليس له صلاحيات إدارة. Role: " + (error.message || "user"),
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "خطأ",
+            description: error.message || "فشل إضافة المنتج",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       console.error("Error creating product:", error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء إضافة المنتج",
+        description: "حدث خطأ أثناء إضافة المنتج. تأكد من الاتصال بالإنترنت.",
         variant: "destructive",
       });
     }
