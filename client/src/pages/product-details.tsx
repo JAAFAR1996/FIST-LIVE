@@ -14,6 +14,7 @@ import { ShoppingCart, Star, Truck, RotateCcw, Shield, Info, Heart, Share2, Leaf
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { useCart } from "@/contexts/cart-context";
 import { useToast } from "@/hooks/use-toast";
+import { ProductReviews } from "@/components/products/product-reviews";
 
 export default function ProductDetails() {
   const params = useParams();
@@ -480,6 +481,11 @@ export default function ProductDetails() {
                   </Card>
                 </TabsContent>
               </Tabs>
+
+              {/* Product Reviews */}
+              <div className="mt-16">
+                <ProductReviews productId={product.id} productName={product.name} />
+              </div>
 
               {/* Related Products */}
               {relatedProducts.length > 0 && (

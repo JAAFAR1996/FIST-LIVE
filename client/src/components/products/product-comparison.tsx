@@ -11,13 +11,33 @@ import { Button } from "@/components/ui/button";
 import { Check, X, Minus, ShoppingCart } from "lucide-react";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/contexts/cart-context";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductComparisonProps {
   products: Product[];
 }
 
 export function ProductComparison({ products }: ProductComparisonProps) {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
   if (!products.length) return null;
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
+
+    toast({
+      title: "تمت الإضافة للسلة",
+      description: `تم إضافة ${product.name} إلى سلة التسوق`,
+    });
+  };
 
   return (
     <div className="w-full overflow-x-auto border rounded-xl shadow-lg bg-card/50 backdrop-blur-sm">
@@ -39,7 +59,7 @@ export function ProductComparison({ products }: ProductComparisonProps) {
                     <span className="font-bold text-foreground line-clamp-2 h-12 text-lg leading-tight px-2">
                       {product.name}
                     </span>
-                    <Button size="sm" className="w-full gap-2">
+                    <Button size="sm" className="w-full gap-2" onClick={() => handleAddToCart(product)}>
                       <ShoppingCart className="w-4 h-4" /> إضافة
                     </Button>
                   </div>

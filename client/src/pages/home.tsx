@@ -106,25 +106,27 @@ export default function Home() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { title: "حاسبة السخان", desc: "احسب القدرة المطلوبة للسخان", icon: Thermometer, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/20" },
-                { title: "حاسبة الفلترة", desc: "احسب معدل التدفق المناسب", icon: Droplets, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20" },
-                { title: "مكتشف الأسماك", desc: "اكتشف الأسماك المناسبة لحوضك", icon: Package, color: "text-primary", bg: "bg-primary/10" },
+                { title: "حاسبة السخان", desc: "احسب القدرة المطلوبة للسخان", icon: Thermometer, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/20", link: "/calculators" },
+                { title: "حاسبة الفلترة", desc: "احسب معدل التدفق المناسب", icon: Droplets, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20", link: "/calculators" },
+                { title: "مكتشف الأسماك", desc: "اكتشف الأسماك المناسبة لحوضك", icon: Package, color: "text-primary", bg: "bg-primary/10", link: "/fish-finder" },
               ].map((tool, idx) => (
-                <div key={idx} className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer relative overflow-hidden">
-                  <div className={`absolute top-0 right-0 w-32 h-32 ${tool.bg} rounded-bl-full -mr-16 -mt-16 opacity-50 transition-transform group-hover:scale-150 duration-700`} />
-                  
-                  <div className={`w-16 h-16 ${tool.bg} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 relative z-10`}>
-                    <tool.icon className={`h-8 w-8 ${tool.color}`} />
-                  </div>
-                  
-                  <div className="relative z-10">
-                    <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{tool.title}</h3>
-                    <p className="text-muted-foreground mb-8 text-lg">{tool.desc}</p>
-                    <div className="flex items-center font-bold text-primary group-hover:gap-3 transition-all">
-                      جرب الآن <ArrowRight className="h-5 w-5 mr-1" />
+                <Link key={idx} href={tool.link}>
+                  <div className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer relative overflow-hidden">
+                    <div className={`absolute top-0 right-0 w-32 h-32 ${tool.bg} rounded-bl-full -mr-16 -mt-16 opacity-50 transition-transform group-hover:scale-150 duration-700`} />
+
+                    <div className={`w-16 h-16 ${tool.bg} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 relative z-10`}>
+                      <tool.icon className={`h-8 w-8 ${tool.color}`} />
+                    </div>
+
+                    <div className="relative z-10">
+                      <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{tool.title}</h3>
+                      <p className="text-muted-foreground mb-8 text-lg">{tool.desc}</p>
+                      <div className="flex items-center font-bold text-primary group-hover:gap-3 transition-all">
+                        جرب الآن <ArrowRight className="h-5 w-5 mr-1" />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

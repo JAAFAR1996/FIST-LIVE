@@ -471,6 +471,87 @@ export async function registerRoutes(
     }
   );
 
+  // Update order status (Admin only)
+  (app as any).put(
+    "/api/admin/orders/:id",
+    requireAdmin as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!status) {
+          return res.status(400).json({ message: "Status is required" });
+        }
+
+        const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+        if (!validStatuses.includes(status)) {
+          return res.status(400).json({ message: "Invalid status" });
+        }
+
+        const updatedOrder = await storage.updateOrder(id, { status });
+
+        if (!updatedOrder) {
+          return res.status(404).json({ message: "Order not found" });
+        }
+
+        res.json(updatedOrder);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // ============ REVIEWS ENDPOINTS ============
+
+  // Get reviews for a product
+  (app as any).get(
+    "/api/products/:productId/reviews",
+    async (req: any, res: any, next: any) => {
+      try {
+        const { productId } = req.params;
+        const reviews = await storage.getReviews(productId);
+        res.json(reviews);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Create a review (requires authentication)
+  (app as any).post(
+    "/api/products/:productId/reviews",
+    localRequireAuth as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const sess = getSession(req);
+        const userId = sess?.userId as string | undefined;
+
+        if (!userId) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const { productId } = req.params;
+        const { rating, comment } = req.body;
+
+        if (!rating || rating < 1 || rating > 5) {
+          return res.status(400).json({ message: "Valid rating (1-5) is required" });
+        }
+
+        const review = await storage.createReview({
+          productId,
+          userId,
+          rating: Number(rating),
+          comment: comment || "",
+        });
+
+        res.status(201).json(review);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
   (app as any).use("/api", (_req: any, res: any) => {
     res.status(404).json({ message: "Not Found" });
   });
