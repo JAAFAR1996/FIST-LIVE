@@ -12,6 +12,7 @@ import ProductDetails from "@/pages/product-details";
 import Calculators from "@/pages/calculators";
 import Journey from "@/pages/journey";
 import FishFinder from "@/pages/fish-finder";
+import Deals from "@/pages/deals";
 import Sustainability from "@/pages/sustainability";
 import FeaturedProduct from "@/pages/products-featured";
 import EquipmentDetails from "@/pages/equipment-details";
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/calculators" component={Calculators} />
       <Route path="/journey" component={Journey} />
       <Route path="/fish-finder" component={FishFinder} />
+      <Route path="/deals" component={Deals} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/return-policy" component={ReturnPolicy} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />

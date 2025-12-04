@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2 } from "lucide-react";
+import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -53,6 +53,7 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: "الرئيسية", icon: Home },
     { href: "/products", label: "المنتجات", icon: Package },
+    { href: "/deals", label: "العروض", icon: Tag },
     { href: "/calculators", label: "الحاسبات", icon: Calculator },
     { href: "/journey", label: "رحلتك", icon: Fish },
     { href: "/fish-finder", label: "مكتشف الأسماك", icon: SearchIcon },
