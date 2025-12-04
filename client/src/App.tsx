@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/cart-context";
 import { AuthProvider } from "@/contexts/auth-context";
 import { RequireAdmin } from "@/components/auth/require-admin";
+import { ScrollProgress } from "@/components/effects/scroll-progress";
+import { FloatingActionButton } from "@/components/effects/floating-action-button";
 import Home from "@/pages/home";
 import Products from "@/pages/products";
 import ProductDetails from "@/pages/product-details";
@@ -27,7 +29,7 @@ import FAQ from "@/pages/faq";
 import OrderTracking from "@/pages/order-tracking";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
-import NotFound from "@/pages/not-found";
+import NotFound from "@/pages/404";
 
 function Router() {
   return (
@@ -75,6 +77,8 @@ function App() {
             <a href="#main-content" className="skip-to-main">
               الانتقال إلى المحتوى الرئيسي
             </a>
+            <ScrollProgress />
+            <FloatingActionButton />
             <Toaster />
             <Router />
           </TooltipProvider>

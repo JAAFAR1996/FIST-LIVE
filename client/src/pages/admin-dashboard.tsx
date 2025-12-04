@@ -34,6 +34,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { OrdersManagement } from "@/components/admin/orders-management";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Plus,
   Pencil,
@@ -544,7 +545,9 @@ export default function AdminDashboard() {
             <Package className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
+            <div className="text-2xl font-bold">
+              <AnimatedCounter end={totalProducts} duration={1500} />
+            </div>
             <p className="text-xs text-gray-500">المنتجات المتوفرة في النظام</p>
           </CardContent>
         </Card>
@@ -555,7 +558,9 @@ export default function AdminDashboard() {
             <AlertCircle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-500">{lowStockProducts}</div>
+            <div className="text-2xl font-bold text-orange-500">
+              <AnimatedCounter end={lowStockProducts} duration={1500} />
+            </div>
             <p className="text-xs text-gray-500">تحتاج إلى إعادة تخزين</p>
           </CardContent>
         </Card>
@@ -566,7 +571,9 @@ export default function AdminDashboard() {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalValue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              <AnimatedCounter end={totalValue} duration={2000} decimals={0} />
+            </div>
             <p className="text-xs text-gray-500">دينار عراقي</p>
           </CardContent>
         </Card>

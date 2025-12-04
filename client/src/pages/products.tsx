@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ProductCardSkeleton } from "@/components/ui/loading-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { Product } from "@/types";
 
@@ -171,7 +171,7 @@ export default function Products() {
                 {isLoading && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.from({ length: 9 }).map((_, i) => (
-                      <Skeleton key={i} className="h-96 w-full rounded-xl" />
+                      <ProductCardSkeleton key={i} />
                     ))}
                   </div>
                 )}

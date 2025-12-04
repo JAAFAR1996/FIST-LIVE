@@ -10,6 +10,7 @@ import { MasonryGalleryGrid } from "@/components/gallery/masonry-gallery-grid";
 import { WaterRippleButton } from "@/components/effects/water-ripple-button";
 import { ProductCard } from "@/components/products/product-card";
 import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
+import { Testimonials } from "@/components/home/testimonials";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -180,6 +181,9 @@ export default function Home() {
           </div>
         </section>
       </WaveScrollEffect>
+
+      {/* Testimonials Section */}
+      <Testimonials />
 
       {/* Sustainability CTA */}
       <section className="py-24 relative overflow-hidden">
