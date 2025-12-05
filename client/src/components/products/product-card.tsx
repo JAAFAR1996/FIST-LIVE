@@ -23,7 +23,7 @@ export const ProductCard = memo(function ProductCard({ product, onCompare }: Pro
   const { addItem } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation when clicking the button inside the link
+    e.preventDefault();
     e.stopPropagation();
     addItem(product);
     setTriggerFish(true);
@@ -106,12 +106,8 @@ export const ProductCard = memo(function ProductCard({ product, onCompare }: Pro
                 </span>
               )}
             </div>
-            <div
-              className="flex items-center gap-1 text-sm text-amber-500"
-              role="group"
-              aria-label={`التقييم ${product.rating} من 5 بناءً على ${product.reviewCount} تقييم`}
-            >
-              <span aria-hidden="true">★</span>
+            <div className="flex items-center gap-1 text-sm text-amber-500">
+              <span>★</span>
               <span className="font-medium text-foreground">{product.rating}</span>
               <span className="text-muted-foreground">({product.reviewCount})</span>
             </div>
@@ -121,9 +117,8 @@ export const ProductCard = memo(function ProductCard({ product, onCompare }: Pro
             <Button
               className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all"
               onClick={handleAddToCart}
-              aria-label={`إضافة ${product.name} إلى سلة المشتريات بسعر ${product.price.toLocaleString()} دينار عراقي`}
             >
-              <ShoppingCart className="w-4 h-4" aria-hidden="true" />
+              <ShoppingCart className="w-4 h-4" />
               أضف للسلة
             </Button>
           </CardFooter>

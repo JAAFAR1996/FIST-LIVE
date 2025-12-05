@@ -25,13 +25,7 @@ export function ProductComparison({ products }: ProductComparisonProps) {
   if (!products.length) return null;
 
   const handleAddToCart = (product: Product) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-    });
+    addItem(product);
 
     toast({
       title: "تمت الإضافة للسلة",

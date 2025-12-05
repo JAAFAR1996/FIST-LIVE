@@ -46,9 +46,41 @@ function localRequireAuth(req: any, res: any, next: any) {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
-  // authorized, continue
   next();
 }
+
+// In-memory Gallery Storage
+interface GallerySubmission {
+  id: number;
+  customerName: string;
+  customerPhone: string;
+  imageUrl: string;
+  tankSize: string;
+  description: string;
+  likes: number;
+  likedBy: Set<string>;
+  isWinner: boolean;
+  winnerMonth?: string;
+  prize?: string;
+  submittedAt: Date;
+  approved: boolean;
+}
+
+interface GalleryPrize {
+  month: string;
+  prize: string;
+  discountCode?: string;
+  discountPercentage?: number;
+}
+
+const gallerySubmissions: GallerySubmission[] = [];
+let galleryIdCounter = 1;
+const currentPrize: GalleryPrize = {
+  month: new Date().toLocaleString('ar-IQ', { year: 'numeric', month: 'long' }),
+  prize: 'كوبون خصم 20%',
+  discountCode: 'GALLERY20',
+  discountPercentage: 20
+};
 
 export async function registerRoutes(
   httpServer: Server,
@@ -570,6 +602,171 @@ export async function registerRoutes(
       }
     }
   );
+
+  // ============ COMMUNITY GALLERY ============
+
+  // Get all approved gallery submissions
+  (app as any).get("/api/gallery/submissions", (_req: any, res: any) => {
+    const approved = gallerySubmissions
+      .filter(s => s.approved)
+      .map(s => ({
+        ...s,
+        likedBy: undefined
+      }))
+      .sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime());
+    res.json(approved);
+  });
+
+  // Submit new gallery item
+  (app as any).post("/api/gallery/submit", async (req: any, res: any) => {
+    try {
+      const { customerName, customerPhone, imageUrl, tankSize, description } = req.body;
+
+      if (!customerName || !customerPhone || !imageUrl) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const submission: GallerySubmission = {
+        id: galleryIdCounter++,
+        customerName,
+        customerPhone,
+        imageUrl,
+        tankSize: tankSize || '',
+        description: description || '',
+        likes: 0,
+        likedBy: new Set(),
+        isWinner: false,
+        submittedAt: new Date(),
+        approved: false
+      };
+
+      gallerySubmissions.push(submission);
+      res.status(201).json({ message: "Submission received", id: submission.id });
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Like a gallery submission
+  (app as any).post("/api/gallery/like/:id", (req: any, res: any) => {
+    const id = parseInt(req.params.id);
+    const submission = gallerySubmissions.find(s => s.id === id);
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
+
+    if (submission.likedBy.has(clientIp)) {
+      return res.status(400).json({ message: "Already liked" });
+    }
+
+    submission.likedBy.add(clientIp);
+    submission.likes++;
+
+    res.json({ likes: submission.likes });
+  });
+
+  // Admin: Get all submissions (including pending)
+  (app as any).get(
+    "/api/admin/gallery/submissions",
+    requireAdmin as express.RequestHandler,
+    (_req: any, res: any) => {
+      const all = gallerySubmissions.map(s => ({
+        ...s,
+        likedBy: undefined
+      })).sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime());
+      res.json(all);
+    }
+  );
+
+  // Admin: Approve submission
+  (app as any).post(
+    "/api/admin/gallery/approve/:id",
+    requireAdmin as express.RequestHandler,
+    (req: any, res: any) => {
+      const id = parseInt(req.params.id);
+      const submission = gallerySubmissions.find(s => s.id === id);
+
+      if (!submission) {
+        return res.status(404).json({ message: "Submission not found" });
+      }
+
+      submission.approved = true;
+      res.json({ message: "Approved", submission });
+    }
+  );
+
+  // Admin: Reject submission
+  (app as any).post(
+    "/api/admin/gallery/reject/:id",
+    requireAdmin as express.RequestHandler,
+    (req: any, res: any) => {
+      const id = parseInt(req.params.id);
+      const index = gallerySubmissions.findIndex(s => s.id === id);
+
+      if (index === -1) {
+        return res.status(404).json({ message: "Submission not found" });
+      }
+
+      gallerySubmissions.splice(index, 1);
+      res.json({ message: "Rejected and removed" });
+    }
+  );
+
+  // Admin: Set winner
+  (app as any).post(
+    "/api/admin/gallery/set-winner/:id",
+    requireAdmin as express.RequestHandler,
+    (req: any, res: any) => {
+      const id = parseInt(req.params.id);
+      const submission = gallerySubmissions.find(s => s.id === id);
+
+      if (!submission) {
+        return res.status(404).json({ message: "Submission not found" });
+      }
+
+      gallerySubmissions.forEach(s => {
+        if (s.isWinner && s.winnerMonth === currentPrize.month) {
+          s.isWinner = false;
+          s.winnerMonth = undefined;
+          s.prize = undefined;
+        }
+      });
+
+      submission.isWinner = true;
+      submission.winnerMonth = currentPrize.month;
+      submission.prize = currentPrize.prize;
+      submission.approved = true;
+
+      res.json({ message: "Winner set", submission });
+    }
+  );
+
+  // Admin: Update prize
+  (app as any).post(
+    "/api/admin/gallery/prize",
+    requireAdmin as express.RequestHandler,
+    (req: any, res: any) => {
+      const { prize, discountCode, discountPercentage } = req.body;
+
+      if (!prize) {
+        return res.status(400).json({ message: "Prize is required" });
+      }
+
+      currentPrize.prize = prize;
+      currentPrize.discountCode = discountCode;
+      currentPrize.discountPercentage = discountPercentage;
+
+      res.json({ message: "Prize updated", prize: currentPrize });
+    }
+  );
+
+  // Get current prize
+  (app as any).get("/api/gallery/prize", (_req: any, res: any) => {
+    res.json(currentPrize);
+  });
 
   (app as any).use("/api", (_req: any, res: any) => {
     res.status(404).json({ message: "Not Found" });

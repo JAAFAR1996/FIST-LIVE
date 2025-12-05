@@ -32,13 +32,7 @@ export default function Deals() {
   };
 
   const handleAddToCart = (product: any) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-    });
+    addItem(product);
 
     toast({
       title: "تمت الإضافة للسلة",

@@ -34,6 +34,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { OrdersManagement } from "@/components/admin/orders-management";
+import { GalleryManagement } from "@/components/admin/gallery-management";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Plus,
@@ -51,6 +52,13 @@ import {
   User,
   Upload,
   Wand2,
+  Camera,
+  Trophy,
+  Check,
+  X,
+  Crown,
+  Heart,
+  Tag,
 } from "lucide-react";
 
 interface Product {
@@ -591,10 +599,11 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="products" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="products">إدارة المنتجات</TabsTrigger>
           <TabsTrigger value="discounts">الخصومات</TabsTrigger>
           <TabsTrigger value="orders">الطلبات</TabsTrigger>
+          <TabsTrigger value="gallery">المعرض</TabsTrigger>
         </TabsList>
 
         <TabsContent value="products" className="space-y-4">
@@ -755,6 +764,21 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="gallery">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Camera className="h-5 w-5" />
+                إدارة معرض العملاء
+              </CardTitle>
+              <CardDescription>مراجعة الصور، اختيار الفائزين، وإدارة الجوائز</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GalleryManagement />
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* Product Dialog */}
@@ -873,7 +897,7 @@ export default function AdminDashboard() {
                     <SelectItem value="other">أخرى (إضافة جديدة)</SelectItem>
                   </SelectContent>
                 </Select>
-                {(formData.category === "" || !CATEGORIES.includes(formData.category)) && (
+                {(formData.category === "" || !CATEGORIES.includes(formData.category || "")) && (
                   <Input
                     placeholder="أدخل اسم الفئة"
                     value={customCategory || formData.category}
@@ -913,7 +937,7 @@ export default function AdminDashboard() {
                   <SelectItem value="other">أخرى (إضافة جديدة)</SelectItem>
                 </SelectContent>
               </Select>
-              {(formData.subcategory === "" || !CATEGORIES.includes(formData.subcategory)) && (
+              {(formData.subcategory === "" || !CATEGORIES.includes(formData.subcategory || "")) && (
                 <Input
                   placeholder="أدخل اسم الفئة الفرعية"
                   value={customSubcategory || formData.subcategory}

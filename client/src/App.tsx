@@ -21,6 +21,11 @@ import FishIdentifier from "@/pages/fish-identifier";
 import Deals from "@/pages/deals";
 import Wishlist from "@/pages/wishlist";
 import SearchResults from "@/pages/search-results";
+import CommunityGallery from "@/pages/community-gallery";
+import TankBuilder3D from "@/pages/tank-builder-3d";
+import FishHealthDiagnosis from "@/pages/fish-health-diagnosis";
+import SubscriptionBoxes from "@/pages/subscription-boxes";
+import FishBreedingCalculator from "@/pages/fish-breeding-calculator";
 import Sustainability from "@/pages/sustainability";
 import FeaturedProduct from "@/pages/products-featured";
 import EquipmentDetails from "@/pages/equipment-details";
@@ -53,6 +58,11 @@ function Router() {
       <Route path="/deals" component={Deals} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/search" component={SearchResults} />
+      <Route path="/community-gallery" component={CommunityGallery} />
+      <Route path="/tank-builder-3d" component={TankBuilder3D} />
+      <Route path="/fish-health-diagnosis" component={FishHealthDiagnosis} />
+      <Route path="/subscription-boxes" component={SubscriptionBoxes} />
+      <Route path="/fish-breeding-calculator" component={FishBreedingCalculator} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/return-policy" component={ReturnPolicy} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />

@@ -40,7 +40,6 @@ export default function Navbar() {
   const { items: cartItems, removeItem, clearCart, totalItems, totalPrice } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
 
-  // Keyboard shortcut for search (Ctrl/Cmd + K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -62,7 +61,7 @@ export default function Navbar() {
     setOrderData(newOrderData);
     setIsCheckoutOpen(false);
     setIsCartOpen(false);
-    clearCart(); // Clear cart after successful checkout
+    clearCart();
     setIsInvoiceOpen(true);
   };
 
@@ -82,22 +81,17 @@ export default function Navbar() {
     <>
       <nav
         className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-colors duration-300"
-        role="navigation"
-        aria-label="التنقل الرئيسي"
       >
         <EasterEggs />
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          {/* Mobile Menu */}
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  aria-label="فتح قائمة التنقل"
-                  aria-expanded={isMenuOpen}
                 >
-                  <Menu className="h-6 w-6" aria-hidden="true" />
+                  <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">

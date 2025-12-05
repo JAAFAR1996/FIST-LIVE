@@ -1,7 +1,7 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package } from "lucide-react";
+import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package, Trophy, Crown, Camera } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import heroImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
 import { BubbleTrail } from "@/components/effects/bubble-trail";
@@ -26,6 +26,17 @@ export default function Home() {
   const products = data?.products ?? [];
   const featuredProduct = products.find((p) => p.id === "seachem-prime") || products[0];
   const bestSellers = products.filter((p) => p.isBestSeller);
+
+  const { data: gallerySubmissions } = useQuery({
+    queryKey: ["/api/gallery/submissions"],
+    queryFn: async () => {
+      const res = await fetch("/api/gallery/submissions");
+      if (!res.ok) return [];
+      return res.json();
+    }
+  });
+
+  const winner = gallerySubmissions?.find((s: any) => s.isWinner);
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
@@ -184,6 +195,80 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <Testimonials />
+
+      {/* Gallery Winner Section */}
+      {winner && (
+        <section className="py-20 bg-gradient-to-b from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-yellow-500/20 px-6 py-2 rounded-full mb-4">
+                <Trophy className="h-5 w-5 text-yellow-600" />
+                <span className="font-bold text-yellow-700">فائز الشهر</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                <Crown className="inline h-10 w-10 text-yellow-500 animate-bounce mr-2" />
+                أفضل حوض الشهر
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                شارك حوضك واحصل على فرصة للفوز بجوائز رائعة!
+              </p>
+            </div>
+
+            <div className="max-w-5xl mx-auto">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border-4 border-yellow-500/50">
+                <div className="grid md:grid-cols-2 gap-0">
+                  <div className="relative h-80 md:h-auto">
+                    <img
+                      src={winner.imageUrl}
+                      alt={`حوض ${winner.customerName}`}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-yellow-500 text-white rounded-full px-4 py-2 font-bold shadow-lg flex items-center gap-2">
+                        <Trophy className="h-5 w-5" />
+                        الفائز
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-8 md:p-12 flex flex-col justify-center">
+                    <h3 className="text-3xl font-bold mb-4">{winner.customerName}</h3>
+
+                    {winner.tankSize && (
+                      <p className="text-lg text-muted-foreground mb-2">
+                        <span className="font-semibold">حجم الحوض:</span> {winner.tankSize}
+                      </p>
+                    )}
+
+                    {winner.description && (
+                      <p className="text-muted-foreground mb-6 leading-relaxed">
+                        {winner.description}
+                      </p>
+                    )}
+
+                    {winner.prize && (
+                      <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border-2 border-yellow-500/30 rounded-xl p-6 mb-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Trophy className="h-6 w-6 text-yellow-600" />
+                          <span className="font-bold text-lg">الجائزة:</span>
+                        </div>
+                        <p className="text-2xl font-bold text-yellow-600">{winner.prize}</p>
+                      </div>
+                    )}
+
+                    <Link href="/community-gallery">
+                      <Button size="lg" className="w-full gap-2">
+                        <Camera className="h-5 w-5" />
+                        شارك حوضك الآن
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Sustainability CTA */}
       <section className="py-24 relative overflow-hidden">

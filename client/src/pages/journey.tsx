@@ -150,13 +150,7 @@ export default function Journey() {
 
     recommendations.forEach(product => {
       if (product) {
-        addItem({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: 1,
-        });
+        addItem(product);
         addedCount++;
       }
     });
@@ -217,11 +211,11 @@ export default function Journey() {
         <div className="max-w-5xl mx-auto mb-12">
           <div className="relative">
             {/* Background bar */}
-            <div className="absolute top-5 left-0 w-full h-1 bg-muted rounded-full" />
+            <div className="absolute top-5 right-0 w-full h-1 bg-muted rounded-full" />
 
-            {/* Progress bar */}
+            {/* Progress bar - RTL: starts from right */}
             <motion.div
-              className="absolute top-5 left-0 h-1 bg-primary rounded-full"
+              className="absolute top-5 right-0 h-1 bg-primary rounded-full origin-right"
               initial={{ width: "0%" }}
               animate={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}

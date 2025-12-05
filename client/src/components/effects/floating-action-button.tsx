@@ -36,12 +36,13 @@ export function FloatingActionButton() {
         <ArrowUp className="h-5 w-5" />
       </Button>
 
-      {/* Help/Chat Button (Placeholder) */}
+      {/* WhatsApp Chat Button */}
       <Button
         size="icon"
         variant="outline"
-        className="h-12 w-12 rounded-full shadow-lg bg-background hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-        aria-label="Help"
+        className="h-12 w-12 rounded-full shadow-lg bg-green-500 hover:bg-green-600 text-white border-green-600 transition-all duration-300"
+        onClick={() => window.open('https://wa.me/9647700000000', '_blank')}
+        aria-label="تواصل معنا عبر واتساب"
       >
         <MessageCircle className="h-5 w-5" />
       </Button>

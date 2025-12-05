@@ -221,10 +221,115 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
             {/* Breeding */}
             <div className="mb-6">
               <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                <Baby className="w-5 h-5 text-primary" />
+                <Baby className="w-5 w-5 text-primary" />
                 التكاثر
               </h3>
-              <p className="text-muted-foreground leading-relaxed">{fish.breeding}</p>
+              {typeof fish.breeding === 'string' ? (
+                <p className="text-muted-foreground leading-relaxed">{fish.breeding}</p>
+              ) : (
+                <div className="space-y-4">
+                  {/* Difficulty */}
+                  <div className="flex items-center gap-2">
+                    <Badge className={
+                      fish.breeding.difficulty === 'easy' ? 'bg-green-500' :
+                      fish.breeding.difficulty === 'moderate' ? 'bg-yellow-500' :
+                      fish.breeding.difficulty === 'difficult' ? 'bg-orange-500' :
+                      'bg-red-500'
+                    }>
+                      {fish.breeding.difficulty === 'easy' ? 'سهل' :
+                       fish.breeding.difficulty === 'moderate' ? 'متوسط' :
+                       fish.breeding.difficulty === 'difficult' ? 'صعب' : 'خبراء فقط'}
+                    </Badge>
+                    <Badge variant="outline">
+                      {fish.breeding.method === 'egg-layer' ? 'يضع بيض' :
+                       fish.breeding.method === 'live-bearer' ? 'ولود' :
+                       fish.breeding.method === 'bubble-nest' ? 'عش فقاعات' :
+                       'حاضن فموي'}
+                    </Badge>
+                  </div>
+
+                  {/* Sexual Dimorphism */}
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <div className="font-bold mb-2">التفريق بين الجنسين:</div>
+                    <p className="text-sm text-muted-foreground">{fish.breeding.sexualDimorphism}</p>
+                  </div>
+
+                  {/* Spawning Triggers */}
+                  <div>
+                    <div className="font-bold mb-2">محفزات التكاثر:</div>
+                    <ul className="text-sm space-y-1">
+                      {fish.breeding.spawningTriggers.map((trigger, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span className="text-muted-foreground">{trigger}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Breeding Setup */}
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <div className="font-bold mb-3">إعداد حوض التكاثر:</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="font-semibold text-primary">الحجم:</span> {fish.breeding.breedingSetup.tankSize}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-primary">الحرارة:</span> {fish.breeding.breedingSetup.temperature}
+                      </div>
+                      <div className="md:col-span-2">
+                        <span className="font-semibold text-primary">ظروف المياه:</span> {fish.breeding.breedingSetup.waterConditions}
+                      </div>
+                      <div className="md:col-span-2">
+                        <span className="font-semibold text-primary">المعدات:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {fish.breeding.breedingSetup.equipment.map((eq, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">{eq}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Spawning Behavior */}
+                  <div>
+                    <div className="font-bold mb-2">سلوك التكاثر:</div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{fish.breeding.spawningBehavior}</p>
+                  </div>
+
+                  {/* Egg Care */}
+                  <div>
+                    <div className="font-bold mb-2">رعاية البيض:</div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{fish.breeding.eggCare}</p>
+                  </div>
+
+                  {/* Fry Info */}
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg p-4 border">
+                    <div className="font-bold mb-3">معلومات الصغار:</div>
+                    <div className="space-y-2 text-sm">
+                      <div><span className="font-semibold">الطعام الأول:</span> {fish.breeding.fryInfo.firstFood}</div>
+                      <div><span className="font-semibold">معدل النمو:</span> {fish.breeding.fryInfo.growthRate}</div>
+                      <div><span className="font-semibold">وقت النضج:</span> {fish.breeding.fryInfo.adulthoodTime}</div>
+                    </div>
+                  </div>
+
+                  {/* Tips */}
+                  <div>
+                    <div className="font-bold mb-2 flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-yellow-500" />
+                      نصائح مهمة:
+                    </div>
+                    <ul className="space-y-2">
+                      {fish.breeding.tips.map((tip, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm bg-muted/30 rounded p-2">
+                          <span className="text-primary">✓</span>
+                          <span className="text-muted-foreground">{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
 
             <Separator className="my-6" />

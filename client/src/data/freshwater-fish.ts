@@ -1,3 +1,24 @@
+export interface BreedingInfo {
+  difficulty: 'easy' | 'moderate' | 'difficult' | 'expert';
+  method: 'egg-layer' | 'live-bearer' | 'bubble-nest' | 'mouth-brooder';
+  sexualDimorphism: string;
+  spawningTriggers: string[];
+  breedingSetup: {
+    tankSize: string;
+    waterConditions: string;
+    temperature: string;
+    equipment: string[];
+  };
+  spawningBehavior: string;
+  eggCare: string;
+  fryInfo: {
+    firstFood: string;
+    growthRate: string;
+    adulthoodTime: string;
+  };
+  tips: string[];
+}
+
 export interface FishSpecies {
   id: string;
   commonName: string;
@@ -19,7 +40,7 @@ export interface FishSpecies {
     hardness: 'soft' | 'medium' | 'hard';
   };
   diet: string[];
-  breeding: string;
+  breeding: string | BreedingInfo;
   schooling: boolean;
   minimumGroup: number;
   compatibility: {
@@ -92,7 +113,37 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Betta pellets', 'Bloodworms', 'Brine shrimp', 'Daphnia'],
-    breeding: 'الذكر يبني عش فقاعات. يحتاج لحوض تكاثر منفصل.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'bubble-nest',
+      sexualDimorphism: 'الذكور ذو ألوان زاهية وزعانف طويلة جداً. الإناث أصغر وألوانها باهتة مع زعانف قصيرة.',
+      spawningTriggers: [
+        'رفع درجة الحرارة إلى 27-28°م',
+        'تغذية مكثفة بالأطعمة الحية (بلودورم)',
+        'خفض مستوى الماء إلى 15-20 سم',
+        'إضافة نباتات طافية'
+      ],
+      breedingSetup: {
+        tankSize: '20-40 لتر (منفصل)',
+        waterConditions: 'pH 7.0، ماء ناعم، نظيف جداً',
+        temperature: '27-28°م',
+        equipment: ['سخان', 'نباتات طافية (Indian Almond leaves)', 'مخبأ للأنثى', 'بدون فلتر قوي']
+      },
+      spawningBehavior: 'الذكر يبني عش فقاعات على السطح. يحضن الذكر ويطارد الأنثى تحت العش. يلتف حولها ويضغط لإخراج البيض.',
+      eggCare: 'الذكر يجمع البيض ويضعه في عش الفقاعات. احفظ الذكر مع البيض. أزل الأنثى فوراً! الذكر يحرس البيض 24-48 ساعة حتى يفقس.',
+      fryInfo: {
+        firstFood: 'Infusoria لمدة 3-4 أيام، ثم baby brine shrimp',
+        growthRate: 'متوسط - تبدأ الألوان بعد 8-10 أسابيع',
+        adulthoodTime: '3-4 أشهر للنضج الكامل'
+      },
+      tips: [
+        '🥚 البيض يطفو في عش الفقاعات - لا تحرك الماء!',
+        '👨 الذكر أب ممتاز - لا تزيله حتى تسبح الصغار بحرية (48 ساعة)',
+        '👩 أزل الأنثى فوراً! الذكر قد يقتلها',
+        '⚡ الصغار حساسون جداً للتيار - استخدم فلتر إسفنجي خفيف',
+        '🍃 ورق اللوز الهندي يحسن الخصوبة ويمنع الفطريات'
+      ]
+    },
     schooling: false,
     minimumGroup: 1,
     compatibility: {
@@ -130,7 +181,35 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Flakes', 'Algae', 'Vegetables', 'Live foods'],
-    breeding: 'سهل التكاثر. ولود (لا يضع بيض). ينتج الكثير من الصغار.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'live-bearer',
+      sexualDimorphism: 'الذكور أصغر حجماً وأكثر ألواناً مع زعانف طويلة. الإناث أكبر وأقل لوناً مع بطن منتفخ.',
+      spawningTriggers: [
+        'درجة حرارة 26-28 درجة',
+        'تغذية جيدة بالأطعمة الحية',
+        'نسبة 1 ذكر لكل 2-3 إناث'
+      ],
+      breedingSetup: {
+        tankSize: '20-40 لتر للتكاثر',
+        waterConditions: 'pH 7.0-7.5، ماء متوسط الصلابة',
+        temperature: '26-28°م',
+        equipment: ['فلتر إسفنجي', 'نباتات كثيفة (Java moss)', 'صندوق ولادة اختياري']
+      },
+      spawningBehavior: 'الذكر يطارد الأنثى ويحدث التخصيب داخلياً. فترة الحمل 21-30 يوم.',
+      eggCare: 'لا توجد بيوض - ولادة مباشرة! الصغار يسبحون فوراً. انقل الصغار أو الأم لحمايتهم.',
+      fryInfo: {
+        firstFood: 'Infusoria، brine shrimp حديث الفقس، طعام سائل للصغار',
+        growthRate: 'سريع - ينضجون في 3-4 أشهر',
+        adulthoodTime: '3-6 أشهر حسب الظروف'
+      },
+      tips: [
+        '⚠️ تأكل الصغار! افصلهم فوراً أو استخدم نباتات كثيفة',
+        '🌱 Java moss و Guppy grass ممتازان لاختباء الصغار',
+        '👶 الأنثى تلد 20-50 صغير كل شهر!',
+        '🔄 تجنب التهجين الداخلي - أضف دماء جديدة كل 3-4 أجيال'
+      ]
+    },
     schooling: false,
     minimumGroup: 3,
     compatibility: {
@@ -168,7 +247,38 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Pellets', 'Bloodworms', 'Brine shrimp', 'Vegetables'],
-    breeding: 'يضع البيض على الأسطح المستوية. يعتني بالصغار.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'egg-layer',
+      sexualDimorphism: 'صعب التفريق! عند النضج: الذكور لديهم جبهة منحنية أكثر. الإناث بطن أكبر وأنبوب تناسلي أوضح عند التكاثر.',
+      spawningTriggers: [
+        'زوج ناضج يربط ببعضه (pair bonding)',
+        'تغذية مكثفة بالديدان الحية',
+        'تغيير ماء كبير (50%) بماء أبرد قليلاً',
+        'إضافة سطح أملس للبيض (ورقة نبات، أنبوب PVC)'
+      ],
+      breedingSetup: {
+        tankSize: '150-200 لتر للتكاثر',
+        waterConditions: 'pH 6.5-6.9، ماء ناعم جداً (GH < 5)',
+        temperature: '27-28°م',
+        equipment: ['سخان', 'فلتر إسفنجي', 'سطح أملس للبيض', 'نباتات كبيرة']
+      },
+      spawningBehavior: 'الزوج ينظف السطح لمدة يومين. الأنثى تضع 200-400 بيضة في صفوف. الذكر يخصب البيض. كلاهما يحرس ويهوي البيض بزعانفه.',
+      eggCare: 'الوالدان يحرسان البيض 60 ساعة. يزيلان البيض الأبيض (الميت). بعد الفقس، ينقلان الصغار بأفواههما لحفرة أخرى. إذا أكلا الصغار، ازرع بيض صناعي مع aerator.',
+      fryInfo: {
+        firstFood: 'Baby brine shrimp بعد 5 أيام من الفقس',
+        growthRate: 'متوسط - يصلون 3-4 سم في 3 أشهر',
+        adulthoodTime: '6-8 أشهر للنضج الجنسي'
+      },
+      tips: [
+        '💑 دع الزوج يختار بعضه - لا تجبرهما!',
+        '🥚 البيض برتقالي/بني صحي، أبيض = ميت أو غير مخصب',
+        '👪 معظم الأزواج يأكلون أول 2-3 مرات - هذا طبيعي!',
+        '🌿 ضع سيراميك أو ورقة Amazon Sword كسطح تبيض',
+        '💡 خفف الإضاءة - Angelfish تحب الظلام عند التكاثر',
+        '⚠️ افصلهما في حوض آخر - سيصبحان عدوانيين جداً!'
+      ]
+    },
     schooling: false,
     minimumGroup: 2,
     compatibility: {
@@ -871,7 +981,6 @@ export const freshwaterFish: FishSpecies[] = [
   },
 ];
 
-// Helper functions
 export function getFishById(id: string): FishSpecies | undefined {
   return freshwaterFish.find(fish => fish.id === id);
 }
