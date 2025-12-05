@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Fish, CreditCard, Truck, Shield, Clock, ChevronLeft, Youtube, MessageCircle } from "lucide-react";
+import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Fish, CreditCard, Truck, Shield, Clock, ChevronLeft, Youtube, MessageCircle, Lock, Award } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
@@ -75,6 +75,31 @@ export default function Footer() {
               <p className="font-medium text-white text-sm">دعم على مدار الساعة</p>
               <p className="text-xs text-slate-400">نحن هنا لمساعدتك</p>
             </div>
+          </div>
+        </div>
+
+        {/* Trust Badges Section */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 py-8 border-b border-slate-800/50">
+          <div className="flex flex-col items-center p-4 rounded-lg bg-slate-800/20 text-center">
+            <div className="p-2 bg-blue-500/20 rounded-full mb-2">
+              <Lock className="h-5 w-5 text-blue-500" />
+            </div>
+            <p className="font-medium text-white text-xs">SSL Certified</p>
+            <p className="text-[10px] text-slate-400">موقع آمن</p>
+          </div>
+          <div className="flex flex-col items-center p-4 rounded-lg bg-slate-800/20 text-center">
+            <div className="p-2 bg-green-500/20 rounded-full mb-2">
+              <Award className="h-5 w-5 text-green-500" />
+            </div>
+            <p className="font-medium text-white text-xs">Money-back Guarantee</p>
+            <p className="text-[10px] text-slate-400">ضمان استرجاع المال</p>
+          </div>
+          <div className="flex flex-col items-center p-4 rounded-lg bg-slate-800/20 text-center">
+            <div className="p-2 bg-amber-500/20 rounded-full mb-2">
+              <Shield className="h-5 w-5 text-amber-500" />
+            </div>
+            <p className="font-medium text-white text-xs">Authentic Products</p>
+            <p className="text-[10px] text-slate-400">منتجات أصلية</p>
           </div>
         </div>
 
@@ -172,8 +197,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-slate-400">
               <li>
-                <a 
-                  href="tel:+9647700000000" 
+                <a
+                  href="tel:+9647700000000"
                   className="flex items-center gap-3 hover:text-primary transition-colors group"
                 >
                   <div className="p-2 bg-slate-800 group-hover:bg-primary/20 rounded-full transition-colors">
@@ -183,7 +208,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a 
+                <a
                   href="mailto:info@fishweb.iq"
                   className="flex items-center gap-3 hover:text-primary transition-colors group"
                 >
@@ -191,6 +216,19 @@ export default function Footer() {
                     <Mail className="h-4 w-4 text-primary" />
                   </div>
                   <span>info@fishweb.iq</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/9647700000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 hover:text-green-500 transition-colors group"
+                >
+                  <div className="p-2 bg-slate-800 group-hover:bg-green-500/20 rounded-full transition-colors">
+                    <MessageCircle className="h-4 w-4 text-green-500" />
+                  </div>
+                  <span>واتس آب</span>
                 </a>
               </li>
               <li className="flex items-start gap-3">
@@ -201,17 +239,26 @@ export default function Footer() {
               </li>
             </ul>
 
+            {/* Business Hours */}
+            <div className="pt-2 border-t border-slate-700">
+              <p className="text-slate-400 text-sm font-semibold mb-2">ساعات العمل:</p>
+              <p className="text-xs text-slate-400">
+                <span className="block">السبت - الخميس: 9:00 ص - 10:00 م</span>
+                <span className="block">الجمعة: 10:00 ص - 10:00 م</span>
+              </p>
+            </div>
+
             <div className="pt-2">
               <p className="text-slate-400 text-sm mb-3">اشترك للحصول على آخر العروض:</p>
               <form onSubmit={handleSubscribe} className="flex gap-2">
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="البريد الإلكتروني" 
+                  placeholder="البريد الإلكتروني"
                   className="bg-slate-800/80 border border-slate-700 rounded-lg px-4 py-2.5 text-sm w-full focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                 />
-                <button 
+                <button
                   type="submit"
                   className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all hover:scale-105 whitespace-nowrap"
                 >

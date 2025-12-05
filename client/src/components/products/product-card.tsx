@@ -9,6 +9,7 @@ import { UnderwaterGlowImage } from "@/components/effects/underwater-glow-image"
 import { FishSwimToCart } from "@/components/cart/fish-swim-to-cart";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/cart-context";
+import { WishlistButton } from "@/components/wishlist/wishlist-button";
 import { Link } from "wouter";
 
 interface ProductCardProps {
@@ -75,19 +76,12 @@ export const ProductCard = memo(function ProductCard({ product, onCompare }: Pro
               >
                 مقارنة
               </Button>
-              <Button
+              <WishlistButton
+                product={product}
+                variant="icon"
                 size="icon"
-                variant="secondary"
-                className="rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 shadow-md"
-                 onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  // Add to wishlist logic here
-                }}
-                aria-label={`إضافة ${product.name} للمفضلة`}
-              >
-                <Heart className="w-4 h-4" aria-hidden="true" />
-              </Button>
+                className="shadow-md"
+              />
             </div>
           </div>
 

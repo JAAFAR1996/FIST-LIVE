@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/contexts/cart-context";
+import { WishlistProvider } from "@/contexts/wishlist-context";
 import { AuthProvider } from "@/contexts/auth-context";
 import { RequireAdmin } from "@/components/auth/require-admin";
 import { ScrollProgress } from "@/components/effects/scroll-progress";
@@ -18,6 +19,8 @@ import FishFinderAdvanced from "@/pages/fish-finder-advanced";
 import FishEncyclopedia from "@/pages/fish-encyclopedia";
 import FishIdentifier from "@/pages/fish-identifier";
 import Deals from "@/pages/deals";
+import Wishlist from "@/pages/wishlist";
+import SearchResults from "@/pages/search-results";
 import Sustainability from "@/pages/sustainability";
 import FeaturedProduct from "@/pages/products-featured";
 import EquipmentDetails from "@/pages/equipment-details";
@@ -48,6 +51,8 @@ function Router() {
       <Route path="/fish-encyclopedia" component={FishEncyclopedia} />
       <Route path="/fish-identifier" component={FishIdentifier} />
       <Route path="/deals" component={Deals} />
+      <Route path="/wishlist" component={Wishlist} />
+      <Route path="/search" component={SearchResults} />
       <Route path="/sustainability" component={Sustainability} />
       <Route path="/return-policy" component={ReturnPolicy} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
@@ -72,7 +77,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <TooltipProvider>
+          <WishlistProvider>
+            <TooltipProvider>
             {/* Skip to main content for keyboard navigation */}
             <a href="#main-content" className="skip-to-main">
               الانتقال إلى المحتوى الرئيسي
@@ -82,6 +88,7 @@ function App() {
             <Toaster />
             <Router />
           </TooltipProvider>
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Moon, Sun, Zap, Palette } from "lucide-react";
+import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,32 +10,55 @@ import {
 import { ThemeOption } from "@/types";
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<ThemeOption>("light");
+  const [theme, setTheme] = useState<ThemeOption>("system");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as ThemeOption | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-      if (savedTheme === 'dark' || savedTheme === 'neon-ocean') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
+    const initialTheme = savedTheme || "system";
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
   }, []);
+
+  const applyTheme = (newTheme: ThemeOption) => {
+    const root = document.documentElement;
+
+    // Remove all theme-related attributes and classes
+    root.removeAttribute("data-theme");
+    root.classList.remove('dark');
+
+    if (newTheme === 'system') {
+      // Use system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        root.classList.add('dark');
+      }
+    } else if (newTheme === 'dark') {
+      root.classList.add('dark');
+    }
+    // light theme is the default, no class needed
+  };
 
   const changeTheme = (newTheme: ThemeOption) => {
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    
-    // Handle Tailwind's dark mode class
-    if (newTheme === 'dark' || newTheme === 'neon-ocean') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    applyTheme(newTheme);
+  };
+
+  // Listen for system theme changes when in system mode
+  useEffect(() => {
+    if (theme !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => applyTheme('system');
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
+
+  const getIcon = () => {
+    if (theme === 'light') return <Sun className="h-5 w-5" />;
+    if (theme === 'dark') return <Moon className="h-5 w-5" />;
+    return <Monitor className="h-5 w-5" />;
   };
 
   return (
@@ -47,7 +70,7 @@ export function ThemeSwitcher() {
           className="rounded-full border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all"
           aria-label="تغيير السمة"
         >
-          <Palette className="h-5 w-5" />
+          {getIcon()}
           <span className="sr-only">تغيير السمة</span>
         </Button>
       </DropdownMenuTrigger>
@@ -60,17 +83,9 @@ export function ThemeSwitcher() {
           <Moon className="ml-2 h-4 w-4 text-slate-400" />
           <span>داكن</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("neon-ocean")} className="cursor-pointer">
-          <Zap className="ml-2 h-4 w-4 text-cyan-400" />
-          <span>محيط نيون</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("pastel")} className="cursor-pointer">
-          <Palette className="ml-2 h-4 w-4 text-pink-400" />
-          <span>باستيل</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeTheme("monochrome")} className="cursor-pointer">
-          <div className="ml-2 h-4 w-4 rounded-full border border-current bg-zinc-500" />
-          <span>أحادي اللون</span>
+        <DropdownMenuItem onClick={() => changeTheme("system")} className="cursor-pointer">
+          <Monitor className="ml-2 h-4 w-4 text-blue-500" />
+          <span>النظام</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

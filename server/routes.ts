@@ -227,15 +227,33 @@ export async function registerRoutes(
     requireAdmin as express.RequestHandler,
     async (req: any, res: any, next: any) => {
       try {
+        // Ensure body is properly parsed
+        if (!req.body || typeof req.body !== 'object') {
+          res.status(400).json({ message: "Invalid request body" });
+          return;
+        }
+
         const productData = req.body;
+
+        // Validate required fields
+        if (!productData.name || typeof productData.name !== 'string') {
+          res.status(400).json({ message: "Product name is required" });
+          return;
+        }
 
         // Handle image upload if base64 provided
         if (productData.imageBase64) {
-          const imageUrl = saveBase64Image(productData.imageBase64);
-          productData.thumbnail = imageUrl;
-          if (!productData.images) productData.images = [];
-          productData.images.push(imageUrl);
-          delete productData.imageBase64;
+          try {
+            const imageUrl = saveBase64Image(productData.imageBase64);
+            productData.thumbnail = imageUrl;
+            if (!productData.images) productData.images = [];
+            productData.images.push(imageUrl);
+            delete productData.imageBase64;
+          } catch (imgErr) {
+            console.error("Image upload error:", imgErr);
+            res.status(400).json({ message: "Failed to upload image" });
+            return;
+          }
         }
 
         const product = await storage.createProduct(productData);
@@ -251,6 +269,7 @@ export async function registerRoutes(
 
         res.status(201).json(product);
       } catch (err) {
+        console.error("Product creation error:", err);
         next(err);
       }
     }

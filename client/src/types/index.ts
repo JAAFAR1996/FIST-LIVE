@@ -1,5 +1,5 @@
 export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'expert';
-export type ThemeOption = 'light' | 'dark' | 'neon-ocean' | 'pastel' | 'monochrome';
+export type ThemeOption = 'light' | 'dark' | 'system';
 
 export interface EquipmentPart {
   id: string;

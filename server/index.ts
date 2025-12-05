@@ -17,13 +17,14 @@ declare module "http" {
 
 app.use(
   express.json({
+    limit: '10mb', // Increase limit for base64 images
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Session configuration
 const sessionStore = createSessionStore(process.env.NODE_ENV, { enableCleanupTimer: true });

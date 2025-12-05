@@ -212,6 +212,11 @@
     clip: auto;
     white-space: normal;
   }
+
+  /* Visited link styling */
+  a:visited {
+    color: hsl(var(--primary) / 0.7);
+  }
 }
 
 /* Utility Classes for Animations */

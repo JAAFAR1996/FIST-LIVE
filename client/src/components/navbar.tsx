@@ -1,17 +1,19 @@
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera } from "lucide-react";
+import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { FontSizeControllerCompact } from "@/components/ui/font-size-controller";
 import { EasterEggs } from "@/components/effects/easter-eggs";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { CheckoutDialog } from "@/components/cart/checkout-dialog";
 import { InvoiceDialog } from "@/components/cart/invoice-dialog";
 import { formatIQD, generateOrderNumber } from "@/lib/utils";
 import { useCart, CartItem } from "@/contexts/cart-context";
-import { SearchDialog } from "@/components/search/search-dialog";
+import { useWishlist } from "@/contexts/wishlist-context";
+import { GlobalSearch } from "@/components/search/global-search";
 
 interface OrderData {
   customerInfo: {
@@ -36,6 +38,20 @@ export default function Navbar() {
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
   const { items: cartItems, removeItem, clearCart, totalItems, totalPrice } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
+
+  // Keyboard shortcut for search (Ctrl/Cmd + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleCheckoutComplete = (data: { customerInfo: OrderData['customerInfo']; items: CartItem[]; total: number }) => {
     const newOrderData: OrderData = {
@@ -54,6 +70,7 @@ export default function Navbar() {
     { href: "/", label: "الرئيسية", icon: Home },
     { href: "/products", label: "المنتجات", icon: Package },
     { href: "/deals", label: "العروض", icon: Tag },
+    { href: "/wishlist", label: "المفضلة", icon: Heart },
     { href: "/fish-encyclopedia", label: "موسوعة الأسماك", icon: BookOpen },
     { href: "/fish-finder-advanced", label: "مخطط الحوض", icon: SearchIcon },
     { href: "/fish-identifier", label: "تحديد الأسماك", icon: Camera },
@@ -134,12 +151,37 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden sm:flex"
-              aria-label="البحث"
+              className="relative group"
+              aria-label="البحث (Ctrl+K)"
               onClick={() => setIsSearchOpen(true)}
             >
               <Search className="h-5 w-5" aria-hidden="true" />
+              <Badge
+                variant="outline"
+                className="hidden sm:block absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] px-1 py-0 pointer-events-none whitespace-nowrap"
+              >
+                Ctrl+K
+              </Badge>
             </Button>
+
+            <Link href="/wishlist">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                aria-label={`المفضلة${wishlistCount > 0 ? ` - ${wishlistCount} منتج` : " - فارغة"}`}
+              >
+                <Heart className="h-5 w-5" aria-hidden="true" />
+                {wishlistCount > 0 && (
+                  <span
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
+                    aria-label={`${wishlistCount} منتج في المفضلة`}
+                  >
+                    {wishlistCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
 
             <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
               <SheetTrigger asChild>
@@ -222,8 +264,8 @@ export default function Navbar() {
             </Sheet>
           </div>
         </div>
-        
-        <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+
+        <GlobalSearch open={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
         <CheckoutDialog
           open={isCheckoutOpen}
