@@ -450,7 +450,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'hard',
     },
     diet: ['Flakes', 'Pellets', 'Vegetables', 'Live foods'],
-    breeding: 'ولود سهل التكاثر. تنتج صغار كل 4-6 أسابيع.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'live-bearer',
+      sexualDimorphism: 'الذكور أصغر وأكثر ألواناً مع زعانف طويلة. الإناث أكبر حجماً مع بطن منتفخ واضح.',
+      spawningTriggers: [
+        'درجة حرارة مستقرة 24-26°م',
+        'تغذية جيدة بالأطعمة الحية',
+        'نسبة 1 ذكر لكل 2-3 إناث',
+        'جودة ماء جيدة'
+      ],
+      breedingSetup: {
+        tankSize: '40+ لتر',
+        waterConditions: 'pH 7.0-8.0، ماء متوسط إلى صلب',
+        temperature: '24-26°م',
+        equipment: ['فلتر إسفنجي', 'نباتات كثيفة', 'صندوق ولادة (اختياري)']
+      },
+      spawningBehavior: 'الذكر يطارد الأنثى. التخصيب داخلي. فترة الحمل 24-30 يوم.',
+      eggCare: 'لا توجد بيوض - ولادة مباشرة! الصغار يسبحون فوراً. انقل الصغار أو الأم.',
+      fryInfo: {
+        firstFood: 'طعام سائل، رقائق مطحونة ناعم، baby brine shrimp',
+        growthRate: 'سريع - جاهزون للبيع في 8-10 أسابيع',
+        adulthoodTime: '4-5 أشهر'
+      },
+      tips: [
+        '⚠️ تأكل الصغار - افصلهم فوراً!',
+        '🌱 نباتات Java Moss تحمي الصغار',
+        '👶 تلد 20-40 صغير كل شهر',
+        '🎨 تتزاوج مع Swordtail - تجنب التهجين إذا أردت سلالات نقية'
+      ]
+    },
     schooling: false,
     minimumGroup: 3,
     compatibility: {
@@ -526,7 +555,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'hard',
     },
     diet: ['Algae', 'Vegetables', 'Flakes', 'Live foods'],
-    breeding: 'ولود سهل جداً. يمكن إضافة قليل من الملح للماء.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'live-bearer',
+      sexualDimorphism: 'الذكور أصغر مع زعنفة شرجية معدلة (gonopodium). الإناث أكبر وأكثر استدارة.',
+      spawningTriggers: [
+        'درجة حرارة 26-28°م',
+        'إضافة ملح مائي قليل (1 ملعقة/10 لتر)',
+        'تغذية بالطحالب والخضروات',
+        'نسبة 1 ذكر : 2-3 إناث'
+      ],
+      breedingSetup: {
+        tankSize: '80+ لتر',
+        waterConditions: 'pH 7.5-8.5، ماء صلب، ملح اختياري',
+        temperature: '26-28°م',
+        equipment: ['فلتر قوي', 'نباتات طويلة', 'صندوق ولادة كبير']
+      },
+      spawningBehavior: 'الذكر يطارد الأنثى بنشاط. التخصيب داخلي. فترة الحمل 60-70 يوم.',
+      eggCare: 'ولادة مباشرة - لا بيض! تلد حتى 100 صغير. انقلهم فوراً للحماية.',
+      fryInfo: {
+        firstFood: 'رقائق مطحونة، spirulina، baby brine shrimp',
+        growthRate: 'متوسط - تكبر ببطء لكنها قوية',
+        adulthoodTime: '5-6 أشهر'
+      },
+      tips: [
+        '🧂 الملح يحسن الصحة لكنه اختياري',
+        '🍃 تحب أكل الطحالب - مفيدة للحوض',
+        '👶 تلد عدد كبير - خطط لمكان الصغار',
+        '⚠️ الأهل يأكلون الصغار بكثرة!'
+      ]
+    },
     schooling: false,
     minimumGroup: 3,
     compatibility: {
@@ -640,7 +698,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'hard',
     },
     diet: ['Flakes', 'Pellets', 'Vegetables', 'Live foods'],
-    breeding: 'ولود سهل. ينتج الكثير من الصغار.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'live-bearer',
+      sexualDimorphism: 'الذكور لديهم "سيف" طويل في الذيل و gonopodium. الإناث أكبر بدون سيف.',
+      spawningTriggers: [
+        'درجة حرارة 24-27°م',
+        'تغذية جيدة ومتنوعة',
+        'نباتات كثيفة للأمان',
+        'نسبة 1 ذكر : 3 إناث (الذكور عدوانيون)'
+      ],
+      breedingSetup: {
+        tankSize: '80+ لتر (حجم مهم)',
+        waterConditions: 'pH 7.0-8.0، ماء متوسط إلى صلب',
+        temperature: '24-27°م',
+        equipment: ['فلتر جيد', 'نباتات طويلة', 'غطاء (يقفزون!)', 'صندوق ولادة']
+      },
+      spawningBehavior: 'الذكر يطارد الأنثى بعدوانية. التخصيب داخلي. فترة الحمل 28 يوم.',
+      eggCare: 'ولادة مباشرة. تلد 20-100 صغير. الوالدان يأكلان الصغار - افصلهم!',
+      fryInfo: {
+        firstFood: 'رقائق مطحونة، brine shrimp، طعام سائل',
+        growthRate: 'سريع - ينمو السيف في 3-4 أشهر',
+        adulthoodTime: '4-6 أشهر'
+      },
+      tips: [
+        '⚔️ السيف يظهر عند النضج فقط',
+        '💪 الذكور عدوانيون - 1 ذكر أفضل',
+        '🦘 يقفزون - غطي الحوض دائماً!',
+        '👶 ينتجون عدد كبير - خطط مسبقاً'
+      ]
+    },
     schooling: false,
     minimumGroup: 2,
     compatibility: {
