@@ -167,12 +167,15 @@ export async function registerRoutes(
       const payload = insertUserSchema.parse(req.body);
       const existing = await storage.getUserByEmail(payload.email);
       if (existing) {
-        res.status(409).json({ message: "Email already exists" });
+        res.status(409).json({ message: "البريد الإلكتروني مستخدم بالفعل" });
         return;
       }
 
+      // Remove phone field as it may not exist in DB yet
+      const { phone, ...userDataWithoutPhone } = payload;
+
       const user = await storage.createUser({
-        ...payload,
+        ...userDataWithoutPhone,
         passwordHash: hashPassword(payload.passwordHash),
       });
 
@@ -183,8 +186,10 @@ export async function registerRoutes(
       }
       sess.userId = user.id;
       res.status(201).json({ id: user.id, email: user.email });
-    } catch (err) {
-      next(err);
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      // Return JSON error instead of passing to next
+      res.status(400).json({ message: err.message || "فشل إنشاء الحساب" });
     }
   });
 
