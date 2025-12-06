@@ -119,7 +119,7 @@ export default function SubscriptionBoxes() {
     if (!selectedPlan) return;
 
     toast({
-      title: "🎉 تم الاشتراك بنجاح!",
+      title: "تم الاشتراك بنجاح",
       description: `سنرسل لك ${selectedPlan.arabicName} شهرياً. سيصل أول صندوق خلال 3-5 أيام.`
     });
 

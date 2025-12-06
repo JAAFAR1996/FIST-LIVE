@@ -13,14 +13,14 @@ export function BubbleTrail() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (Math.random() > 0.7) { // Create bubbles more frequently
+      if (Math.random() > 0.5) { // Create bubbles more frequently
         const newBubble = {
-          id: Date.now(),
+          id: Date.now() + Math.random(),
           x: e.clientX,
           y: e.clientY,
-          size: Math.random() * 15 + 5,
+          size: Math.random() * 20 + 8,
         };
-        setBubbles(prev => [...prev.slice(-30), newBubble]);
+        setBubbles(prev => [...prev.slice(-50), newBubble]);
       }
     };
 
@@ -34,20 +34,20 @@ export function BubbleTrail() {
         {bubbles.map(bubble => (
           <motion.div
             key={bubble.id}
-            initial={{ opacity: 0.6, y: bubble.y, x: bubble.x, scale: 0 }}
+            initial={{ opacity: 0.8, y: bubble.y, x: bubble.x, scale: 0 }}
             animate={{
               opacity: 0,
-              y: bubble.y - 100,
-              x: bubble.x + (Math.random() * 20 - 10),
-              scale: 1
+              y: bubble.y - 150,
+              x: bubble.x + (Math.random() * 40 - 20),
+              scale: 1.2
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="absolute rounded-full bg-primary/30 border border-primary/50 backdrop-blur-sm"
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute rounded-full bg-cyan-400/40 border-2 border-cyan-300/60 backdrop-blur-sm"
             style={{
               width: bubble.size,
               height: bubble.size,
-              boxShadow: "0 0 10px rgba(6, 182, 212, 0.3)"
+              boxShadow: "0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3)"
             }}
             onAnimationComplete={() => {
               setBubbles(prev => prev.filter(b => b.id !== bubble.id));

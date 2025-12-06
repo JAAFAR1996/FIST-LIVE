@@ -38,7 +38,7 @@ export function WishlistButton({
     } else {
       addItem(product);
       toast({
-        title: "تمت الإضافة للمفضلة ❤️",
+        title: "تمت الإضافة إلى المفضلة",
         description: `تم إضافة ${product.name} إلى قائمة المفضلة`,
       });
     }

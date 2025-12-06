@@ -1098,12 +1098,12 @@ export default function Journey() {
                       <Label className="text-lg font-bold">أنواع الأسماك المهتم بها</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
-                          { value: "community", label: "أسماك المجتمع", emoji: "🐠", examples: "Tetras, Guppies, Mollies" },
-                          { value: "cichlids", label: "سيكليد", emoji: "🐟", examples: "Angelfish, Rams, Discus" },
-                          { value: "bottom-dwellers", label: "أسماك القاع", emoji: "🐡", examples: "Corydoras, Plecos, Loaches" },
-                          { value: "schooling", label: "أسماك السرب", emoji: "🐠🐠🐠", examples: "Neon Tetras, Rasboras" },
-                          { value: "centerpiece", label: "سمكة مركزية", emoji: "👑", examples: "Betta, Gourami, Angelfish" },
-                          { value: "shrimp-snails", label: "جمبري وحلزون", emoji: "🦐", examples: "Cherry Shrimp, Nerite Snails" }
+                          { value: "community", label: "أسماك المجتمع", examples: "Tetras, Guppies, Mollies" },
+                          { value: "cichlids", label: "سيكليد", examples: "Angelfish, Rams, Discus" },
+                          { value: "bottom-dwellers", label: "أسماك القاع", examples: "Corydoras, Plecos, Loaches" },
+                          { value: "schooling", label: "أسماك السرب", examples: "Neon Tetras, Rasboras" },
+                          { value: "centerpiece", label: "سمكة مركزية", examples: "Betta, Gourami, Angelfish" },
+                          { value: "shrimp-snails", label: "جمبري وحلزون", examples: "Cherry Shrimp, Nerite Snails" }
                         ].map((option) => (
                           <div key={option.value} className="flex items-start space-x-3 space-x-reverse">
                             <Checkbox
@@ -1121,8 +1121,7 @@ export default function Journey() {
                               htmlFor={`fish-${option.value}`}
                               className="flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all hover:border-primary/50 hover:bg-primary/5"
                             >
-                              <div className="flex items-center gap-3 mb-2">
-                                <span className="text-2xl">{option.emoji}</span>
+                              <div className="mb-2">
                                 <div className="font-bold text-foreground">{option.label}</div>
                               </div>
                               <div className="text-xs text-muted-foreground">أمثلة: {option.examples}</div>

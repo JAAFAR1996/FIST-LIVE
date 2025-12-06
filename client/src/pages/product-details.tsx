@@ -20,6 +20,55 @@ import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { BackToTop } from "@/components/back-to-top";
 import { MetaTags, ProductSchema, BreadcrumbSchema } from "@/components/seo/meta-tags";
 
+// Get category-specific benefits
+function getCategoryBenefits(category: string): string[] {
+  const benefitsMap: Record<string, string[]> = {
+    "معالجة المياه": [
+      "يزيل الكلور والكلورامين بفعالية فورية",
+      "يحمي الأسماك من المعادن الثقيلة الضارة",
+      "يحسن جودة المياه ويقلل التوتر على الأسماك",
+      "مناسب لجميع أنواع أحواض المياه العذبة والمالحة"
+    ],
+    "أطعمة": [
+      "تركيبة غذائية متوازنة تدعم النمو الصحي",
+      "يعزز الألوان الطبيعية الزاهية للأسماك",
+      "سهل الهضم ولا يلوث المياه",
+      "غني بالفيتامينات والمعادن الأساسية"
+    ],
+    "فلاتر": [
+      "فلترة ميكانيكية وبيولوجية وكيميائية ثلاثية المراحل",
+      "يحافظ على صفاء المياه ونقائها",
+      "يقلل من الحاجة لتغيير المياه المتكرر",
+      "تشغيل هادئ وموفر للطاقة"
+    ],
+    "سخانات": [
+      "تحكم دقيق في درجة الحرارة ±0.5°س",
+      "حماية تلقائية من الحرارة الزائدة",
+      "مقاوم للماء بالكامل وآمن للاستخدام",
+      "موفر للطاقة مع أداء موثوق"
+    ],
+    "إضاءة": [
+      "طيف ضوئي كامل يحاكي ضوء الشمس الطبيعي",
+      "يعزز نمو النباتات المائية الصحي",
+      "يبرز الألوان الطبيعية للأسماك والديكور",
+      "عمر افتراضي طويل وكفاءة طاقة عالية"
+    ],
+    "ديكور": [
+      "آمن 100% للأسماك ولا يؤثر على جودة المياه",
+      "يوفر أماكن للاختباء وتقليل التوتر",
+      "سهل التنظيف والصيانة",
+      "تصميم طبيعي وجذاب يحسن مظهر الحوض"
+    ]
+  };
+
+  return benefitsMap[category] || [
+    "منتج عالي الجودة من علامة تجارية موثوقة",
+    "سهل الاستخدام ومناسب للمبتدئين والخبراء",
+    "يحسن بيئة الحوض ويعزز صحة الأسماك",
+    "قيمة ممتازة مقابل السعر"
+  ];
+}
+
 export default function ProductDetails() {
   const params = useParams();
   const slug = params.slug;
@@ -49,7 +98,7 @@ export default function ProductDetails() {
         addItem(product);
       }
       toast({
-        title: "تمت الإضافة للسلة ✓",
+        title: "تمت الإضافة إلى السلة",
         description: `تم إضافة ${quantity} من ${product.name} إلى سلة المشتريات.`,
       });
     }
@@ -68,8 +117,8 @@ export default function ProductDetails() {
       if (navigator.share) {
         await navigator.share(shareData);
         toast({
-          title: "تمت المشاركة بنجاح",
-          description: "شكراً لمشاركة المنتج!",
+          title: "تمت المشاركة",
+          description: "تم مشاركة المنتج بنجاح",
         });
       } else {
         // Fallback: copy to clipboard
@@ -364,22 +413,12 @@ export default function ProductDetails() {
                       <div className="space-y-4">
                         <h4 className="font-bold">الفوائد الرئيسية:</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-primary rounded-full"></div>
-                            يساعد في الحفاظ على بيئة صحية لأسماكك
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-primary rounded-full"></div>
-                            سهل الاستخدام ومناسب لجميع المستويات
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-primary rounded-full"></div>
-                            منتج موثوق ومستخدم من قبل آلاف الهواة
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-primary rounded-full"></div>
-                            يوفر الوقت والجهد في صيانة الحوض
-                          </li>
+                          {getCategoryBenefits(product.category).map((benefit, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
+                              <span>{benefit}</span>
+                            </li>
+                          ))}
                         </ul>
                       </div>
                     </div>

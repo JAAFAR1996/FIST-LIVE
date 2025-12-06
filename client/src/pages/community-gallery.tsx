@@ -67,7 +67,7 @@ export default function CommunityGallery() {
     },
     onSuccess: () => {
       toast({
-        title: "✅ تم الإرسال بنجاح!",
+        title: "تم الإرسال بنجاح",
         description: "صورتك قيد المراجعة. سيتم عرضها بعد الموافقة من الإدارة.",
       });
       setIsUploadOpen(false);
