@@ -58,9 +58,13 @@ export class DbStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
+    // Exclude phone field as it may not exist in DB schema yet
+    const { phone, ...userData } = insertUser as any;
     const result = await this.db.insert(users).values({
-      ...insertUser,
-      role: insertUser.role || "user",
+      email: userData.email,
+      passwordHash: userData.passwordHash,
+      fullName: userData.fullName,
+      role: userData.role || "user",
     }).returning();
     return result[0];
   }
