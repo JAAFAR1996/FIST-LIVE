@@ -43,16 +43,37 @@ export function FishCard({
   showCompatibility,
   compatibilityStatus,
 }: FishCardProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log("🐟 FishCard clicked:", fish.arabicName);
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (onClick) {
+        onClick();
+      }
+    }
+  };
+
   return (
     <Card
       className={cn(
-        "group cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden",
+        "group cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden relative",
         isSelected && "ring-2 ring-primary shadow-lg scale-[1.02]",
         showCompatibility && compatibilityStatus === "incompatible" && "ring-2 ring-red-500 opacity-60"
       )}
-      onClick={onClick}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-label={`عرض تفاصيل ${fish.arabicName}`}
     >
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 pointer-events-none">
         <img
           src={fish.image}
           alt={fish.arabicName}
@@ -62,7 +83,7 @@ export function FishCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Corner badges */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2">
+        <div className="absolute top-3 right-3 flex flex-col gap-2 pointer-events-none">
           {fish.schooling && (
             <Badge className="bg-blue-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
               <Fish className="w-3 h-3 ml-1" />
@@ -92,7 +113,7 @@ export function FishCard({
         </div>
       </div>
 
-      <CardContent className="p-5 space-y-4">
+      <CardContent className="p-5 space-y-4 pointer-events-none">
         {/* Names */}
         <div>
           <h3 className="text-xl font-bold text-foreground mb-1 line-clamp-1">
