@@ -54,3 +54,6 @@ coverage
 vite.config.ts.*
 *.tar.gz
 *.zip
+
+#Ignore cursor AI rules
+.cursor\rules\codacy.mdc

@@ -75,7 +75,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Micro pellets', 'Frozen bloodworms', 'Brine shrimp'],
-    breeding: 'يحتاج إلى ظروف محددة ومياه ناعمة جداً. يفضل حوض منفصل للتكاثر.',
+    breeding: {
+      difficulty: 'difficult',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكثر استدارة وامتلاءً، خاصة عند الحمل بالبيض. الخط الأزرق في الإناث قد يبدو منحنياً أكثر.',
+      spawningTriggers: [
+        'تعتيم الحوض (يحتاج لظلام شبه تام)',
+        'مياه ناعمة جداً وحمضية (pH 5.0-6.0)',
+        'تغذية بالأطعمة الحية',
+        'ضوء الصباح الخافت يحفز التزاوج'
+      ],
+      breedingSetup: {
+        tankSize: '20-40 لتر (منفصل)',
+        waterConditions: 'pH 5.5-6.0، ماء ناعم جداً (< 2 dGH)',
+        temperature: '25-26°م',
+        equipment: ['فلتر إسفنجي ضعيف', 'نباتات كثيفة (Java Moss)', 'شبكة في القاع لحماية البيض']
+      },
+      spawningBehavior: 'يحدث التزاوج عادة في الصباح الباكر. يسبح الزوج جنباً إلى جنب وينثران البيض فوق النباتات.',
+      eggCare: 'البيض حساس جداً للضوء! يجب تغطية الحوض تماماً لمنع الضوء. يفقس بعد 24 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria (إنفوزوريا) و Paramecium',
+        growthRate: 'بطيء في البداية',
+        adulthoodTime: '6-8 أشهر'
+      },
+      tips: [
+        '🌑 أهم عامل هو الظلام - الضوء يقتل البيض واليرقات',
+        '💧 جودة المياه يجب أن تكون مثالية',
+        '🦠 جهز مزارع الإنفوزوريا قبل أسبوعين',
+        '🚫 اعزل الوالدين فوراً بعد وضع البيض'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -354,7 +383,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Goldfish pellets', 'Vegetables', 'Bloodworms', 'Algae'],
-    breeding: 'يضع آلاف البيض في الماء البارد. يحتاج لحوض كبير.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'egg-layer',
+      sexualDimorphism: 'الذكور يطورون "درنات التزاوج" (نقاك بيضاء صغيرة) على أغطية الخياشيم والزعانف الصدرية. الإناث تصبح ممتلئة وغير متناظرة من الأعلى.',
+      spawningTriggers: [
+        'ارتفاع درجة الحرارة تدريجياً (محاكاة الربيع)',
+        'تغييرات ماء كبيرة',
+        'تغذية عالية البروتين',
+        'إطالة فترة الإضاءة'
+      ],
+      breedingSetup: {
+        tankSize: '100+ لتر',
+        waterConditions: 'نظيف جداً، pH 7.0-7.5',
+        temperature: '20-23°م',
+        equipment: ['مماسح تزاوج (Spawning Mops)', 'نباتات كثيفة', 'تهوية جيدة']
+      },
+      spawningBehavior: 'الذكور يطاردون الإناث ويدفعون بطونهم (المطاردة). تطلق الأنثى البيض ويخصبه الذكر فوراً.',
+      eggCare: 'البيض لزج ويلتصق بالنباتات. يفقس في 2-7 أيام حسب الحرارة. يجب إزالة الأبوين أو البيض.',
+      fryInfo: {
+        firstFood: 'صفار بيض مسلوق، طعام سائل، ارتيميا',
+        growthRate: 'سريع مع التغذية الجيدة',
+        adulthoodTime: '1 سنة'
+      },
+      tips: [
+        '🍽️ السمك الذهبي يأكل بيضه بشراهة!',
+        '🧹 نظافة الماء ضرورية للصغار',
+        '📈 الصغار تحتاج مساحة كبيرة للنمو السليم',
+        '🔍 افحص البيض وأزل الأبيض منه (الفاسد) لتجنب الفطر'
+      ]
+    },
     schooling: false,
     minimumGroup: 2,
     compatibility: {

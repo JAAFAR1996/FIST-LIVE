@@ -189,7 +189,7 @@ export default function Journey() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300" dir="rtl">
       <Navbar />
 
       <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
@@ -237,8 +237,8 @@ export default function Journey() {
                       className={cn(
                         "w-10 h-10 md:w-12 md:h-12 rounded-full border-4 flex items-center justify-center bg-background transition-all duration-300",
                         isCompleted ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/25" :
-                        isCurrent ? "border-primary text-primary shadow-lg shadow-primary/25 scale-110" :
-                        "border-muted text-muted-foreground"
+                          isCurrent ? "border-primary text-primary shadow-lg shadow-primary/25 scale-110" :
+                            "border-muted text-muted-foreground"
                       )}
                       onClick={() => setCurrentStep(index)}
                       whileHover={{ scale: 1.1 }}
