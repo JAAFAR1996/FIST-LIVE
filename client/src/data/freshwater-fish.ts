@@ -118,7 +118,7 @@ export const freshwaterFish: FishSpecies[] = [
       'حساسة لتغيرات المياه المفاجئة',
       'تتغذى بشكل أفضل في طبقات المياه الوسطى',
     ],
-    image: '/images/fish/neon-tetra.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Paracheirodon_innesi_by_Fayzal%2C_Jr_Deposa.jpg/1280px-Paracheirodon_innesi_by_Fayzal%2C_Jr_Deposa.jpg',
     category: 'tetra',
   },
   {
@@ -186,7 +186,7 @@ export const freshwaterFish: FishSpecies[] = [
       'يفضل النباتات الحية',
       'تجنب الزعانف الطويلة مع أسماك عدوانية',
     ],
-    image: '/images/fish/betta.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Kampffisch_Betta_splendens.jpg/1280px-Kampffisch_Betta_splendens.jpg',
     category: 'betta',
   },
   {
@@ -252,7 +252,7 @@ export const freshwaterFish: FishSpecies[] = [
       'تفضل المياه الصلبة قليلاً',
       'الذكور أكثر ألواناً من الإناث',
     ],
-    image: '/images/fish/guppy.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Guppy_copance.jpg/1280px-Guppy_copance.jpg',
     category: 'livebearer',
   },
   {
@@ -321,7 +321,7 @@ export const freshwaterFish: FishSpecies[] = [
       'تصبح إقليمية أثناء التكاثر',
       'تحتاج لتغذية متنوعة',
     ],
-    image: '/images/fish/angelfish.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Pterophyllum_scalare_freshwater_angelfish_20.jpg/1280px-Pterophyllum_scalare_freshwater_angelfish_20.jpg',
     category: 'cichlid',
   },
   {
@@ -359,7 +359,7 @@ export const freshwaterFish: FishSpecies[] = [
       'نشطة جداً وممتعة للمراقبة',
       'تحتاج لطعام يغرق للقاع',
     ],
-    image: '/images/fish/corydoras.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Corydoras_paleatus_1.jpg/1280px-Corydoras_paleatus_1.jpg',
     category: 'catfish',
   },
   {
@@ -426,7 +426,7 @@ export const freshwaterFish: FishSpecies[] = [
       'لا تحتاج لسخان (مياه باردة)',
       'تعيش لسنوات طويلة مع العناية الصحيحة',
     ],
-    image: '/images/fish/goldfish.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Fish_-_Tekniska_museet_-_Almost_Goldfish.jpg/1280px-Fish_-_Tekniska_museet_-_Almost_Goldfish.jpg',
     category: 'goldfish',
   },
   {
@@ -493,7 +493,7 @@ export const freshwaterFish: FishSpecies[] = [
       'ألوان متنوعة (أحمر، أصفر، برتقالي)',
       'نشطة وودودة',
     ],
-    image: '/images/fish/platy.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Xiphophorus_maculatus_-_female_-_01.jpg/1280px-Xiphophorus_maculatus_-_female_-_01.jpg',
     category: 'livebearer',
   },
   {
@@ -531,7 +531,7 @@ export const freshwaterFish: FishSpecies[] = [
       'جميل جداً في الأحواض المزروعة',
       'حساس لجودة المياه',
     ],
-    image: '/images/fish/cardinal-tetra.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Paracheirodon_axelrodi.jpg/1280px-Paracheirodon_axelrodi.jpg',
     category: 'tetra',
   },
   {
@@ -598,7 +598,7 @@ export const freshwaterFish: FishSpecies[] = [
       'تنمو كبيرة نسبياً',
       'تحتاج لحوض واسع',
     ],
-    image: '/images/fish/molly.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Poecilia_sphenops.jpg/1280px-Poecilia_sphenops.jpg',
     category: 'livebearer',
   },
   {
@@ -636,7 +636,7 @@ export const freshwaterFish: FishSpecies[] = [
       'خجول في البداية',
       'يفضل النباتات الطافية',
     ],
-    image: '/images/fish/dwarf-gourami.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Trichogaster_lalius_male.jpg/1280px-Trichogaster_lalius_male.jpg',
     category: 'gourami',
   },
   {
@@ -674,7 +674,7 @@ export const freshwaterFish: FishSpecies[] = [
       'نشطة جداً',
       'تحتاج لمساحة سباحة',
     ],
-    image: '/images/fish/black-skirt-tetra.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Black_Widow_Tetra_%28Gymnocorymbus_ternetzi%29.jpg/1280px-Black_Widow_Tetra_%28Gymnocorymbus_ternetzi%29.jpg',
     category: 'tetra',
   },
   {
@@ -741,7 +741,7 @@ export const freshwaterFish: FishSpecies[] = [
       'يحب القفز - غطي الحوض',
       'نشط وسهل التربية',
     ],
-    image: '/images/fish/swordtail.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Xiphophorus_hellerii.jpg/1280px-Xiphophorus_hellerii.jpg',
     category: 'livebearer',
   },
   {
@@ -779,7 +779,7 @@ export const freshwaterFish: FishSpecies[] = [
       'صلبة وتتحمل ظروف متنوعة',
       'مثالية لبداية الحوض',
     ],
-    image: '/images/fish/zebra-danio.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Zebrafisch.jpg/1280px-Zebrafisch.jpg',
     category: 'other',
   },
   {
@@ -817,7 +817,7 @@ export const freshwaterFish: FishSpecies[] = [
       'نشطة جداً',
       'تحتاج لرفقاء سريعين',
     ],
-    image: '/images/fish/tiger-barb.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Puntius_tetrazona.jpg/1280px-Puntius_tetrazona.jpg',
     category: 'other',
   },
   {
@@ -855,7 +855,7 @@ export const freshwaterFish: FishSpecies[] = [
       'خجول قليلاً',
       'يحب النباتات الكثيفة',
     ],
-    image: '/images/fish/pearl-gourami.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Trichopodus_leerii.jpg/1280px-Trichopodus_leerii.jpg',
     category: 'gourami',
   },
   {
@@ -893,7 +893,7 @@ export const freshwaterFish: FishSpecies[] = [
       'يحتاج لكهوف ومخابئ',
       'ممتاز لتنظيف الطحالب',
     ],
-    image: '/images/fish/bristlenose-pleco.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Ancistrus_sp.jpg/1280px-Ancistrus_sp.jpg',
     category: 'catfish',
   },
   {
@@ -931,7 +931,7 @@ export const freshwaterFish: FishSpecies[] = [
       'يحب الاختباء',
       'ممتع للمراقبة',
     ],
-    image: '/images/fish/kuhli-loach.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Pangio_kuhlii.jpg/1280px-Pangio_kuhlii.jpg',
     category: 'other',
   },
   {
@@ -969,7 +969,7 @@ export const freshwaterFish: FishSpecies[] = [
       'نشطة في النهار',
       'جميلة في الأحواض المزروعة',
     ],
-    image: '/images/fish/harlequin-rasbora.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Trigonostigma_heteromorpha.jpg/1280px-Trigonostigma_heteromorpha.jpg',
     category: 'other',
   },
   {
@@ -1007,7 +1007,7 @@ export const freshwaterFish: FishSpecies[] = [
       'تحب النباتات الكثيفة',
       'سهلة التربية',
     ],
-    image: '/images/fish/cherry-barb.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Puntius_titteya.jpg/1280px-Puntius_titteya.jpg',
     category: 'other',
   },
   {
@@ -1045,7 +1045,7 @@ export const freshwaterFish: FishSpecies[] = [
       'جميل جداً',
       'يحتاج لرفاق هادئين',
     ],
-    image: '/images/fish/german-blue-ram.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Mikrogeophagus_ramirezi.jpg/1280px-Mikrogeophagus_ramirezi.jpg',
     category: 'cichlid',
   },
   {
@@ -1083,7 +1083,7 @@ export const freshwaterFish: FishSpecies[] = [
       'حساس قليلاً',
       'يحب المجموعات',
     ],
-    image: '/images/fish/otocinclus.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Otocinclus_vestitus.jpg/1280px-Otocinclus_vestitus.jpg',
     category: 'catfish',
   },
   {
@@ -1121,7 +1121,7 @@ export const freshwaterFish: FishSpecies[] = [
       'غالي الثمن',
       'للهواة المتقدمين فقط',
     ],
-    image: '/images/fish/discus.jpg',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Discus_fish_in_an_aquarium.jpg/1280px-Discus_fish_in_an_aquarium.jpg',
     category: 'cichlid',
   },
 ];
