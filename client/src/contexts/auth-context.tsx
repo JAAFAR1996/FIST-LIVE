@@ -96,11 +96,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }),
       });
 
+      // Check if response is HTML (server error or not JSON)
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("Server returned non-JSON response:", await response.text());
+        throw new Error("خطأ في الخادم. تأكد من تشغيل السيرفر (pnpm run dev)");
+      }
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "فشل إنشاء الحساب.");
       }
 
+      console.log("✅ Registration successful");
       // Automatically login after register
       await login(email, password);
     } catch (error: any) {

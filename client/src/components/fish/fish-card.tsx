@@ -1,5 +1,4 @@
 import { FishSpecies } from "@/data/freshwater-fish";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Droplets, Thermometer, Heart, Fish, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,37 +42,18 @@ export function FishCard({
   showCompatibility,
   compatibilityStatus,
 }: FishCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    console.log("🐟 FishCard clicked:", fish.arabicName);
-    if (onClick) {
-      onClick();
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (onClick) {
-        onClick();
-      }
-    }
-  };
-
   return (
-    <Card
+    <button
+      type="button"
+      onClick={onClick}
       className={cn(
-        "group cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden relative",
+        "group w-full text-right cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] overflow-hidden relative rounded-xl border bg-card text-card-foreground shadow",
         isSelected && "ring-2 ring-primary shadow-lg scale-[1.02]",
         showCompatibility && compatibilityStatus === "incompatible" && "ring-2 ring-red-500 opacity-60"
       )}
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
       aria-label={`عرض تفاصيل ${fish.arabicName}`}
     >
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 pointer-events-none">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950">
         <img
           src={fish.image}
           alt={fish.arabicName}
@@ -83,7 +63,7 @@ export function FishCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Corner badges */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 pointer-events-none">
+        <div className="absolute top-3 right-3 flex flex-col gap-2">
           {fish.schooling && (
             <Badge className="bg-blue-500/90 backdrop-blur-sm text-white border-0 shadow-lg">
               <Fish className="w-3 h-3 ml-1" />
@@ -113,7 +93,7 @@ export function FishCard({
         </div>
       </div>
 
-      <CardContent className="p-5 space-y-4 pointer-events-none">
+      <div className="p-5 space-y-4">
         {/* Names */}
         <div>
           <h3 className="text-xl font-bold text-foreground mb-1 line-clamp-1">
@@ -163,7 +143,8 @@ export function FishCard({
 
         {/* Hover effect overlay */}
         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-lg" />
-      </CardContent>
-    </Card>
+      </div>
+    </button>
   );
 }
+

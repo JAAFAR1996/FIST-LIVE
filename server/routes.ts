@@ -804,6 +804,24 @@ export async function registerRoutes(
     res.json(currentPrize);
   });
 
+  // Global error handler for API routes - ensure JSON responses
+  (app as any).use("/api", (err: any, _req: any, res: any, _next: any) => {
+    console.error("API Error:", err);
+    const status = err.status || 500;
+    const message = err.message || "Internal server error";
+
+    // Handle Zod validation errors
+    if (err.name === "ZodError") {
+      res.status(400).json({
+        message: "Validation error",
+        errors: err.errors
+      });
+      return;
+    }
+
+    res.status(status).json({ message });
+  });
+
   (app as any).use("/api", (_req: any, res: any) => {
     res.status(404).json({ message: "Not Found" });
   });
