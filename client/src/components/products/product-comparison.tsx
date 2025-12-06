@@ -43,10 +43,12 @@ export function ProductComparison({ products }: ProductComparisonProps) {
               <TableHead key={product.id} className="min-w-[240px] text-center align-bottom pb-6">
                 <div className="flex flex-col items-center gap-4 py-4">
                   <div className="relative w-32 h-32 p-4 bg-background rounded-xl shadow-sm border">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" 
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                     />
                   </div>
                   <div className="space-y-2">
@@ -71,7 +73,7 @@ export function ProductComparison({ products }: ProductComparisonProps) {
               </TableCell>
             ))}
           </TableRow>
-          
+
           <TableRow className="hover:bg-muted/20">
             <TableCell className="font-bold bg-muted/30 sticky left-0 z-10">مستوى الصعوبة</TableCell>
             {products.map((p) => (
@@ -119,7 +121,7 @@ export function ProductComparison({ products }: ProductComparisonProps) {
               </TableCell>
             ))}
           </TableRow>
-          
+
           <TableRow className="hover:bg-muted/20">
             <TableCell className="font-bold bg-muted/30 sticky left-0 z-10">المواصفات التقنية</TableCell>
             {products.map((p) => (

@@ -222,7 +222,9 @@ export default function ProductDetails() {
                   <div className="relative bg-muted/20 aspect-square">
                     <img
                       src={product.image}
-                      alt={`صورة منتج ${product.name}`}
+                      alt={product.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain p-8"
                     />
                     {/* Badges */}

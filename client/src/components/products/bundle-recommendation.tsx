@@ -31,15 +31,17 @@ export function BundleRecommendation({ bundle, products, onAddToCart }: BundleRe
         </div>
         <p className="text-sm text-muted-foreground">{bundle.description}</p>
       </CardHeader>
-      
+
       <CardContent className="pb-4">
         <div className="flex items-center gap-2 py-4 overflow-x-auto pb-6">
           {products.map((product, index) => (
             <div key={product.id} className="flex items-center shrink-0">
               <div className="relative group w-20 h-20 rounded-md overflow-hidden border bg-background">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -49,7 +51,7 @@ export function BundleRecommendation({ bundle, products, onAddToCart }: BundleRe
             </div>
           ))}
         </div>
-        
+
         <div className="space-y-1">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Total Value:</span>
@@ -65,7 +67,7 @@ export function BundleRecommendation({ bundle, products, onAddToCart }: BundleRe
           </div>
         </div>
       </CardContent>
-      
+
       <CardFooter>
         <Button className="w-full gap-2 group" onClick={onAddToCart}>
           <ShoppingBag className="w-4 h-4 group-hover:animate-bounce" />

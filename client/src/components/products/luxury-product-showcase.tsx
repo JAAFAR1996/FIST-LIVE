@@ -27,7 +27,7 @@ export function LuxuryProductShowcase({ product }: LuxuryProductShowcaseProps) {
 
       <div className="container relative z-10 grid lg:grid-cols-2 gap-16 items-center">
         {/* Text Content */}
-        <motion.div 
+        <motion.div
           style={{ opacity, x: useTransform(scrollYProgress, [0, 1], [-50, 50]) }}
           className="space-y-8"
         >
@@ -43,7 +43,7 @@ export function LuxuryProductShowcase({ product }: LuxuryProductShowcaseProps) {
           <p className="text-xl text-muted-foreground max-w-md leading-relaxed">
             تجربة استثنائية تجمع بين التصميم الفاخر والأداء الفائق. صمم ليكون تحفة فنية في منزلك.
           </p>
-          
+
           <div className="flex items-center gap-6 pt-4">
             <Button size="lg" className="rounded-full px-8 h-14 text-lg">
               اكتشف المزيد
@@ -57,15 +57,17 @@ export function LuxuryProductShowcase({ product }: LuxuryProductShowcaseProps) {
         {/* Product Image */}
         <motion.div style={{ y, scale, opacity }} className="relative">
           <div className="aspect-square relative z-10">
-            <img 
-              src={product.image} 
-              alt={product.name} 
+            <img
+              src={product.image}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-contain drop-shadow-2xl"
             />
           </div>
-          
+
           {/* Floating Specs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
@@ -75,7 +77,7 @@ export function LuxuryProductShowcase({ product }: LuxuryProductShowcaseProps) {
             <div className="text-sm text-muted-foreground">تقييم المستخدمين</div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}

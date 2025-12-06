@@ -173,6 +173,8 @@ export default function Deals() {
                         <img
                           src={product.image}
                           alt={product.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-contain p-6 group-hover:scale-110 transition-transform duration-300"
                         />
                         {product.isNew && (
@@ -203,8 +205,8 @@ export default function Deals() {
                             <Star
                               key={i}
                               className={`w-3 h-3 ${i < Math.floor(product.rating)
-                                  ? "fill-current"
-                                  : ""
+                                ? "fill-current"
+                                : ""
                                 }`}
                             />
                           ))}

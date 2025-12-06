@@ -171,6 +171,8 @@ export default function CommunityGallery() {
                         <img
                           src={imagePreview}
                           alt="Preview"
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-64 object-cover rounded-lg"
                         />
                         <Button
@@ -269,6 +271,8 @@ export default function CommunityGallery() {
                 <img
                   src={winner.imageUrl}
                   alt={`حوض ${winner.customerName}`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-80 object-cover rounded-xl shadow-2xl"
                 />
 
@@ -349,6 +353,8 @@ export default function CommunityGallery() {
                     <img
                       src={submission.imageUrl}
                       alt={`حوض ${submission.customerName}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />

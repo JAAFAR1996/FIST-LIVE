@@ -14,7 +14,7 @@ interface SearchDialogProps {
 
 export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
   const [query, setQuery] = useState('');
-  const { data } = useQuery< { products: Product[] } >({ queryKey: ['products'], queryFn: fetchProducts });
+  const { data } = useQuery<{ products: Product[] }>({ queryKey: ['products'], queryFn: fetchProducts });
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             {filteredProducts.map(product => (
               <Link key={product.id} href={`/products/${product.slug}`} onClick={() => onOpenChange(false)}>
                 <div className="flex items-center gap-4 p-2 rounded-lg hover:bg-muted cursor-pointer">
-                  <img src={product.image} alt={product.name} className="w-16 h-16 object-contain rounded-md bg-white" />
+                  <img src={product.image} alt={product.name} loading="lazy" decoding="async" className="w-16 h-16 object-contain rounded-md bg-white" />
                   <div>
                     <h4 className="font-semibold">{product.name}</h4>
                     <p className="text-sm text-primary">{product.price.toLocaleString()} د.ع</p>

@@ -265,15 +265,16 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                 <button
                   key={result.id}
                   onClick={() => handleResultClick(result.url)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-right ${
-                    index === selectedIndex ? "bg-muted" : ""
-                  }`}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-right ${index === selectedIndex ? "bg-muted" : ""
+                    }`}
                   aria-label={`انتقل إلى ${result.title}`}
                 >
                   {result.type === "product" && result.image && (
                     <img
                       src={result.image}
                       alt={result.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-12 h-12 object-contain rounded-md bg-white shrink-0"
                     />
                   )}

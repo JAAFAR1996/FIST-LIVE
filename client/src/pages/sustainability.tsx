@@ -9,18 +9,20 @@ export default function Sustainability() {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src="/stock_images/sustainable_eco_frie_c88ff0b1.jpg"
-            alt="Ocean Conservation"
-            className="w-full h-full object-cover opacity-80"
+            src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=400&fit=crop"
+            alt="Sustainability"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-64 object-cover rounded-lg mb-6"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
         </div>
-        
+
         <div className="container relative z-10 text-center px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -67,9 +69,11 @@ export default function Sustainability() {
             </div>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
               <img
-                src="/stock_images/clean_river_ecosyste_f6301bd2.jpg"
-                alt="Coral Restoration"
-                className="w-full h-full object-cover"
+                src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=400&h=300&fit=crop"
+                alt="Clean Water"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-48 object-cover rounded-lg mb-4"
               />
             </div>
           </div>

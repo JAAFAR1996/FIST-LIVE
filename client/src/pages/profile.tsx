@@ -212,8 +212,8 @@ export default function Profile() {
                                             <Label>رقم الهاتف</Label>
                                             <Input
                                                 type="tel"
-                                                value={user.phone || ""}
-                                                disabled
+                                                value={extraData.phone || ""}
+                                                disabled={!isEditing}
                                                 dir="ltr"
                                             />
                                         </div>
@@ -246,14 +246,14 @@ export default function Profile() {
                                             <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                                             <p className="mt-2 text-muted-foreground">جاري تحميل الطلبات...</p>
                                         </div>
-                                    ) : !orders || orders.length === 0 ? (
+                                    ) : !orders || (Array.isArray(orders) && orders.length === 0) ? (
                                         <div className="text-center py-8 text-muted-foreground">
                                             <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
                                             <p>لا توجد طلبات سابقة</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-4">
-                                            {orders.map((order: any) => (
+                                            {Array.isArray(orders) && orders.map((order: any) => (
                                                 <div
                                                     key={order.id}
                                                     className="flex items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
