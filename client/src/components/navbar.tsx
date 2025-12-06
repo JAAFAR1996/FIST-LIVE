@@ -84,7 +84,6 @@ export default function Navbar() {
     { href: "/wishlist", label: "المفضلة", icon: Heart },
     { href: "/fish-encyclopedia", label: "موسوعة الأسماك", icon: BookOpen },
     { href: "/fish-finder-advanced", label: "مخطط الحوض", icon: SearchIcon },
-    { href: "/fish-identifier", label: "تحديد الأسماك", icon: Camera },
     { href: "/calculators", label: "الحاسبات", icon: Calculator },
     { href: "/journey", label: "رحلتك", icon: Fish },
   ];
