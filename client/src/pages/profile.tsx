@@ -212,9 +212,8 @@ export default function Profile() {
                                             <Label>رقم الهاتف</Label>
                                             <Input
                                                 type="tel"
-                                                value={extraData.phone}
-                                                onChange={(e) => setExtraData({ ...extraData, phone: e.target.value })}
-                                                disabled={!isEditing}
+                                                value={user.phone || ""}
+                                                disabled
                                                 dir="ltr"
                                             />
                                         </div>
