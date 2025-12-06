@@ -11,7 +11,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, phone: string) => Promise<void>;
   logout: () => Promise<void>;
   isAdmin: boolean;
 }
@@ -81,6 +81,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const register = async (name: string, email: string, password: string, phone: string) => {
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: name,
+          email,
+          passwordHash: password,
+          role: "user",
+          phone,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "فشل إنشاء الحساب.");
+      }
+
+      // Automatically login after register
+      await login(email, password);
+    } catch (error: any) {
+      console.error("❌ Register error:", error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await fetch("/api/auth/logout", {
@@ -98,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = user?.role === "admin";
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

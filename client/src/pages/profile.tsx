@@ -33,54 +33,9 @@ import { BackToTop } from "@/components/back-to-top";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 
-// Mock user data
-const mockUser = {
-    name: "أحمد محمد",
-    email: "ahmed@example.com",
-    phone: "07701234567",
-    avatar: "",
-    memberSince: "نوفمبر 2024",
-    loyaltyPoints: 450,
-    loyaltyTier: "silver",
-    addresses: [
-        {
-            id: "1",
-            label: "المنزل",
-            address: "بغداد، الكرادة، شارع 60، قرب مول النخيل",
-            isDefault: true,
-        },
-        {
-            id: "2",
-            label: "العمل",
-            address: "بغداد، الجادرية، مجمع الجامعة",
-            isDefault: false,
-        },
-    ],
-};
-
-const mockOrders = [
-    {
-        id: "ORD-2024-001",
-        date: "25 نوفمبر 2024",
-        total: 125000,
-        status: "delivered",
-        items: 3,
-    },
-    {
-        id: "ORD-2024-002",
-        date: "20 نوفمبر 2024",
-        total: 75000,
-        status: "shipped",
-        items: 2,
-    },
-    {
-        id: "ORD-2024-003",
-        date: "15 نوفمبر 2024",
-        total: 45000,
-        status: "delivered",
-        items: 1,
-    },
-];
+import { useAuth } from "@/contexts/auth-context";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 const statusLabels: Record<string, { label: string; color: string }> = {
     pending: { label: "قيد الانتظار", color: "bg-yellow-100 text-yellow-800" },
@@ -99,8 +54,32 @@ const tierLabels: Record<string, { label: string; color: string; icon: React.Rea
 
 export default function Profile() {
     const { toast } = useToast();
+    const { user, logout } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [userData, setUserData] = useState(mockUser);
+
+    // Fetch orders
+    const { data: orders, isLoading: isLoadingOrders } = useQuery({
+        queryKey: ["/api/orders"],
+        enabled: !!user,
+    });
+
+    // Mock extra user data that isn't in core auth yet (profile details)
+    const [extraData, setExtraData] = useState({
+        phone: "0770XXXXXXX",
+        memberSince: "نوفمبر 2024",
+        loyaltyPoints: 0,
+        loyaltyTier: "bronze",
+        avatar: "",
+        addresses: [],
+    });
+
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     const handleSave = () => {
         setIsEditing(false);
@@ -126,24 +105,24 @@ export default function Profile() {
                             <CardContent className="p-8">
                                 <div className="flex flex-col md:flex-row items-center gap-6">
                                     <Avatar className="w-24 h-24 border-4 border-white shadow-xl">
-                                        <AvatarImage src={userData.avatar} />
+                                        <AvatarImage src={extraData.avatar} />
                                         <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                                            {userData.name.charAt(0)}
+                                            {(user.fullName || user.email).charAt(0)}
                                         </AvatarFallback>
                                     </Avatar>
 
                                     <div className="flex-1 text-center md:text-right">
-                                        <h1 className="text-3xl font-bold mb-2">{userData.name}</h1>
-                                        <p className="text-muted-foreground mb-3">عضو منذ {userData.memberSince}</p>
+                                        <h1 className="text-3xl font-bold mb-2">{user.fullName || "مستخدم جديد"}</h1>
+                                        <p className="text-muted-foreground mb-3">عضو منذ {extraData.memberSince}</p>
 
                                         <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                                            <Badge className={`${tierLabels[userData.loyaltyTier].color} gap-1`}>
-                                                {tierLabels[userData.loyaltyTier].icon}
-                                                عضو {tierLabels[userData.loyaltyTier].label}
+                                            <Badge className={`${tierLabels[extraData.loyaltyTier].color} gap-1`}>
+                                                {tierLabels[extraData.loyaltyTier].icon}
+                                                عضو {tierLabels[extraData.loyaltyTier].label}
                                             </Badge>
                                             <Badge variant="outline" className="gap-1">
                                                 <Gift className="w-3 h-3" />
-                                                {userData.loyaltyPoints} نقطة
+                                                {extraData.loyaltyPoints} نقطة
                                             </Badge>
                                         </div>
                                     </div>
@@ -153,7 +132,7 @@ export default function Profile() {
                                             <Settings className="w-4 h-4" />
                                             الإعدادات
                                         </Button>
-                                        <Button variant="ghost" size="sm" className="gap-2 text-destructive">
+                                        <Button variant="ghost" size="sm" className="gap-2 text-destructive" onClick={() => logout()}>
                                             <LogOut className="w-4 h-4" />
                                             تسجيل الخروج
                                         </Button>
@@ -216,18 +195,16 @@ export default function Profile() {
                                         <div className="space-y-2">
                                             <Label>الاسم الكامل</Label>
                                             <Input
-                                                value={userData.name}
-                                                onChange={(e) => setUserData({ ...userData, name: e.target.value })}
-                                                disabled={!isEditing}
+                                                value={user.fullName || ""}
+                                                disabled
                                             />
                                         </div>
                                         <div className="space-y-2">
                                             <Label>البريد الإلكتروني</Label>
                                             <Input
                                                 type="email"
-                                                value={userData.email}
-                                                onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                                                disabled={!isEditing}
+                                                value={user.email}
+                                                disabled
                                                 dir="ltr"
                                             />
                                         </div>
@@ -235,8 +212,8 @@ export default function Profile() {
                                             <Label>رقم الهاتف</Label>
                                             <Input
                                                 type="tel"
-                                                value={userData.phone}
-                                                onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
+                                                value={extraData.phone}
+                                                onChange={(e) => setExtraData({ ...extraData, phone: e.target.value })}
                                                 disabled={!isEditing}
                                                 dir="ltr"
                                             />
@@ -265,34 +242,48 @@ export default function Profile() {
                                     <CardDescription>عرض وتتبع جميع طلباتك</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="space-y-4">
-                                        {mockOrders.map((order) => (
-                                            <div
-                                                key={order.id}
-                                                className="flex items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
-                                            >
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                                                        <Package className="w-6 h-6 text-primary" />
+                                    {isLoadingOrders ? (
+                                        <div className="text-center py-8">
+                                            <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+                                            <p className="mt-2 text-muted-foreground">جاري تحميل الطلبات...</p>
+                                        </div>
+                                    ) : !orders || orders.length === 0 ? (
+                                        <div className="text-center py-8 text-muted-foreground">
+                                            <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                            <p>لا توجد طلبات سابقة</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {orders.map((order: any) => (
+                                                <div
+                                                    key={order.id}
+                                                    className="flex items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                                            <Package className="w-6 h-6 text-primary" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-sm sm:text-base">
+                                                                #{order.id.slice(0, 8)}...
+                                                            </p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {new Date(order.createdAt).toLocaleDateString("ar-IQ")} • {order.items?.length || 0} منتجات
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className="font-semibold">{order.id}</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {order.date} • {order.items} منتجات
+                                                    <div className="text-left">
+                                                        <p className="font-bold text-primary">
+                                                            {parseInt(order.total).toLocaleString()} د.ع
                                                         </p>
+                                                        <Badge className={statusLabels[order.status]?.color || "bg-gray-100"}>
+                                                            {statusLabels[order.status]?.label || order.status}
+                                                        </Badge>
                                                     </div>
                                                 </div>
-                                                <div className="text-left">
-                                                    <p className="font-bold text-primary">
-                                                        {order.total.toLocaleString()} د.ع
-                                                    </p>
-                                                    <Badge className={statusLabels[order.status].color}>
-                                                        {statusLabels[order.status].label}
-                                                    </Badge>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    )}
 
                                     <div className="mt-6 text-center">
                                         <Link href="/order-tracking">
@@ -324,7 +315,7 @@ export default function Profile() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid md:grid-cols-2 gap-4">
-                                        {userData.addresses.map((address) => (
+                                        {extraData.addresses.map((address: any) => (
                                             <div
                                                 key={address.id}
                                                 className={`p-4 rounded-lg border-2 ${address.isDefault ? "border-primary bg-primary/5" : "border-border"
@@ -367,14 +358,14 @@ export default function Profile() {
                                     {/* Points Progress */}
                                     <div className="bg-gradient-to-br from-primary/10 to-cyan-500/10 rounded-xl p-6 text-center">
                                         <p className="text-sm text-muted-foreground mb-2">رصيد نقاطك</p>
-                                        <p className="text-5xl font-bold text-primary mb-4">{userData.loyaltyPoints}</p>
+                                        <p className="text-5xl font-bold text-primary mb-4">{extraData.loyaltyPoints}</p>
                                         <p className="text-sm text-muted-foreground">
                                             تحتاج <strong>50</strong> نقطة إضافية للترقية إلى المستوى الذهبي
                                         </p>
                                         <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
                                             <div
                                                 className="h-full bg-gradient-to-r from-primary to-cyan-500"
-                                                style={{ width: `${(userData.loyaltyPoints / 500) * 100}%` }}
+                                                style={{ width: `${(extraData.loyaltyPoints / 500) * 100}%` }}
                                             />
                                         </div>
                                     </div>
@@ -384,9 +375,9 @@ export default function Profile() {
                                         {Object.entries(tierLabels).map(([key, tier], index) => (
                                             <div
                                                 key={key}
-                                                className={`text-center p-4 rounded-lg ${key === userData.loyaltyTier
-                                                        ? "bg-primary/10 border-2 border-primary"
-                                                        : "bg-muted/50"
+                                                className={`text-center p-4 rounded-lg ${key === extraData.loyaltyTier
+                                                    ? "bg-primary/10 border-2 border-primary"
+                                                    : "bg-muted/50"
                                                     }`}
                                             >
                                                 <div className={`text-2xl mb-2 ${tier.color}`}>{tier.icon}</div>

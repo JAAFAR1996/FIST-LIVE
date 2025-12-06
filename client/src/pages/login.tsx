@@ -25,7 +25,7 @@ import { motion } from "framer-motion";
 
 export default function Login() {
     const [, setLocation] = useLocation();
-    const { toast } = useToast();
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -38,21 +38,18 @@ export default function Login() {
         setError("");
         setIsLoading(true);
 
-        // Simulate login (in production, this would call an API)
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Demo login - accept any email/password
-        if (email && password) {
+        try {
+            await login(email, password);
             toast({
                 title: "تم تسجيل الدخول بنجاح!",
                 description: "مرحباً بك في فيش ويب",
             });
             setLocation("/");
-        } else {
-            setError("يرجى إدخال البريد الإلكتروني وكلمة المرور");
+        } catch (err: any) {
+            setError(err.message || "فشل تسجيل الدخول. يرجى التحقق من البيانات.");
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     return (

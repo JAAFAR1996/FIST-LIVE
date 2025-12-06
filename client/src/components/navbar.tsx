@@ -14,6 +14,17 @@ import { formatIQD, generateOrderNumber } from "@/lib/utils";
 import { useCart, CartItem } from "@/contexts/cart-context";
 import { useWishlist } from "@/contexts/wishlist-context";
 import { GlobalSearch } from "@/components/search/global-search";
+import { useAuth } from "@/contexts/auth-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User, LogOut, Package as PackageIcon } from "lucide-react";
 
 interface OrderData {
   customerInfo: {
@@ -39,6 +50,7 @@ export default function Navbar() {
 
   const { items: cartItems, removeItem, clearCart, totalItems, totalPrice } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -98,9 +110,8 @@ export default function Navbar() {
                 <div className="flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
                     <Link key={link.href} href={link.href} onClick={() => setIsMenuOpen(false)}>
-                      <span className={`flex items-center gap-3 text-lg px-4 py-2 rounded-md transition-colors ${
-                        location === link.href ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
-                      }`}>
+                      <span className={`flex items-center gap-3 text-lg px-4 py-2 rounded-md transition-colors ${location === link.href ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"
+                        }`}>
                         <link.icon className="h-5 w-5" />
                         {link.label}
                       </span>
@@ -127,9 +138,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <span className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center gap-2 ${
-                  location === link.href ? "text-primary" : "text-muted-foreground"
-                }`}>
+                <span className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center gap-2 ${location === link.href ? "text-primary" : "text-muted-foreground"
+                  }`}>
                   {link.icon && <link.icon className="h-4 w-4 opacity-50" />}
                   {link.label}
                 </span>
@@ -141,6 +151,58 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeSwitcher />
             <FontSizeControllerCompact />
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={user.fullName || user.email} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {(user.fullName || user.email).charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.fullName}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer w-full flex items-center">
+                      <User className="mr-2 h-4 w-4 ml-2" />
+                      <span>الملف الشخصي</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile?tab=orders" className="cursor-pointer w-full flex items-center">
+                      <PackageIcon className="mr-2 h-4 w-4 ml-2" />
+                      <span>طلباتي</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()} className="cursor-pointer text-red-600 focus:text-red-600">
+                    <LogOut className="mr-2 h-4 w-4 ml-2" />
+                    <span>تسجيل الخروج</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login">
+                <Button variant="default" size="sm" className="hidden md:flex">
+                  تسجيل الدخول
+                </Button>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             <Button
               variant="ghost"

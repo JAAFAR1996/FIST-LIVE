@@ -237,19 +237,19 @@ export async function registerRoutes(
     "/api/auth/me",
     localRequireAuth as express.RequestHandler,
     async (req: any, res: any) => {
-    const sess = getSession(req);
-    const userId = sess?.userId as string | undefined;
-    if (!userId) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-    const user = await storage.getUser(userId);
-    if (!user) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-    res.json({ id: user.id, email: user.email, fullName: user.fullName, role: user.role });
-  });
+      const sess = getSession(req);
+      const userId = sess?.userId as string | undefined;
+      if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+      const user = await storage.getUser(userId);
+      if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+      res.json({ id: user.id, email: user.email, fullName: user.fullName, role: user.role });
+    });
 
   // ============ ADMIN ENDPOINTS ============
 
@@ -507,6 +507,42 @@ export async function registerRoutes(
       }
     }
   );
+
+  // ============ ORDER MANAGEMENT ============
+
+  // Get current user's orders
+  (app as any).get(
+    "/api/orders",
+    localRequireAuth as express.RequestHandler,
+    async (req: any, res: any, next: any) => {
+      try {
+        const sess = getSession(req);
+        const userId = sess?.userId;
+        const orders = await storage.getOrders(userId);
+        res.json(orders);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  // Track order by Order Number (Public)
+  (app as any).get("/api/orders/track/:orderNumber", async (req: any, res: any, next: any) => {
+    try {
+      // Since we don't have orderNumber in the schema yet (it uses UUID 'id'),
+      // we'll search by ID or we might need to update schema to support friendly order numbers
+      // For now, let's assuming ID is the order number or we search all.
+      // NOTE: Real implementation should have a dedicated 'orderNumber' field.
+      // For this MVP, we will try to find by ID.
+      const order = await storage.getOrder(req.params.orderNumber);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      res.json(order);
+    } catch (err) {
+      next(err);
+    }
+  });
 
   // Get all orders (Admin only)
   (app as any).get(

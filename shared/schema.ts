@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   fullName: text("full_name"),
+  phone: text("phone"),
   role: text("role").notNull().default("user"), // user, admin
   emailVerified: boolean("email_verified").default(false),
   verificationToken: text("verification_token"),
@@ -98,10 +99,12 @@ export const insertUserSchema = createInsertSchema(users).pick({
   passwordHash: true,
   fullName: true,
   role: true,
+  phone: true,
 }).extend({
   email: z.string().email("Valid email is required"),
   passwordHash: z.string().min(1, "Password is required"),
   fullName: z.string().optional(),
+  phone: z.string().optional(),
   role: z.enum(["user", "admin"]).optional(),
 });
 

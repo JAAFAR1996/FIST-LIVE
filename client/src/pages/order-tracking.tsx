@@ -5,12 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Package, 
-  Search, 
-  Truck, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Package,
+  Search,
+  Truck,
+  CheckCircle2,
+  Clock,
   MapPin,
   Phone,
   MessageCircle,
@@ -134,21 +134,74 @@ export default function OrderTracking() {
     ]
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+    setOrderDetails(null);
+
     if (!orderNumber.trim()) {
       setError("الرجاء إدخال رقم الطلب");
       return;
     }
 
     setIsSearching(true);
-    
-    setTimeout(() => {
-      setOrderDetails(sampleOrder);
+
+    try {
+      const response = await fetch(`/api/orders/track/${orderNumber}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("لم يتم العثور على الطلب. يرجى التحقق من الرقم.");
+        }
+        throw new Error("حدث خطأ أثناء البحث عن الطلب.");
+      }
+
+      const data = await response.json();
+
+      // Transform API data to UI format if needed
+      // For now, we assume the API returns the format we need, or we map it.
+      // Since our backend returns the raw DB object, we might need to map it to 'OrderDetails' interface
+      // But for this MVP let's assume we construct a basic view or map it here.
+
+      // MAPPING:
+      const mappedOrder: OrderDetails = {
+        orderNumber: data.id,
+        orderDate: new Date(data.createdAt).toLocaleDateString("ar-IQ"),
+        estimatedDelivery: "قريباً", // We don't have this in DB yet
+        status: data.status,
+        customerName: data.customerInfo?.name || "عميل",
+        shippingAddress: data.customerInfo?.address || "العنوان غير متوفر",
+        phone: data.customerInfo?.phone || "",
+        courier: "خدمة التوصيل",
+        trackingNumber: "---",
+        shippingMethod: "قياسي",
+        items: data.items || [],
+        timeline: [
+          {
+            id: "ordered",
+            title: "تم استلام الطلب",
+            description: "تم استلام طلبك",
+            time: new Date(data.createdAt).toLocaleString("ar-IQ"),
+            completed: true,
+            current: data.status === "pending"
+          },
+          // Add more computed timeline events based on status
+          {
+            id: "current_status",
+            title: "الحالة الحالية",
+            description: data.status,
+            time: new Date().toLocaleString("ar-IQ"),
+            completed: false,
+            current: true
+          }
+        ]
+      };
+
+      setOrderDetails(mappedOrder);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
       setIsSearching(false);
-    }, 1500);
+    }
   };
 
   const getStatusIcon = (status: OrderStatus) => {
@@ -164,13 +217,13 @@ export default function OrderTracking() {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans" data-testid="order-tracking-page">
       <Navbar />
-      
+
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-primary/5 to-background">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-20 w-64 h-64 bg-primary rounded-full blur-3xl" />
           <div className="absolute bottom-10 left-20 w-48 h-48 bg-green-500 rounded-full blur-3xl" />
         </div>
-        
+
         <div className="container relative z-10 mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -238,8 +291,8 @@ export default function OrderTracking() {
                   </div>
                 )}
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full py-6 text-lg"
                   disabled={isSearching}
                   data-testid="button-track-order"
@@ -293,20 +346,19 @@ export default function OrderTracking() {
 
                       <div className="relative">
                         <div className="absolute right-[23px] top-0 bottom-0 w-0.5 bg-muted" />
-                        
+
                         <div className="space-y-8">
                           {orderDetails.timeline.map((status, index) => (
-                            <div 
-                              key={status.id} 
+                            <div
+                              key={status.id}
                               className={`relative flex gap-4 ${status.completed || status.current ? "" : "opacity-50"}`}
                             >
-                              <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center ${
-                                status.completed 
-                                  ? "bg-green-500/20" 
-                                  : status.current 
-                                    ? "bg-primary/20 ring-4 ring-primary/30" 
+                              <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center ${status.completed
+                                  ? "bg-green-500/20"
+                                  : status.current
+                                    ? "bg-primary/20 ring-4 ring-primary/30"
                                     : "bg-muted"
-                              }`}>
+                                }`}>
                                 {getStatusIcon(status)}
                               </div>
                               <div className="flex-1 pb-2">
@@ -338,12 +390,12 @@ export default function OrderTracking() {
                       </h3>
                       <div className="space-y-4">
                         {orderDetails.items.map((item, index) => (
-                          <div 
+                          <div
                             key={index}
                             className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg"
                           >
-                            <img 
-                              src={item.image} 
+                            <img
+                              src={item.image}
                               alt={item.name}
                               className="w-16 h-16 rounded-lg object-cover"
                             />
@@ -422,7 +474,7 @@ export default function OrderTracking() {
                     <CardContent className="p-6">
                       <h3 className="text-lg font-bold mb-4">هل تحتاج مساعدة؟</h3>
                       <div className="space-y-3">
-                        <a 
+                        <a
                           href="https://wa.me/9647700000000"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -431,7 +483,7 @@ export default function OrderTracking() {
                           <MessageCircle className="w-5 h-5 text-green-500" />
                           <span className="text-sm">تواصل عبر واتساب</span>
                         </a>
-                        <a 
+                        <a
                           href="tel:+9647700000000"
                           className="flex items-center gap-3 p-3 bg-background/80 rounded-lg hover:bg-background transition-colors"
                         >
@@ -447,7 +499,7 @@ export default function OrderTracking() {
           )}
 
           {!orderDetails && !error && (
-            <motion.section 
+            <motion.section
               className="max-w-4xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -479,7 +531,7 @@ export default function OrderTracking() {
             </motion.section>
           )}
 
-          <motion.section 
+          <motion.section
             className="mt-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -492,7 +544,7 @@ export default function OrderTracking() {
                   <p className="text-muted-foreground">فريقنا جاهز لمساعدتك في أي وقت</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <a 
+                  <a
                     href="tel:+9647700000000"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                   >
@@ -504,7 +556,7 @@ export default function OrderTracking() {
                       <p className="text-sm text-muted-foreground" dir="ltr">+964 770 000 0000</p>
                     </div>
                   </a>
-                  <a 
+                  <a
                     href="https://wa.me/9647700000000"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -518,7 +570,7 @@ export default function OrderTracking() {
                       <p className="text-sm text-muted-foreground">رد فوري</p>
                     </div>
                   </a>
-                  <a 
+                  <a
                     href="mailto:support@fishweb.iq"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                   >

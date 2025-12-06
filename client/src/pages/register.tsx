@@ -28,6 +28,7 @@ import { motion } from "framer-motion";
 export default function Register() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
+    const { register } = useAuth();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -66,16 +67,18 @@ export default function Register() {
 
         setIsLoading(true);
 
-        // Simulate registration (in production, this would call an API)
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        toast({
-            title: "تم إنشاء الحساب بنجاح! 🎉",
-            description: "مرحباً بك في عائلة فيش ويب. تم إرسال رسالة تأكيد إلى بريدك.",
-        });
-        setLocation("/login");
-
-        setIsLoading(false);
+        try {
+            await register(formData.name, formData.email, formData.password, formData.phone);
+            toast({
+                title: "تم إنشاء الحساب بنجاح! 🎉",
+                description: "مرحباً بك في عائلة فيش ويب.",
+            });
+            setLocation("/");
+        } catch (err: any) {
+            setError(err.message || "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const benefits = [
