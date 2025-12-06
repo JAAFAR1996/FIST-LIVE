@@ -66,7 +66,7 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 relative gap-0 block overflow-hidden" aria-describedby="fish-detail-desc">
+      <DialogContent className="max-w-4xl max-h-[90vh] p-0 relative gap-0 z-[1000]" aria-describedby="fish-detail-desc">
         <ScrollArea className="h-full max-h-[90vh]">
           <div className="p-6">
             <DialogHeader className="mb-4">
