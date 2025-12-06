@@ -1,4 +1,5 @@
 import { Switch, Route } from "wouter";
+import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,16 +15,13 @@ import Home from "@/pages/home";
 import Products from "@/pages/products";
 import ProductDetails from "@/pages/product-details";
 import Calculators from "@/pages/calculators";
-import Journey from "@/pages/journey";
 import FishFinder from "@/pages/fish-finder";
 import FishFinderAdvanced from "@/pages/fish-finder-advanced";
 import FishEncyclopedia from "@/pages/fish-encyclopedia";
-import FishIdentifier from "@/pages/fish-identifier";
 import Deals from "@/pages/deals";
 import Wishlist from "@/pages/wishlist";
 import SearchResults from "@/pages/search-results";
 import CommunityGallery from "@/pages/community-gallery";
-import TankBuilder3D from "@/pages/tank-builder-3d";
 import FishHealthDiagnosis from "@/pages/fish-health-diagnosis";
 import SubscriptionBoxes from "@/pages/subscription-boxes";
 import FishBreedingCalculator from "@/pages/fish-breeding-calculator";
@@ -45,6 +43,26 @@ import Register from "@/pages/register";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/404";
 
+// Lazy load heavy pages for better performance
+const Journey = lazy(() => import("@/pages/journey"));
+const TankBuilder3D = lazy(() => import("@/pages/tank-builder-3d"));
+const FishIdentifier = lazy(() => import("@/pages/fish-identifier"));
+
+// Loading component for lazy-loaded pages
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-b-primary/40 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }}></div>
+        </div>
+        <p className="text-sm text-muted-foreground animate-pulse">جاري التحميل...</p>
+      </div>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -56,16 +74,37 @@ function Router() {
       <Route path="/equipment/:slug" component={EquipmentDetails} />
       <Route path="/guides/eco-friendly" component={EcoFriendlyGuide} />
       <Route path="/calculators" component={Calculators} />
-      <Route path="/journey" component={Journey} />
+
+      {/* Lazy loaded routes */}
+      <Route path="/journey">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <Journey />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/tank-builder-3d">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <TankBuilder3D />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/fish-identifier">
+        {() => (
+          <Suspense fallback={<PageLoader />}>
+            <FishIdentifier />
+          </Suspense>
+        )}
+      </Route>
+
       <Route path="/fish-finder" component={FishFinder} />
       <Route path="/fish-finder-advanced" component={FishFinderAdvanced} />
       <Route path="/fish-encyclopedia" component={FishEncyclopedia} />
-      <Route path="/fish-identifier" component={FishIdentifier} />
       <Route path="/deals" component={Deals} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/search" component={SearchResults} />
       <Route path="/community-gallery" component={CommunityGallery} />
-      <Route path="/tank-builder-3d" component={TankBuilder3D} />
       <Route path="/fish-health-diagnosis" component={FishHealthDiagnosis} />
       <Route path="/subscription-boxes" component={SubscriptionBoxes} />
       <Route path="/fish-breeding-calculator" component={FishBreedingCalculator} />

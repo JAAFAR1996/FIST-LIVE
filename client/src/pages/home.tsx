@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { BackToTop } from "@/components/back-to-top";
 import { MetaTags, OrganizationSchema } from "@/components/seo/meta-tags";
+import { WaveDivider } from "@/components/ui/wave-divider";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -93,6 +94,8 @@ export default function Home() {
         </div>
       </section>
 
+      <WaveDivider className="-mt-1" />
+
       {/* Features */}
       <WaveScrollEffect>
         <section className="py-20 bg-card border-y border-border/50">
@@ -116,6 +119,8 @@ export default function Home() {
           </div>
         </section>
       </WaveScrollEffect>
+
+      <WaveDivider variant="curve" flip />
 
       {/* Product of the Week */}
       {featuredProduct && <ProductOfTheWeek product={featuredProduct} />}
@@ -162,6 +167,8 @@ export default function Home() {
         </section>
       </WaveScrollEffect>
 
+      <WaveDivider variant="wave-triple" />
+
       {/* Social Proof / Gallery */}
       <section className="py-20 overflow-hidden">
         <div className="container mx-auto px-4">
@@ -172,6 +179,8 @@ export default function Home() {
           <MasonryGalleryGrid />
         </div>
       </section>
+
+      <WaveDivider variant="tilt" flip />
 
       {/* Best Sellers Grid */}
       <WaveScrollEffect>

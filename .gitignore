@@ -33,6 +33,10 @@ Thumbs.db
 .project
 .classpath
 .settings
+.claude/
+.cursor/
+.local/
+.vite/
 
 # Testing
 coverage
