@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -29,19 +30,19 @@ interface FishDetailModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const temperamentLabels = {
+const temperamentLabels: Record<string, string> = {
   peaceful: "سلمي",
   "semi-aggressive": "شبه عدواني",
   aggressive: "عدواني",
 };
 
-const careLevelLabels = {
+const careLevelLabels: Record<string, string> = {
   beginner: "مبتدئ",
   intermediate: "متوسط",
   advanced: "متقدم",
 };
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   community: "مجتمع",
   cichlid: "سيكلد",
   catfish: "سمك القراميط",
@@ -53,22 +54,26 @@ const categoryLabels = {
   other: "أخرى",
 };
 
-const hardnessLabels = {
+const hardnessLabels: Record<string, string> = {
   soft: "ناعمة",
   medium: "متوسطة",
   hard: "صلبة",
 };
 
 export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalProps) {
-  if (!fish) return null;
+  // Don't return null if open is true, to allow animation/proper unmount
+  if (!open) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 relative" onPointerDownOutside={() => onOpenChange(false)}>
+      <DialogContent className="max-w-4xl max-h-[90vh] p-0 relative gap-0 block overflow-hidden" aria-describedby="fish-detail-desc">
         <ScrollArea className="h-full max-h-[90vh]">
           <div className="p-6">
-            <DialogHeader>
-              <DialogTitle className="text-3xl font-bold">{fish.arabicName}</DialogTitle>
+            <DialogHeader className="mb-4">
+              <DialogTitle className="text-3xl font-bold">{fish?.arabicName || 'تفاصيل السمكة'}</DialogTitle>
+              <DialogDescription id="fish-detail-desc" className="sr-only">
+                تفاصيل كاملة عن {fish?.arabicName} تشمل العناية، الغذاء، والتكاثر
+              </DialogDescription>
             </DialogHeader>
 
             {/* Hero Image */}
@@ -232,19 +237,19 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                   <div className="flex items-center gap-2">
                     <Badge className={
                       fish.breeding.difficulty === 'easy' ? 'bg-green-500' :
-                      fish.breeding.difficulty === 'moderate' ? 'bg-yellow-500' :
-                      fish.breeding.difficulty === 'difficult' ? 'bg-orange-500' :
-                      'bg-red-500'
+                        fish.breeding.difficulty === 'moderate' ? 'bg-yellow-500' :
+                          fish.breeding.difficulty === 'difficult' ? 'bg-orange-500' :
+                            'bg-red-500'
                     }>
                       {fish.breeding.difficulty === 'easy' ? 'سهل' :
-                       fish.breeding.difficulty === 'moderate' ? 'متوسط' :
-                       fish.breeding.difficulty === 'difficult' ? 'صعب' : 'خبراء فقط'}
+                        fish.breeding.difficulty === 'moderate' ? 'متوسط' :
+                          fish.breeding.difficulty === 'difficult' ? 'صعب' : 'خبراء فقط'}
                     </Badge>
                     <Badge variant="outline">
                       {fish.breeding.method === 'egg-layer' ? 'يضع بيض' :
-                       fish.breeding.method === 'live-bearer' ? 'ولود' :
-                       fish.breeding.method === 'bubble-nest' ? 'عش فقاعات' :
-                       'حاضن فموي'}
+                        fish.breeding.method === 'live-bearer' ? 'ولود' :
+                          fish.breeding.method === 'bubble-nest' ? 'عش فقاعات' :
+                            'حاضن فموي'}
                     </Badge>
                   </div>
 
