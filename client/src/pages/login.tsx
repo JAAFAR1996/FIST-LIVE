@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -17,7 +17,8 @@ import {
     Fish,
     Sparkles,
     AlertCircle,
-    CheckCircle
+    CheckCircle,
+    Loader2
 } from "lucide-react";
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { useToast } from "@/hooks/use-toast";
@@ -27,13 +28,17 @@ import { useAuth } from "@/contexts/auth-context";
 export default function Login() {
     const [, setLocation] = useLocation();
     const { toast } = useToast();
-    const { login } = useAuth();
+    const { login, isLoading: authLoading } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        console.log("✅ Login page mounted successfully");
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,6 +58,22 @@ export default function Login() {
             setIsLoading(false);
         }
     };
+
+    // Show loading if auth is still checking
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex flex-col bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800" dir="rtl">
+                <Navbar />
+                <main className="flex-1 flex items-center justify-center py-12 px-4">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                        <p className="text-muted-foreground">جاري التحميل...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800" dir="rtl">
@@ -146,7 +167,7 @@ export default function Login() {
                                 <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
                                     {isLoading ? (
                                         <span className="flex items-center gap-2">
-                                            <span className="animate-spin">◌</span>
+                                            <Loader2 className="w-5 h-5 animate-spin" />
                                             جاري تسجيل الدخول...
                                         </span>
                                     ) : (

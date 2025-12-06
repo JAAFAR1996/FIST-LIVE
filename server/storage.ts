@@ -45,7 +45,7 @@ export interface ProductFilters {
 type DbClient = NonNullable<ReturnType<typeof getDb>>;
 
 export class DbStorage implements IStorage {
-  constructor(private db: DbClient) {}
+  constructor(private db: DbClient) { }
 
   async getUser(id: string): Promise<User | undefined> {
     const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
@@ -67,7 +67,7 @@ export class DbStorage implements IStorage {
 
   async getProducts(filters?: ProductFilters): Promise<Product[]> {
     let query = this.db.select().from(products);
-    
+
     const conditions = [];
     if (filters?.category) conditions.push(eq(products.category, filters.category));
     if (filters?.subcategory) conditions.push(eq(products.subcategory, filters.subcategory));
@@ -114,7 +114,7 @@ export class DbStorage implements IStorage {
   }
 
   async updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined> {
-    const result = await this.db.update(products).set({...updates, updatedAt: new Date()}).where(eq(products.id, id)).returning();
+    const result = await this.db.update(products).set({ ...updates, updatedAt: new Date() }).where(eq(products.id, id)).returning();
     return result[0];
   }
 
@@ -172,7 +172,7 @@ export class DbStorage implements IStorage {
   }
 
   async updateDiscount(id: string, updates: Partial<Discount>): Promise<Discount | undefined> {
-    const result = await this.db.update(discounts).set({...updates, updatedAt: new Date()}).where(eq(discounts.id, id)).returning();
+    const result = await this.db.update(discounts).set({ ...updates, updatedAt: new Date() }).where(eq(discounts.id, id)).returning();
     return result[0];
   }
 
@@ -227,6 +227,7 @@ class MockStorage implements IStorage {
       role: user.role || "user",
       emailVerified: false,
       verificationToken: null,
+      phone: user.phone ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

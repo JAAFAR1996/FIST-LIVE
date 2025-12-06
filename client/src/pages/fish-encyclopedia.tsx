@@ -105,8 +105,11 @@ export default function FishEncyclopedia() {
   };
 
   const handleFishClick = (fish: FishSpecies) => {
+    console.log("🐟 Fish clicked:", fish.arabicName);
+    console.log("📊 Setting selected fish and opening modal");
     setSelectedFish(fish);
     setIsModalOpen(true);
+    console.log("✅ Modal state updated - isModalOpen:", true);
   };
 
   return (

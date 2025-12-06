@@ -18,22 +18,22 @@ export function BubbleTrail() {
         id: Date.now() + Math.random(),
         x: Math.random() * window.innerWidth,
         y: window.innerHeight + 50, // Start from bottom
-        size: Math.random() * 25 + 10,
+        size: Math.random() * 40 + 20, // Increased size range: 20-60px
       };
       setBubbles(prev => [...prev.slice(-60), newBubble]);
     };
 
-    // Create bubbles automatically every 800ms
-    const autoInterval = setInterval(createAutoBubble, 800);
+    // Create bubbles automatically every 500ms (more frequent)
+    const autoInterval = setInterval(createAutoBubble, 500);
 
     // Create bubbles on mouse move
     const handleMouseMove = (e: MouseEvent) => {
-      if (Math.random() > 0.5) {
+      if (Math.random() > 0.3) { // Higher chance to create bubbles (70%)
         const newBubble = {
           id: Date.now() + Math.random(),
           x: e.clientX,
           y: e.clientY,
-          size: Math.random() * 20 + 8,
+          size: Math.random() * 30 + 15, // Increased size: 15-45px
         };
         setBubbles(prev => [...prev.slice(-60), newBubble]);
       }
@@ -47,25 +47,28 @@ export function BubbleTrail() {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
       <AnimatePresence>
         {bubbles.map(bubble => (
           <motion.div
             key={bubble.id}
-            initial={{ opacity: 0.8, y: bubble.y, x: bubble.x, scale: 0 }}
+            initial={{ opacity: 0.9, y: bubble.y, x: bubble.x, scale: 0 }}
             animate={{
               opacity: 0,
-              y: bubble.y - 150,
-              x: bubble.x + (Math.random() * 40 - 20),
-              scale: 1.2
+              y: bubble.y - 200, // Float higher
+              x: bubble.x + (Math.random() * 60 - 30), // More horizontal movement
+              scale: 1.3
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-            className="absolute rounded-full bg-cyan-400/40 border-2 border-cyan-300/60 backdrop-blur-sm"
+            transition={{ duration: 2.5, ease: "easeOut" }}
+            className="absolute rounded-full"
             style={{
               width: bubble.size,
               height: bubble.size,
-              boxShadow: "0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3)"
+              background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(6, 182, 212, 0.6), rgba(14, 165, 233, 0.4))",
+              border: "3px solid rgba(6, 182, 212, 0.8)",
+              boxShadow: "0 0 30px rgba(6, 182, 212, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.5), 0 8px 32px rgba(6, 182, 212, 0.4)",
+              backdropFilter: "blur(4px)"
             }}
             onAnimationComplete={() => {
               setBubbles(prev => prev.filter(b => b.id !== bubble.id));
