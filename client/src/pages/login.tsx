@@ -22,9 +22,11 @@ import {
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Login() {
     const [, setLocation] = useLocation();
+    const { toast } = useToast();
     const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -53,12 +55,12 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800" dir="rtl">
             <Navbar />
 
             <main className="flex-1 flex items-center justify-center py-12 px-4">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 1, y: 0 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-md"
                 >

@@ -24,6 +24,7 @@ import {
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Register() {
     const [, setLocation] = useLocation();

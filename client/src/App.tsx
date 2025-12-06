@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { RequireAdmin } from "@/components/auth/require-admin";
 import { ScrollProgress } from "@/components/effects/scroll-progress";
 import { FloatingActionButton } from "@/components/effects/floating-action-button";
+import { BubbleTrail } from "@/components/effects/bubble-trail";
 import Home from "@/pages/home";
 import Products from "@/pages/products";
 import ProductDetails from "@/pages/product-details";
@@ -105,6 +106,7 @@ function App() {
               </a>
               <ScrollProgress />
               <FloatingActionButton />
+              <BubbleTrail />
               <Toaster />
               <Router />
             </TooltipProvider>

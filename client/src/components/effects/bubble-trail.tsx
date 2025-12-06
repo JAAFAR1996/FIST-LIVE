@@ -12,20 +12,38 @@ export function BubbleTrail() {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
   useEffect(() => {
+    // Create automatic floating bubbles
+    const createAutoBubble = () => {
+      const newBubble = {
+        id: Date.now() + Math.random(),
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + 50, // Start from bottom
+        size: Math.random() * 25 + 10,
+      };
+      setBubbles(prev => [...prev.slice(-60), newBubble]);
+    };
+
+    // Create bubbles automatically every 800ms
+    const autoInterval = setInterval(createAutoBubble, 800);
+
+    // Create bubbles on mouse move
     const handleMouseMove = (e: MouseEvent) => {
-      if (Math.random() > 0.5) { // Create bubbles more frequently
+      if (Math.random() > 0.5) {
         const newBubble = {
           id: Date.now() + Math.random(),
           x: e.clientX,
           y: e.clientY,
           size: Math.random() * 20 + 8,
         };
-        setBubbles(prev => [...prev.slice(-50), newBubble]);
+        setBubbles(prev => [...prev.slice(-60), newBubble]);
       }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      clearInterval(autoInterval);
+    };
   }, []);
 
   return (
