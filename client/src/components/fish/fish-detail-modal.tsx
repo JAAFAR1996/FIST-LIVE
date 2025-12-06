@@ -61,8 +61,8 @@ const hardnessLabels: Record<string, string> = {
 };
 
 export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalProps) {
-  // Don't return null if open is true, to allow animation/proper unmount
-  if (!open) return null;
+  // Don't render if not open or if fish is null
+  if (!open || !fish) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
