@@ -16,6 +16,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Search, SlidersHorizontal, X, Fish, BookOpen } from "lucide-react";
 import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
 
 export default function FishEncyclopedia() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -336,6 +338,8 @@ export default function FishEncyclopedia() {
         onOpenChange={setIsModalOpen}
       />
 
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );

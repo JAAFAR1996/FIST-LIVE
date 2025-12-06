@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
 import { Thermometer, Droplets, Waves, Wrench, Clock, Info } from "lucide-react";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
 
 export default function Calculators() {
   return (
@@ -49,6 +51,8 @@ export default function Calculators() {
           </Tabs>
         </div>
       </main>
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );
@@ -65,7 +69,7 @@ function HeaterCalculator() {
     if (v && t) {
       // Basic rule of thumb: 1 watt per liter for up to 5C diff, more for higher
       // This is a simplified calculation
-      setResult(v * (t / 5)); 
+      setResult(v * (t / 5));
     }
   };
 
@@ -95,7 +99,7 @@ function HeaterCalculator() {
             </Select>
           </div>
         </div>
-        
+
         <Button onClick={calculate} className="w-full text-lg h-12">احسب النتيجة</Button>
 
         {result && (

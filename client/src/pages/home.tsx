@@ -14,6 +14,9 @@ import { Testimonials } from "@/components/home/testimonials";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
+import { MetaTags, OrganizationSchema } from "@/components/seo/meta-tags";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -40,16 +43,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
+      <MetaTags
+        title="الرئيسية"
+        description="فيش ويب - وجهتك الأولى لمستلزمات أحواض الأسماك، نباتات الزينة، والعناية بالحياة المائية في العراق."
+      />
+      <OrganizationSchema />
       <BubbleTrail />
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="relative h-[700px] w-full overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background z-10" />
-        <img 
-          src={heroImg} 
-          alt="Aquarium Hero" 
+        <img
+          src={heroImg}
+          alt="Aquarium Hero"
           className="absolute inset-0 w-full h-full object-cover animate-slow-zoom"
           style={{ animation: 'float 20s ease-in-out infinite alternate' }}
         />
@@ -122,10 +130,10 @@ export default function Home() {
                 <p className="text-xl text-muted-foreground">استخدم أدواتنا المجانية لحساب احتياجات حوضك بدقة</p>
               </div>
               <Link href="/calculators">
-                 <Button variant="ghost" className="gap-2 text-lg">عرض الكل <ArrowRight className="w-5 h-5" /></Button>
+                <Button variant="ghost" className="gap-2 text-lg">عرض الكل <ArrowRight className="w-5 h-5" /></Button>
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { title: "موسوعة الأسماك", desc: "اكتشف أكثر من 20 نوع من الأسماك", icon: Package, color: "text-primary", bg: "bg-primary/10", link: "/fish-encyclopedia" },
@@ -158,7 +166,7 @@ export default function Home() {
       {/* Social Proof / Gallery */}
       <section className="py-20 overflow-hidden">
         <div className="container mx-auto px-4">
-           <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-4 text-foreground">إبداعات مجتمعنا</h2>
             <p className="text-xl text-muted-foreground">شاهد كيف يحول عملاؤنا منازلهم إلى واحات طبيعية</p>
           </div>
@@ -185,9 +193,9 @@ export default function Home() {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-            
+
             <div className="mt-12 text-center sm:hidden">
-               <Button variant="outline" size="lg" className="w-full">عرض جميع المنتجات</Button>
+              <Button variant="outline" size="lg" className="w-full">عرض جميع المنتجات</Button>
             </div>
           </div>
         </section>
@@ -287,7 +295,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      
+
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );

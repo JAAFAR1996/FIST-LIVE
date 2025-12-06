@@ -24,6 +24,8 @@ export default function Footer() {
   ];
 
   const supportLinks = [
+    { href: "/blog", label: "المدونة والمقالات" },
+    { href: "/shipping", label: "معلومات التوصيل" },
     { href: "/sustainability", label: "الاستدامة البيئية" },
     { href: "/guides/eco-friendly", label: "دليل العناية" },
     { href: "/return-policy", label: "سياسة الإرجاع" },
@@ -119,33 +121,33 @@ export default function Footer() {
               وجهتك الأولى لمستلزمات أحواض الأسماك في العراق. نوفر أفضل المنتجات العالمية لضمان بيئة صحية وسعيدة لأسماكك.
             </p>
             <div className="flex gap-3 pt-2">
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
+              <a
+                href="https://facebook.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-blue-600 rounded-full transition-all hover:scale-110"
               >
                 <Facebook className="h-4 w-4" />
               </a>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
+              <a
+                href="https://instagram.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full transition-all hover:scale-110"
               >
                 <Instagram className="h-4 w-4" />
               </a>
-              <a 
-                href="https://youtube.com" 
-                target="_blank" 
+              <a
+                href="https://youtube.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-red-600 rounded-full transition-all hover:scale-110"
               >
                 <Youtube className="h-4 w-4" />
               </a>
-              <a 
-                href="https://wa.me/9647700000000" 
-                target="_blank" 
+              <a
+                href="https://wa.me/9647700000000"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-green-600 rounded-full transition-all hover:scale-110"
               >
@@ -154,23 +156,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-              <ChevronLeft className="h-4 w-4 text-primary" />
-              روابط سريعة
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href}>
-                    <span className="text-slate-400 hover:text-primary hover:translate-x-1 transition-all inline-block cursor-pointer">
-                      {link.label}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Quick Links section removed per user request */}
 
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -291,9 +277,9 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">طرق الدفع:</span>
               <div className="flex gap-1">
-                <div className="bg-slate-800 px-2 py-1 rounded text-xs">كي كارد</div>
-                <div className="bg-slate-800 px-2 py-1 rounded text-xs">زين كاش</div>
-                <div className="bg-slate-800 px-2 py-1 rounded text-xs">نقدي</div>
+                <div className="bg-slate-800 px-2 py-1 rounded text-xs flex items-center gap-1">كي كارد <span className="text-amber-400 text-[10px]">(قريباً)</span></div>
+                <div className="bg-slate-800 px-2 py-1 rounded text-xs flex items-center gap-1">زين كاش <span className="text-amber-400 text-[10px]">(قريباً)</span></div>
+                <div className="bg-slate-800 px-2 py-1 rounded text-xs flex items-center gap-1">نقدي <span className="text-amber-400 text-[10px]">(قريباً)</span></div>
               </div>
             </div>
           </div>

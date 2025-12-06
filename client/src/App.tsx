@@ -37,6 +37,11 @@ import FAQ from "@/pages/faq";
 import OrderTracking from "@/pages/order-tracking";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import Blog from "@/pages/blog";
+import Shipping from "@/pages/shipping";
+import Login from "@/pages/login";
+import Register from "@/pages/register";
+import Profile from "@/pages/profile";
 import NotFound from "@/pages/404";
 
 function Router() {
@@ -69,6 +74,11 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/faq" component={FAQ} />
       <Route path="/order-tracking" component={OrderTracking} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/shipping" component={Shipping} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/profile" component={Profile} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin">
         {() => (
@@ -89,15 +99,15 @@ function App() {
         <CartProvider>
           <WishlistProvider>
             <TooltipProvider>
-            {/* Skip to main content for keyboard navigation */}
-            <a href="#main-content" className="skip-to-main">
-              الانتقال إلى المحتوى الرئيسي
-            </a>
-            <ScrollProgress />
-            <FloatingActionButton />
-            <Toaster />
-            <Router />
-          </TooltipProvider>
+              {/* Skip to main content for keyboard navigation */}
+              <a href="#main-content" className="skip-to-main">
+                الانتقال إلى المحتوى الرئيسي
+              </a>
+              <ScrollProgress />
+              <FloatingActionButton />
+              <Toaster />
+              <Router />
+            </TooltipProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>

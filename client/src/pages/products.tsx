@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { AlertCircle, ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MetaTags, OrganizationSchema } from "@/components/seo/meta-tags";
 import { ProductComparison } from "@/components/products/product-comparison";
 import { ProductCard } from "@/components/products/product-card";
 import { ProductFilters, FilterState } from "@/components/products/product-filters";
@@ -11,6 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { ProductCardSkeleton } from "@/components/ui/loading-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
 import type { Product } from "@/types";
 
 type SortOption = "default" | "price-asc" | "price-desc" | "name-asc" | "rating-desc";
@@ -120,6 +124,11 @@ export default function Products() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
+      <MetaTags
+        title="المنتجات"
+        description="تسوق أحدث منتجات أحواض الأسماك، الأحياء المائية، والمعدات في العراق."
+      />
+      <OrganizationSchema />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="text-center space-y-4 mb-12">
@@ -190,13 +199,28 @@ export default function Products() {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12">
-                        <p className="text-muted-foreground text-lg mb-4">
-                          لم يتم العثور على منتجات تطابق الفلاتر المحددة
+                      <div className="text-center py-16 bg-muted/30 rounded-xl">
+                        <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center mb-6">
+                          <AlertCircle className="w-10 h-10 text-muted-foreground" />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3">
+                          لم يتم العثور على منتجات
+                        </h3>
+                        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                          جرب تغيير أو إزالة بعض الفلاتر للحصول على نتائج أكثر
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          جرب تغيير أو إزالة بعض الفلاتر
-                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={() => setFilters({
+                            priceRange: [0, maxPrice],
+                            categories: [],
+                            brands: [],
+                            difficulties: [],
+                            tags: [],
+                          })}
+                        >
+                          مسح جميع الفلاتر
+                        </Button>
                       </div>
                     )}
                   </>
@@ -222,6 +246,8 @@ export default function Products() {
           </TabsContent>
         </Tabs>
       </main>
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );

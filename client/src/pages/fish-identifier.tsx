@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
 import { cn } from "@/lib/utils";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
 
 interface IdentificationResult {
   fish: FishSpecies;
@@ -57,14 +59,15 @@ export default function FishIdentifier() {
     // Simulate AI identification (in production, this would call an API like Fishial.AI or Nyckel)
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Mock result - in production this would be the API response
-    const randomFish = freshwaterFish[Math.floor(Math.random() * freshwaterFish.length)];
-    const confidence = 75 + Math.random() * 20; // 75-95%
+    // Mock result - pick from first 5 most common fish for better demo experience
+    const commonFish = freshwaterFish.slice(0, 5);
+    const randomFish = commonFish[Math.floor(Math.random() * commonFish.length)];
+    const confidence = 85 + Math.random() * 10; // 85-95% for more realistic feel
 
-    // Find similar species (by category)
+    // Find only 1-2 similar species (by category) to reduce confusion
     const similarSpecies = freshwaterFish
       .filter(f => f.id !== randomFish.id && f.category === randomFish.category)
-      .slice(0, 3);
+      .slice(0, 1);
 
     setResult({
       fish: randomFish,
@@ -304,8 +307,8 @@ export default function FishIdentifier() {
                           className={cn(
                             "text-lg px-4 py-1",
                             result.confidence >= 90 ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
-                            result.confidence >= 75 ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400" :
-                            "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400"
+                              result.confidence >= 75 ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400" :
+                                "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400"
                           )}
                         >
                           {result.confidence.toFixed(0)}% ثقة
@@ -393,6 +396,8 @@ export default function FishIdentifier() {
         onOpenChange={setIsModalOpen}
       />
 
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );

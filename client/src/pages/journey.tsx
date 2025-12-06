@@ -300,10 +300,10 @@ export default function Journey() {
                       <RadioGroup value={wizardData.tankSize} onValueChange={(val) => updateData("tankSize", val)}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {[
-                            { value: "small", label: "صغير (20-60 لتر)", desc: "مناسب للمبتدئين", icon: "🐟" },
-                            { value: "medium", label: "متوسط (60-150 لتر)", desc: "الأكثر شيوعاً، مستقر", icon: "🐠", recommended: true },
-                            { value: "large", label: "كبير (150-300 لتر)", desc: "مثالي، أسهل في الصيانة", icon: "🐡" },
-                            { value: "xlarge", label: "كبير جداً (+300 لتر)", desc: "للمحترفين", icon: "🦈" }
+                            { value: "small", label: "صغير (20-60 لتر)", desc: "مناسب للمبتدئين" },
+                            { value: "medium", label: "متوسط (60-150 لتر)", desc: "الأكثر شيوعاً، مستقر", recommended: true },
+                            { value: "large", label: "كبير (150-300 لتر)", desc: "مثالي، أسهل في الصيانة" },
+                            { value: "xlarge", label: "كبير جداً (+300 لتر)", desc: "للمحترفين" }
                           ].map((option) => (
                             <div key={option.value} className="relative">
                               <RadioGroupItem value={option.value} id={option.value} className="peer sr-only" />
@@ -319,7 +319,9 @@ export default function Journey() {
                                   <Badge className="absolute -top-2 -right-2 bg-primary">مُوصى به</Badge>
                                 )}
                                 <div className="flex items-center gap-3">
-                                  <span className="text-3xl">{option.icon}</span>
+                                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <Package className="w-6 h-6 text-primary" />
+                                  </div>
                                   <div className="flex-1">
                                     <div className="font-bold text-foreground">{option.label}</div>
                                     <div className="text-sm text-muted-foreground">{option.desc}</div>
@@ -681,27 +683,23 @@ export default function Journey() {
                             {
                               value: "gravel",
                               label: "حصى عادي",
-                              desc: "سهل التنظيف، متعدد الألوان",
-                              color: "🪨"
+                              desc: "سهل التنظيف، متعدد الألوان"
                             },
                             {
                               value: "sand",
                               label: "رمل",
-                              desc: "طبيعي، رائع للأسماك القاعية",
-                              color: "🏖️"
+                              desc: "طبيعي، رائع للأسماك القاعية"
                             },
                             {
                               value: "planted-substrate",
                               label: "تربة للنباتات",
                               desc: "غنية بالمغذيات للنباتات الحية",
-                              color: "🌱",
                               recommended: wizardData.tankType === "planted"
                             },
                             {
                               value: "mixed",
                               label: "مختلط",
-                              desc: "رمل + حصى أو رمل + تربة",
-                              color: "🎨"
+                              desc: "رمل + حصى أو رمل + تربة"
                             }
                           ].map((option) => (
                             <div key={option.value} className="relative">
@@ -717,7 +715,9 @@ export default function Journey() {
                                 {option.recommended && (
                                   <Badge className="absolute -top-2 -right-2 bg-primary">مُوصى به</Badge>
                                 )}
-                                <span className="text-3xl">{option.color}</span>
+                                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                  <Mountain className="w-5 h-5 text-primary" />
+                                </div>
                                 <div className="flex-1">
                                   <div className="font-bold text-foreground mb-1">{option.label}</div>
                                   <div className="text-sm text-muted-foreground">{option.desc}</div>
@@ -734,12 +734,12 @@ export default function Journey() {
                       <Label className="text-lg font-bold">عناصر الديكور (اختر ما تريد)</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
-                          { value: "live-plants", label: "نباتات حية", emoji: "🌿", benefit: "تنقي الماء" },
-                          { value: "driftwood", label: "خشب طبيعي", emoji: "🪵", benefit: "مظهر طبيعي" },
-                          { value: "rocks", label: "صخور وأحجار", emoji: "🪨", benefit: "أماكن اختباء" },
-                          { value: "caves", label: "كهوف", emoji: "🏔️", benefit: "ملاجئ آمنة" },
-                          { value: "artificial-plants", label: "نباتات صناعية", emoji: "🌺", benefit: "بدون صيانة" },
-                          { value: "background", label: "خلفية", emoji: "🖼️", benefit: "عمق بصري" }
+                          { value: "live-plants", label: "نباتات حية", benefit: "تنقي الماء" },
+                          { value: "driftwood", label: "خشب طبيعي", benefit: "مظهر طبيعي" },
+                          { value: "rocks", label: "صخور وأحجار", benefit: "أماكن اختباء" },
+                          { value: "caves", label: "كهوف", benefit: "ملاجئ آمنة" },
+                          { value: "artificial-plants", label: "نباتات صناعية", benefit: "بدون صيانة" },
+                          { value: "background", label: "خلفية", benefit: "عمق بصري" }
                         ].map((option) => (
                           <div key={option.value} className="flex items-start space-x-3 space-x-reverse">
                             <Checkbox
@@ -758,7 +758,9 @@ export default function Journey() {
                               className="flex-1 p-4 rounded-xl border-2 cursor-pointer transition-all hover:border-primary/50 hover:bg-primary/5"
                             >
                               <div className="flex items-center gap-3">
-                                <span className="text-2xl">{option.emoji}</span>
+                                <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
+                                  <Leaf className="w-5 h-5 text-green-600" />
+                                </div>
                                 <div className="flex-1">
                                   <div className="font-bold text-foreground">{option.label}</div>
                                   <div className="text-sm text-muted-foreground">{option.benefit}</div>

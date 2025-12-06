@@ -13,15 +13,15 @@ interface FishCardProps {
 }
 
 const temperamentColors = {
-  peaceful: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  "semi-aggressive": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-  aggressive: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+  peaceful: "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+  "semi-aggressive": "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+  aggressive: "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800",
 };
 
 const careLevelColors = {
-  beginner: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  intermediate: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
-  advanced: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
+  beginner: "bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800",
+  intermediate: "bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800",
+  advanced: "bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-950 dark:text-orange-300 dark:border-orange-800",
 };
 
 const temperamentLabels = {

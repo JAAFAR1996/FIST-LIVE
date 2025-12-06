@@ -35,9 +35,20 @@ import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
 
 export default function FishFinderAdvanced() {
   const [tankSize, setTankSize] = useState<number>(100);
-  const [selectedFish, setSelectedFish] = useState<string[]>([]);
+  const [fishCounts, setFishCounts] = useState<Record<string, number>>({});
   const [detailFish, setDetailFish] = useState<FishSpecies | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Get array of selected fish IDs (with duplicates for quantities)
+  const selectedFish = useMemo(() => {
+    const result: string[] = [];
+    Object.entries(fishCounts).forEach(([fishId, count]) => {
+      for (let i = 0; i < count; i++) {
+        result.push(fishId);
+      }
+    });
+    return result;
+  }, [fishCounts]);
 
   // Calculate compatibility and parameters
   const analysis = useMemo(() => {
@@ -52,7 +63,8 @@ export default function FishFinderAdvanced() {
       };
     }
 
-    const fishes = selectedFish.map(id => freshwaterFish.find(f => f.id === id)!).filter(Boolean);
+    const uniqueFishIds = Object.keys(fishCounts).filter(id => fishCounts[id] > 0);
+    const fishes = uniqueFishIds.map(id => freshwaterFish.find(f => f.id === id)!).filter(Boolean);
     const issues: string[] = [];
 
     // Check tank size
@@ -62,9 +74,9 @@ export default function FishFinderAdvanced() {
     }
 
     // Check compatibility between all pairs
-    for (let i = 0; i < selectedFish.length; i++) {
-      for (let j = i + 1; j < selectedFish.length; j++) {
-        const compatible = checkCompatibility(selectedFish[i], selectedFish[j]);
+    for (let i = 0; i < uniqueFishIds.length; i++) {
+      for (let j = i + 1; j < uniqueFishIds.length; j++) {
+        const compatible = checkCompatibility(uniqueFishIds[i], uniqueFishIds[j]);
         if (!compatible) {
           const fish1 = fishes[i];
           const fish2 = fishes[j];
@@ -76,15 +88,15 @@ export default function FishFinderAdvanced() {
     // Check schooling requirements
     fishes.forEach(fish => {
       if (fish.schooling) {
-        const count = selectedFish.filter(id => id === fish.id).length;
+        const count = fishCounts[fish.id] || 0;
         if (count < fish.minimumGroup) {
-          issues.push(`${fish.arabicName} يحتاج لمجموعة من ${fish.minimumGroup} أسماك على الأقل`);
+          issues.push(`${fish.arabicName} يحتاج لمجموعة من ${fish.minimumGroup} أسماك على الأقل (لديك ${count})`);
         }
       }
     });
 
     // Calculate water parameters
-    const waterParams = getWaterParameterRange(selectedFish);
+    const waterParams = getWaterParameterRange(uniqueFishIds);
     if (waterParams.tempMin > waterParams.tempMax) {
       issues.push("تحذير: متطلبات درجة الحرارة غير متوافقة");
     }
@@ -92,8 +104,8 @@ export default function FishFinderAdvanced() {
       issues.push("تحذير: متطلبات الحموضة غير متوافقة");
     }
 
-    // Calculate bioload (simplified: sum of max sizes)
-    const totalBioload = fishes.reduce((sum, fish) => sum + fish.maxSize, 0);
+    // Calculate bioload (simplified: sum of max sizes * count)
+    const totalBioload = fishes.reduce((sum, fish) => sum + (fish.maxSize * (fishCounts[fish.id] || 0)), 0);
     const stockingLevel = (totalBioload / tankSize) * 100;
 
     // Equipment recommendations
@@ -121,19 +133,33 @@ export default function FishFinderAdvanced() {
       stockingLevel,
       equipment,
     };
-  }, [selectedFish, tankSize]);
+  }, [fishCounts, tankSize, selectedFish.length]);
 
-  const toggleFish = (fishId: string) => {
-    setSelectedFish(prev =>
-      prev.includes(fishId)
-        ? prev.filter(id => id !== fishId)
-        : [...prev, fishId]
-    );
+  const addFish = (fishId: string) => {
+    setFishCounts(prev => ({
+      ...prev,
+      [fishId]: (prev[fishId] || 0) + 1
+    }));
+  };
+
+  const removeFish = (fishId: string) => {
+    setFishCounts(prev => {
+      const newCount = (prev[fishId] || 0) - 1;
+      if (newCount <= 0) {
+        const { [fishId]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [fishId]: newCount };
+    });
   };
 
   const handleFishClick = (fish: FishSpecies) => {
     setDetailFish(fish);
     setIsModalOpen(true);
+  };
+
+  const getTotalFishCount = () => {
+    return Object.values(fishCounts).reduce((sum, count) => sum + count, 0);
   };
 
   const getStockingLevelColor = (level: number) => {
@@ -218,24 +244,24 @@ export default function FishFinderAdvanced() {
                     <Fish className="w-5 h-5 text-primary" />
                     الأسماك المختارة
                   </span>
-                  <Badge variant="secondary">{selectedFish.length}</Badge>
+                  <Badge variant="secondary">{getTotalFishCount()} سمكة</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {selectedFish.length === 0 ? (
+                {Object.keys(fishCounts).length === 0 ? (
                   <p className="text-center text-muted-foreground py-8">
                     اختر الأسماك من القائمة أدناه
                   </p>
                 ) : (
                   <ScrollArea className="h-[300px]">
                     <div className="space-y-2">
-                      {selectedFish.map(fishId => {
+                      {Object.entries(fishCounts).map(([fishId, count]) => {
                         const fish = freshwaterFish.find(f => f.id === fishId);
                         if (!fish) return null;
                         return (
                           <div
                             key={fishId}
-                            className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg group"
+                            className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg"
                           >
                             <img
                               src={fish.image}
@@ -244,16 +270,30 @@ export default function FishFinderAdvanced() {
                             />
                             <div className="flex-1 min-w-0">
                               <p className="font-medium text-sm truncate">{fish.arabicName}</p>
-                              <p className="text-xs text-muted-foreground">{fish.maxSize} سم</p>
+                              <p className="text-xs text-muted-foreground">
+                                {fish.maxSize} سم
+                                {fish.schooling && <span className="text-primary mr-2">• سرب {fish.minimumGroup}+</span>}
+                              </p>
                             </div>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => toggleFish(fishId)}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => removeFish(fishId)}
+                              >
+                                -
+                              </Button>
+                              <span className="w-8 text-center font-bold">{count}</span>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => addFish(fishId)}
+                              >
+                                +
+                              </Button>
+                            </div>
                           </div>
                         );
                       })}
@@ -284,13 +324,12 @@ export default function FishFinderAdvanced() {
                       </div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className={`h-full transition-all ${
-                            analysis.stockingLevel < 50
-                              ? "bg-green-500"
-                              : analysis.stockingLevel < 80
+                          className={`h-full transition-all ${analysis.stockingLevel < 50
+                            ? "bg-green-500"
+                            : analysis.stockingLevel < 80
                               ? "bg-yellow-500"
                               : "bg-red-500"
-                          }`}
+                            }`}
                           style={{ width: `${Math.min(analysis.stockingLevel, 100)}%` }}
                         />
                       </div>
@@ -395,18 +434,24 @@ export default function FishFinderAdvanced() {
                   اختر الأسماك لحوضك
                 </CardTitle>
                 <p className="text-sm text-muted-foreground mt-2">
-                  انقر على البطاقات لإضافة أو إزالة الأسماك من قائمتك
+                  انقر لإضافة سمكة. للأسماك التي تعيش في مجموعات، أضف العدد المطلوب من اليسار.
                 </p>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {freshwaterFish.map(fish => (
-                    <FishCard
-                      key={fish.id}
-                      fish={fish}
-                      onClick={() => toggleFish(fish.id)}
-                      isSelected={selectedFish.includes(fish.id)}
-                    />
+                    <div key={fish.id} className="relative">
+                      <FishCard
+                        fish={fish}
+                        onClick={() => addFish(fish.id)}
+                        isSelected={(fishCounts[fish.id] || 0) > 0}
+                      />
+                      {(fishCounts[fish.id] || 0) > 0 && (
+                        <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm shadow-lg">
+                          {fishCounts[fish.id]}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </CardContent>

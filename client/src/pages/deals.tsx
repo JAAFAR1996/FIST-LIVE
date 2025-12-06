@@ -11,6 +11,8 @@ import { ShoppingCart, Star, Percent, Tag, TrendingDown, Timer, Sparkles } from 
 import { useCart } from "@/contexts/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { BackToTop } from "@/components/back-to-top";
 
 export default function Deals() {
   const { data, isLoading } = useQuery({
@@ -46,17 +48,16 @@ export default function Deals() {
 
       <main className="flex-1 container mx-auto px-4 py-12" dir="rtl">
         {/* Hero Section */}
-        <div className="mb-12 text-center relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 p-12 border border-primary/20 shadow-lg">
+        <div className="mb-12 text-center relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500 via-pink-500 to-rose-500 p-12 text-white shadow-2xl">
           <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
           <div className="relative z-10">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Sparkles className="h-8 w-8 text-primary animate-pulse" />
-              <h1 className="text-5xl font-bold text-foreground">
+              <h1 className="text-5xl font-bold">
                 العروض والخصومات
               </h1>
-              <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+              <Sparkles className="h-8 w-8 animate-pulse" />
             </div>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
               اغتنم الفرصة! خصومات هائلة على منتجات مختارة لفترة محدودة
             </p>
           </div>
@@ -201,11 +202,10 @@ export default function Deals() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-3 h-3 ${
-                                i < Math.floor(product.rating)
+                              className={`w-3 h-3 ${i < Math.floor(product.rating)
                                   ? "fill-current"
                                   : ""
-                              }`}
+                                }`}
                             />
                           ))}
                         </div>
@@ -278,6 +278,8 @@ export default function Deals() {
         </Card>
       </main>
 
+      <WhatsAppWidget />
+      <BackToTop />
       <Footer />
     </div>
   );
