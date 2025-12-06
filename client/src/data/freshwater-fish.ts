@@ -99,10 +99,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '6-8 أشهر'
       },
       tips: [
-        '🌑 أهم عامل هو الظلام - الضوء يقتل البيض واليرقات',
-        '💧 جودة المياه يجب أن تكون مثالية',
-        '🦠 جهز مزارع الإنفوزوريا قبل أسبوعين',
-        '🚫 اعزل الوالدين فوراً بعد وضع البيض'
+        'أهم عامل هو الظلام - الضوء يقتل البيض واليرقات',
+        'جودة المياه يجب أن تكون مثالية',
+        'جهز مزارع الإنفوزوريا قبل أسبوعين',
+        'اعزل الوالدين فوراً بعد وضع البيض'
       ]
     },
     schooling: true,
@@ -166,11 +166,11 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '3-4 أشهر للنضج الكامل'
       },
       tips: [
-        '🥚 البيض يطفو في عش الفقاعات - لا تحرك الماء!',
-        '👨 الذكر أب ممتاز - لا تزيله حتى تسبح الصغار بحرية (48 ساعة)',
-        '👩 أزل الأنثى فوراً! الذكر قد يقتلها',
-        '⚡ الصغار حساسون جداً للتيار - استخدم فلتر إسفنجي خفيف',
-        '🍃 ورق اللوز الهندي يحسن الخصوبة ويمنع الفطريات'
+        'البيض يطفو في عش الفقاعات - لا تحرك الماء!',
+        'الذكر أب ممتاز - لا تزيله حتى تسبح الصغار بحرية (48 ساعة)',
+        'أزل الأنثى فوراً! الذكر قد يقتلها',
+        'الصغار حساسون جداً للتيار - استخدم فلتر إسفنجي خفيف',
+        'ورق اللوز الهندي يحسن الخصوبة ويمنع الفطريات'
       ]
     },
     schooling: false,
@@ -233,10 +233,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '3-6 أشهر حسب الظروف'
       },
       tips: [
-        '⚠️ تأكل الصغار! افصلهم فوراً أو استخدم نباتات كثيفة',
-        '🌱 Java moss و Guppy grass ممتازان لاختباء الصغار',
-        '👶 الأنثى تلد 20-50 صغير كل شهر!',
-        '🔄 تجنب التهجين الداخلي - أضف دماء جديدة كل 3-4 أجيال'
+        'تأكل الصغار! افصلهم فوراً أو استخدم نباتات كثيفة',
+        'Java moss و Guppy grass ممتازان لاختباء الصغار',
+        'الأنثى تلد 20-50 صغير كل شهر!',
+        'تجنب التهجين الداخلي - أضف دماء جديدة كل 3-4 أجيال'
       ]
     },
     schooling: false,
@@ -300,12 +300,12 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '6-8 أشهر للنضج الجنسي'
       },
       tips: [
-        '💑 دع الزوج يختار بعضه - لا تجبرهما!',
-        '🥚 البيض برتقالي/بني صحي، أبيض = ميت أو غير مخصب',
-        '👪 معظم الأزواج يأكلون أول 2-3 مرات - هذا طبيعي!',
-        '🌿 ضع سيراميك أو ورقة Amazon Sword كسطح تبيض',
-        '💡 خفف الإضاءة - Angelfish تحب الظلام عند التكاثر',
-        '⚠️ افصلهما في حوض آخر - سيصبحان عدوانيين جداً!'
+        'دع الزوج يختار بعضه - لا تجبرهما!',
+        'البيض برتقالي/بني صحي، أبيض = ميت أو غير مخصب',
+        'معظم الأزواج يأكلون أول 2-3 مرات - هذا طبيعي!',
+        'ضع سيراميك أو ورقة Amazon Sword كسطح تبيض',
+        'خفف الإضاءة - Angelfish تحب الظلام عند التكاثر',
+        'افصلهما في حوض آخر - سيصبحان عدوانيين جداً!'
       ]
     },
     schooling: false,
@@ -345,7 +345,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Sinking pellets', 'Wafers', 'Bloodworms', 'Leftover food'],
-    breeding: 'يضع البيض على الزجاج والنباتات. سهل نسبياً.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكبر وأكثر استدارة من الأعلى. الذكور أصغر وأنحف مع زعانف صدرية مدببة أكثر.',
+      spawningTriggers: [
+        'انخفاض درجة الحرارة 2-3 درجات (محاكاة موسم الأمطار)',
+        'تغيير ماء كبير بماء أبرد',
+        'تغذية مكثفة بالديدان الحية',
+        'نسبة 2 ذكور لكل أنثى'
+      ],
+      breedingSetup: {
+        tankSize: '40-60 لتر',
+        waterConditions: 'pH 7.0، ماء نظيف جداً',
+        temperature: '22-24°م',
+        equipment: ['فلتر إسفنجي', 'نباتات عريضة الأوراق', 'رمل ناعم']
+      },
+      spawningBehavior: 'الأنثى تجمع الحيوانات المنوية في فمها ثم تضع البيض اللاصق على الزجاج والنباتات. تضع 20-100 بيضة.',
+      eggCare: 'البيض يفقس في 3-5 أيام. يمكن نقل البيض لحوض منفصل للحماية من الأكل.',
+      fryInfo: {
+        firstFood: 'صفار بيض مسلوق مطحون، ثم artemia',
+        growthRate: 'متوسط - 1 سم شهرياً',
+        adulthoodTime: '8-12 شهر'
+      },
+      tips: [
+        'الماء البارد يحفز التكاثر',
+        'البيض لزج جداً ويلتصق بالزجاج',
+        'الوالدان قد يأكلان البيض - انقله إذا أمكن',
+        'الصغار متينة نسبياً'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -407,10 +436,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '1 سنة'
       },
       tips: [
-        '🍽️ السمك الذهبي يأكل بيضه بشراهة!',
-        '🧹 نظافة الماء ضرورية للصغار',
-        '📈 الصغار تحتاج مساحة كبيرة للنمو السليم',
-        '🔍 افحص البيض وأزل الأبيض منه (الفاسد) لتجنب الفطر'
+        'السمك الذهبي يأكل بيضه بشراهة!',
+        'نظافة الماء ضرورية للصغار',
+        'الصغار تحتاج مساحة كبيرة للنمو السليم',
+        'افحص البيض وأزل الأبيض منه (الفاسد) لتجنب الفطر'
       ]
     },
     schooling: false,
@@ -474,10 +503,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '4-5 أشهر'
       },
       tips: [
-        '⚠️ تأكل الصغار - افصلهم فوراً!',
-        '🌱 نباتات Java Moss تحمي الصغار',
-        '👶 تلد 20-40 صغير كل شهر',
-        '🎨 تتزاوج مع Swordtail - تجنب التهجين إذا أردت سلالات نقية'
+        'تأكل الصغار - افصلهم فوراً!',
+        'نباتات Java Moss تحمي الصغار',
+        'تلد 20-40 صغير كل شهر',
+        'تتزاوج مع Swordtail - تجنب التهجين إذا أردت سلالات نقية'
       ]
     },
     schooling: false,
@@ -517,7 +546,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Micro pellets', 'Flakes', 'Frozen foods', 'Live foods'],
-    breeding: 'صعب في الأحواض المنزلية. يحتاج لمياه حمضية جداً.',
+    breeding: {
+      difficulty: 'expert',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكثر استدارة وامتلاءً. الذكور أنحف قليلاً.',
+      spawningTriggers: [
+        'مياه حمضية جداً (pH 5.0-5.5)',
+        'ظلام شبه تام',
+        'مياه ناعمة جداً (GH < 2)',
+        'تغذية بالأطعمة الحية'
+      ],
+      breedingSetup: {
+        tankSize: '20-30 لتر (مظلم تماماً)',
+        waterConditions: 'pH 5.0-5.5، GH < 2',
+        temperature: '25-26°م',
+        equipment: ['ماء مطر أو RO', 'Java Moss', 'تغطية كاملة من الضوء']
+      },
+      spawningBehavior: 'يتزاوجون في ظلام دامس. ينثران البيض الصغير جداً بين النباتات.',
+      eggCare: 'البيض حساس جداً للضوء ويفقس في 24-36 ساعة. الظلام ضروري!',
+      fryInfo: {
+        firstFood: 'Infusoria وparamecium لمدة أسبوع',
+        growthRate: 'بطيء جداً',
+        adulthoodTime: '9-12 شهر'
+      },
+      tips: [
+        'صعب جداً في الأحواض المنزلية',
+        'يحتاج لماء خاص (RO أو ماء مطر)',
+        'الضوء قاتل للبيض والصغار',
+        'لا ينصح به للمبتدئين'
+      ]
+    },
     schooling: true,
     minimumGroup: 10,
     compatibility: {
@@ -579,10 +637,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '5-6 أشهر'
       },
       tips: [
-        '🧂 الملح يحسن الصحة لكنه اختياري',
-        '🍃 تحب أكل الطحالب - مفيدة للحوض',
-        '👶 تلد عدد كبير - خطط لمكان الصغار',
-        '⚠️ الأهل يأكلون الصغار بكثرة!'
+        'الملح يحسن الصحة لكنه اختياري',
+        'تحب أكل الطحالب - مفيدة للحوض',
+        'تلد عدد كبير - خطط لمكان الصغار',
+        'الأهل يأكلون الصغار بكثرة!'
       ]
     },
     schooling: false,
@@ -622,7 +680,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Pellets', 'Live foods', 'Frozen foods'],
-    breeding: 'الذكر يبني عش فقاعات. سهل التكاثر نسبياً.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'bubble-nest',
+      sexualDimorphism: 'الذكور ألوانهم زاهية جداً (أحمر وأزرق) مع زعانف أطول. الإناث رمادية باهتة وأصغر حجماً.',
+      spawningTriggers: [
+        'رفع درجة الحرارة إلى 28°م',
+        'خفض مستوى الماء إلى 15-20 سم',
+        'إضافة نباتات طافية',
+        'تغذية مكثفة بالأطعمة الحية'
+      ],
+      breedingSetup: {
+        tankSize: '30-40 لتر',
+        waterConditions: 'pH 6.5-7.0، ماء ناعم',
+        temperature: '27-28°م',
+        equipment: ['نباتات طافية', 'مخبأ للأنثى', 'سخان', 'لا تيار قوي']
+      },
+      spawningBehavior: 'الذكر يبني عش فقاعات كبير تحت النباتات الطافية. يحضن الأنثى تحت العش ويلتف حولها.',
+      eggCare: 'الذكر يحرس العش والبيض. أزل الأنثى بعد وضع البيض. البيض يفقس في 24-48 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'متوسط',
+        adulthoodTime: '4-5 أشهر'
+      },
+      tips: [
+        'الذكر يبني عش رائع من الفقاعات',
+        'أزل الأنثى فوراً بعد التكاثر',
+        'الذكر أب ممتاز - لا تزيله',
+        'الصغار صغيرة جداً في البداية'
+      ]
+    },
     schooling: false,
     minimumGroup: 1,
     compatibility: {
@@ -660,7 +747,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Flakes', 'Pellets', 'Live foods', 'Frozen foods'],
-    breeding: 'يضع البيض بين النباتات. متوسط الصعوبة.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكبر وأكثر استدارة. الذكور أصغر مع زعانف أكثر سواداً.',
+      spawningTriggers: [
+        'رفع درجة الحرارة تدريجياً',
+        'تغذية مكثفة بالأطعمة الحية',
+        'تغيير ماء جزئي',
+        'إضافة نباتات ناعمة كثيفة'
+      ],
+      breedingSetup: {
+        tankSize: '40-60 لتر',
+        waterConditions: 'pH 6.5-7.0، ماء ناعم إلى متوسط',
+        temperature: '26-28°م',
+        equipment: ['Java Moss كثيف', 'شبكة في القاع', 'إضاءة خافتة']
+      },
+      spawningBehavior: 'يتزاوجون في الصباح الباكر. ينثران البيض بين النباتات.',
+      eggCare: 'أزل الوالدين فوراً - يأكلان البيض! يفقس في 24-36 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'متوسط',
+        adulthoodTime: '5-6 أشهر'
+      },
+      tips: [
+        'أزل الوالدين مباشرة بعد وضع البيض',
+        'الإضاءة الخافتة تساعد',
+        'استخدم شبكة لحماية البيض',
+        'الصغار قد تأكل بعضها'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -722,10 +838,10 @@ export const freshwaterFish: FishSpecies[] = [
         adulthoodTime: '4-6 أشهر'
       },
       tips: [
-        '⚔️ السيف يظهر عند النضج فقط',
-        '💪 الذكور عدوانيون - 1 ذكر أفضل',
-        '🦘 يقفزون - غطي الحوض دائماً!',
-        '👶 ينتجون عدد كبير - خطط مسبقاً'
+        'السيف يظهر عند النضج فقط',
+        'الذكور عدوانيون - 1 ذكر أفضل',
+        'يقفزون - غطي الحوض دائماً!',
+        'ينتجون عدد كبير - خطط مسبقاً'
       ]
     },
     schooling: false,
@@ -765,7 +881,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Flakes', 'Micro pellets', 'Live foods', 'Frozen foods'],
-    breeding: 'يضع البيض. سهل التكاثر.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكبر وأكثر استدارة مع بطن ممتلئ. الذكور أنحف وأكثر لوناً.',
+      spawningTriggers: [
+        'ضوء الصباح',
+        'رفع الحرارة قليلاً',
+        'تغذية جيدة',
+        'مجموعة من الذكور والإناث'
+      ],
+      breedingSetup: {
+        tankSize: '20-40 لتر',
+        waterConditions: 'pH 6.5-7.5، ماء نظيف',
+        temperature: '24-26°م',
+        equipment: ['شبكة في القاع أو رخام', 'نباتات ناعمة', 'فلتر إسفنجي']
+      },
+      spawningBehavior: 'يتزاوجون في الصباح الباكر. الذكور يطاردون الإناث وينثرون البيض.',
+      eggCare: 'يأكلون البيض! استخدم شبكة أو رخام لحمايته. يفقس في 48-72 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'سريع',
+        adulthoodTime: '3-4 أشهر'
+      },
+      tips: [
+        'من أسهل الأسماك للتكاثر',
+        'الشبكة أو الرخام يحمي البيض من الأكل',
+        'ينتجون كميات كبيرة من البيض',
+        'مثالي للمبتدئين في التكاثر'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -803,7 +948,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Flakes', 'Pellets', 'Live foods', 'Vegetables'],
-    breeding: 'يضع البيض. متوسط الصعوبة.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'egg-layer',
+      sexualDimorphism: 'الذكور أكثر ألواناً مع زعانف حمراء زاهية. الإناث أكبر وباهتة اللون.',
+      spawningTriggers: [
+        'رفع الحرارة لـ 27°م',
+        'تغذية بالديدان الحية',
+        'ضوء الصباح',
+        'تغيير ماء كبير'
+      ],
+      breedingSetup: {
+        tankSize: '60-80 لتر',
+        waterConditions: 'pH 6.5-7.0، ماء ناعم إلى متوسط',
+        temperature: '26-28°م',
+        equipment: ['Java Moss كثيف', 'شبكة في القاع', 'فلتر إسفنجي']
+      },
+      spawningBehavior: 'الذكور يطاردون الإناث بنشاط. ينثرون البيض بين النباتات.',
+      eggCare: 'يأكلون البيض بشراهة! أزلهم فوراً. يفقس في 36-48 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'سريع',
+        adulthoodTime: '6-8 أشهر للألوان الكاملة'
+      },
+      tips: [
+        'الوالدان يأكلان البيض - احميه!',
+        'استخدم مجموعة كبيرة للتكاثر',
+        'الألوان تظهر مع النضج',
+        'الصغار سريعة النمو'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -841,7 +1015,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Pellets', 'Live foods', 'Vegetables'],
-    breeding: 'يبني عش فقاعات. سهل نسبياً.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'bubble-nest',
+      sexualDimorphism: 'الذكور لديهم صدر برتقالي/أحمر وزعانف ظهرية أطول ومدببة. الإناث أصغر وباهتة.',
+      spawningTriggers: [
+        'رفع الحرارة لـ 28°م',
+        'خفض مستوى الماء',
+        'إضافة نباتات طافية',
+        'تغذية بالأطعمة الحية'
+      ],
+      breedingSetup: {
+        tankSize: '80-100 لتر',
+        waterConditions: 'pH 6.5-7.0، ماء ناعم',
+        temperature: '27-28°م',
+        equipment: ['نباتات طافية كثيفة', 'مخابئ للأنثى', 'لا تيار']
+      },
+      spawningBehavior: 'الذكر يبني عش فقاعات كبير. يحضن الأنثى تحت العش في رقصة جميلة.',
+      eggCare: 'الذكر يحرس العش. أزل الأنثى بعد وضع البيض. يفقس في 24-48 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'متوسط',
+        adulthoodTime: '6-8 أشهر'
+      },
+      tips: [
+        'من أجمل الأسماك في التكاثر',
+        'الذكر يبني عش ضخم',
+        'أزل الأنثى فوراً بعد التكاثر',
+        'الصغار تحتاج طعام صغير جداً'
+      ]
+    },
     schooling: false,
     minimumGroup: 1,
     compatibility: {
@@ -879,7 +1082,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'medium',
     },
     diet: ['Algae wafers', 'Vegetables', 'Wood', 'Sinking pellets'],
-    breeding: 'يضع البيض في الكهوف. سهل نسبياً.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'egg-layer',
+      sexualDimorphism: 'الذكور لديهم شوارب (bristles) كبيرة على الأنف والوجه. الإناث شواربها صغيرة أو معدومة.',
+      spawningTriggers: [
+        'توفير كهف مناسب',
+        'تغيير ماء كبير بماء أبرد',
+        'تغذية بالخضروات',
+        'جودة ماء ممتازة'
+      ],
+      breedingSetup: {
+        tankSize: '80-100 لتر',
+        waterConditions: 'pH 6.5-7.5، ماء نظيف',
+        temperature: '24-26°م',
+        equipment: ['كهوف من الفخار أو PVC', 'خشب طافي', 'فلتر جيد']
+      },
+      spawningBehavior: 'الذكر يجذب الأنثى للكهف. تضع البيض داخله ويحرسه الذكر.',
+      eggCare: 'الذكر يحرس البيض ويهويه بزعانفه. لا تزله! يفقس في 4-10 أيام.',
+      fryInfo: {
+        firstFood: 'طحالب، خضروات مسلوقة، wafers مطحون',
+        growthRate: 'بطيء',
+        adulthoodTime: '12-18 شهر'
+      },
+      tips: [
+        'الذكر أب ممتاز - لا تزعجه',
+        'الكهف هو المفتاح للتكاثر',
+        'الصغار تأكل الطحالب فوراً',
+        'سهل نسبياً للمبتدئين'
+      ]
+    },
     schooling: false,
     minimumGroup: 1,
     compatibility: {
@@ -917,7 +1149,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Sinking pellets', 'Bloodworms', 'Brine shrimp', 'Leftover food'],
-    breeding: 'نادر في الأحواض. صعب.',
+    breeding: {
+      difficulty: 'expert',
+      method: 'egg-layer',
+      sexualDimorphism: 'صعب جداً التفريق. الإناث الناضجة أكثر امتلاءً قليلاً.',
+      spawningTriggers: [
+        'مجموعة كبيرة (10+)',
+        'مياه ناعمة جداً',
+        'انخفاض الضغط الجوي (عواصف)',
+        'نباتات طافية كثيفة'
+      ],
+      breedingSetup: {
+        tankSize: '80-100 لتر',
+        waterConditions: 'pH 6.0-6.5، ماء ناعم جداً',
+        temperature: '26-28°م',
+        equipment: ['رمل ناعم', 'نباتات طافية', 'مخابئ كثيرة']
+      },
+      spawningBehavior: 'يتزاوجون عند السطح بين النباتات الطافية. ينثرون بيض أخضر لامع.',
+      eggCare: 'البيض يطفو بين النباتات. يفقس في 24 ساعة. نادر الحدوث في الأسر.',
+      fryInfo: {
+        firstFood: 'Infusoria صغير جداً',
+        growthRate: 'بطيء جداً',
+        adulthoodTime: '18-24 شهر'
+      },
+      tips: [
+        'نادر جداً في الأحواض المنزلية',
+        'يحتاج لظروف مثالية',
+        'معظم الكولي لوتش تأتي من الطبيعة',
+        'لا تحاول إلا إذا كنت خبيراً'
+      ]
+    },
     schooling: true,
     minimumGroup: 5,
     compatibility: {
@@ -955,7 +1216,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Micro pellets', 'Live foods', 'Frozen foods'],
-    breeding: 'يضع البيض تحت الأوراق. متوسط الصعوبة.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'egg-layer',
+      sexualDimorphism: 'الإناث أكبر وأكثر استدارة. الذكور العلامة السوداء أكثر حدة وامتداداً.',
+      spawningTriggers: [
+        'مياه ناعمة وحمضية',
+        'نباتات عريضة الأوراق (Cryptocoryne)',
+        'تغذية بالأطعمة الحية',
+        'ضوء الصباح الخافت'
+      ],
+      breedingSetup: {
+        tankSize: '30-40 لتر',
+        waterConditions: 'pH 5.5-6.5، ماء ناعم (GH < 4)',
+        temperature: '26-28°م',
+        equipment: ['نباتات عريضة الأوراق', 'إضاءة خافتة', 'فلتر إسفنجي']
+      },
+      spawningBehavior: 'الزوج يسبح مقلوباً تحت ورقة ويلصقان البيض على الجانب السفلي.',
+      eggCare: 'أزل الوالدين. البيض يفقس في 24-28 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'متوسط',
+        adulthoodTime: '6-8 أشهر'
+      },
+      tips: [
+        'يضعون البيض تحت الأوراق - فريد!',
+        'الماء الناعم ضروري',
+        'الأوراق العريضة مهمة جداً',
+        'متوسط الصعوبة للهواة'
+      ]
+    },
     schooling: true,
     minimumGroup: 8,
     compatibility: {
@@ -993,7 +1283,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Flakes', 'Pellets', 'Live foods', 'Vegetables'],
-    breeding: 'يضع البيض بين النباتات. سهل نسبياً.',
+    breeding: {
+      difficulty: 'easy',
+      method: 'egg-layer',
+      sexualDimorphism: 'الذكور حمراء زاهية جداً خاصة عند التكاثر. الإناث أكبر وذهبية/بنية.',
+      spawningTriggers: [
+        'ضوء الصباح',
+        'تغذية بالأطعمة الحية',
+        'رفع الحرارة قليلاً',
+        'نباتات ناعمة كثيفة'
+      ],
+      breedingSetup: {
+        tankSize: '40-60 لتر',
+        waterConditions: 'pH 6.0-7.0، ماء ناعم',
+        temperature: '25-27°م',
+        equipment: ['Java Moss كثيف', 'نباتات ناعمة', 'فلتر إسفنجي']
+      },
+      spawningBehavior: 'الذكر يطارد الأنثى ويلتف حولها. ينثران البيض بين النباتات.',
+      eggCare: 'أزل الوالدين - يأكلان البيض. يفقس في 24-48 ساعة.',
+      fryInfo: {
+        firstFood: 'Infusoria ثم baby brine shrimp',
+        growthRate: 'متوسط',
+        adulthoodTime: '6-8 أشهر للألوان الكاملة'
+      },
+      tips: [
+        'من أسهل أسماك البارب للتكاثر',
+        'الذكور تصبح حمراء جداً',
+        'النباتات الكثيفة ضرورية',
+        'مناسب للمبتدئين'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -1031,7 +1350,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Pellets', 'Flakes', 'Live foods', 'Frozen foods'],
-    breeding: 'يضع البيض على الأسطح. يحتاج لعناية.',
+    breeding: {
+      difficulty: 'moderate',
+      method: 'egg-layer',
+      sexualDimorphism: 'الذكور أكبر مع زعانف ممتدة وألوان أزهى. الإناث بطن وردي/أحمر.',
+      spawningTriggers: [
+        'درجة حرارة عالية (28-30°م)',
+        'مياه ناعمة وحمضية',
+        'سطح مستوٍ للبيض',
+        'تغذية بالأطعمة الحية'
+      ],
+      breedingSetup: {
+        tankSize: '40-60 لتر',
+        waterConditions: 'pH 5.5-6.5، ماء ناعم جداً',
+        temperature: '28-30°م',
+        equipment: ['صخرة مسطحة أو ورقة', 'فلتر إسفنجي', 'سخان موثوق']
+      },
+      spawningBehavior: 'الزوج ينظف سطحاً مستوياً. تضع الأنثى البيض ويخصبه الذكر. كلاهما يحرس.',
+      eggCare: 'الوالدان يحرسان البيض ويهويانه. يفقس في 48-72 ساعة.',
+      fryInfo: {
+        firstFood: 'Baby brine shrimp',
+        growthRate: 'بطيء',
+        adulthoodTime: '4-6 أشهر'
+      },
+      tips: [
+        'الحرارة العالية ضرورية',
+        'جودة الماء يجب أن تكون مثالية',
+        'الوالدان قد يأكلان الصغار أول مرة',
+        'حساسون - للهواة المتوسطين'
+      ]
+    },
     schooling: false,
     minimumGroup: 2,
     compatibility: {
@@ -1069,7 +1417,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Algae', 'Algae wafers', 'Vegetables', 'Biofilm'],
-    breeding: 'يضع البيض على الأسطح. صعب.',
+    breeding: {
+      difficulty: 'difficult',
+      method: 'egg-layer',
+      sexualDimorphism: 'صعب التفريق. الإناث أكبر وأكثر استدارة من الأعلى.',
+      spawningTriggers: [
+        'تغيير ماء كبير بماء أبرد',
+        'مياه ناعمة ونظيفة',
+        'وفرة الطحالب والبيوفيلم',
+        'مجموعة كبيرة (6+)'
+      ],
+      breedingSetup: {
+        tankSize: '40-60 لتر ناضج',
+        waterConditions: 'pH 6.5-7.0، ماء ناعم، نظيف جداً',
+        temperature: '24-26°م',
+        equipment: ['حوض ناضج مع طحالب', 'نباتات كثيفة', 'فلتر إسفنجي']
+      },
+      spawningBehavior: 'يضعون البيض الصغير على الزجاج والنباتات. عادة في الصباح.',
+      eggCare: 'البيض يفقس في 48-72 ساعة. لا يأكلون البيض عادة.',
+      fryInfo: {
+        firstFood: 'طحالب، بيوفيلم، spirulina مطحون',
+        growthRate: 'بطيء',
+        adulthoodTime: '8-12 شهر'
+      },
+      tips: [
+        'يحتاجون حوض ناضج بطحالب',
+        'صعب في الأحواض الجديدة',
+        'الماء النظيف ضروري',
+        'ليس للمبتدئين'
+      ]
+    },
     schooling: true,
     minimumGroup: 6,
     compatibility: {
@@ -1107,7 +1484,36 @@ export const freshwaterFish: FishSpecies[] = [
       hardness: 'soft',
     },
     diet: ['Special discus food', 'Bloodworms', 'Beef heart', 'Vegetables'],
-    breeding: 'يضع البيض ويعتني بالصغار. متقدم.',
+    breeding: {
+      difficulty: 'expert',
+      method: 'egg-layer',
+      sexualDimorphism: 'صعب جداً التفريق. الخبراء يلاحظون فروقات طفيفة في شكل الرأس والأنبوب التناسلي.',
+      spawningTriggers: [
+        'زوج مترابط (pair bonding)',
+        'مياه ناعمة جداً وحمضية',
+        'درجة حرارة عالية (30°م)',
+        'هدوء وخصوصية'
+      ],
+      breedingSetup: {
+        tankSize: '150-200 لتر',
+        waterConditions: 'pH 5.5-6.5، GH < 3، ماء نقي جداً',
+        temperature: '29-31°م',
+        equipment: ['مخروط تكاثر أو سطح عمودي', 'فلتر إسفنجي', 'إضاءة خافتة']
+      },
+      spawningBehavior: 'الزوج ينظف سطحاً عمودياً. تضع الأنثى البيض ويخصبه الذكر. كلاهما يعتني.',
+      eggCare: 'الوالدان يحرسان البيض. يفقس في 48-60 ساعة. الصغار تتغذى من جلد الوالدين!',
+      fryInfo: {
+        firstFood: 'مخاط جلد الوالدين (فريد!) ثم baby brine shrimp',
+        growthRate: 'بطيء',
+        adulthoodTime: '12-18 شهر'
+      },
+      tips: [
+        'الصغار تتغذى من جلد الوالدين - لا تفصلهم!',
+        'يحتاج لخبرة عالية',
+        'جودة الماء حرجة جداً',
+        'للخبراء فقط'
+      ]
+    },
     schooling: false,
     minimumGroup: 5,
     compatibility: {
