@@ -9,6 +9,7 @@ import { buildSessionSecret, createSessionStore } from "../server/session-config
 type RawBodyRequest = IncomingMessage & { rawBody?: Buffer };
 
 async function buildApp() {
+  console.log("🚀 Starting app initialization...");
   const app = express();
   const httpServer = createServer(app);
 
@@ -22,8 +23,10 @@ async function buildApp() {
 
   app.use(express.urlencoded({ extended: false }));
 
+  console.log("📦 Creating session store...");
   // Use persistent PostgreSQL session store in production
   const sessionStore = createSessionStore(process.env.NODE_ENV);
+  console.log("✅ Session store created");
 
   app.use(
     session({
@@ -38,6 +41,7 @@ async function buildApp() {
       },
     }),
   );
+  console.log("✅ Session middleware configured");
 
   app.use((req: any, res: any, next: any) => {
     const start = Date.now();
@@ -53,16 +57,29 @@ async function buildApp() {
     next();
   });
 
+  console.log("📝 Registering routes...");
   await registerRoutes(httpServer, app);
+  console.log("✅ All routes registered successfully");
   return app;
 }
 
 let appPromise: Promise<express.Application> | null = null;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (!appPromise) {
-    appPromise = buildApp();
+  try {
+    if (!appPromise) {
+      appPromise = buildApp();
+    }
+    const app = await appPromise;
+    return (app as any)(req, res);
+  } catch (error: any) {
+    console.error("Handler error:", error);
+    // Reset appPromise on error so next request tries again
+    appPromise = null;
+    res.status(500).json({
+      message: "Server initialization error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined
+    });
   }
-  const app = await appPromise;
-  return (app as any)(req, res);
 }
+
