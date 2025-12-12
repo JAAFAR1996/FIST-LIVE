@@ -1,0 +1,52 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "compare": "Compare"
+  },
+  "fishFinder": {
+    "title": "Fish Finder Wizard",
+    "subtitle": "Find the perfect aquatic companions for your setup",
+    "step1": "Tank Size",
+    "step2": "Experience Level",
+    "step3": "Water Type",
+    "step4": "Preferences",
+    "recommendations": "Your Perfect Matches"
+  },
+  "journey": {
+    "title": "Your Aquarium Journey",
+    "step1": "Choose Your Tank",
+    "step2": "Select Plants",
+    "step3": "Add Fish",
+    "step4": "Essential Equipment",
+    "progress": "Journey Progress"
+  },
+  "difficulty": {
+    "easy": "Beginner Friendly",
+    "medium": "Intermediate",
+    "hard": "Advanced",
+    "expert": "Expert Only"
+  },
+  "themes": {
+    "light": "Daylight",
+    "dark": "Deep Ocean",
+    "neon-ocean": "Bioluminescent",
+    "pastel": "Coral Reef",
+    "monochrome": "Abyssal"
+  },
+  "product": {
+    "ecoFriendly": "Eco-Friendly Choice",
+    "bundle": "Complete Bundle",
+    "productOfWeek": "Product of the Week",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "specs": "Specifications"
+  },
+  "sustainability": {
+    "title": "Our Commitment",
+    "description": "1% of every sale goes to ocean conservation."
+  }
+}

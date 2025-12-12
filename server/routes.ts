@@ -1,0 +1,66 @@
+import type { Server } from "http";
+import express from "express";
+import { createProductRouter } from "./routes/products.js";
+import { createOrderRouter } from "./routes/orders.js";
+import { createUserRouter } from "./routes/users.js";
+import { createGalleryRouter } from "./routes/gallery.js";
+import { createAdminRouter } from "./routes/admin.js";
+import { createSystemRouter } from "./routes/system.js";
+import { createFishRouter } from "./routes/fish.js";
+import { createReviewsRouter } from "./routes/reviews.js";
+import { storage } from "./storage/index.js";
+
+// Helper for session type extension if needed
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
+
+export async function registerRoutes(
+  httpServer: Server,
+  app: express.Application,
+): Promise<Server> {
+
+  // API Routes
+  app.use("/api/fish", createFishRouter(storage));
+  app.use("/api/products", createProductRouter());
+  app.use("/api/orders", createOrderRouter());
+  app.use("/api/admin", createAdminRouter()); // Contains /admin/orders, /admin/users etc.
+  app.use("/api/gallery", createGalleryRouter());
+  app.use("/api/system", createSystemRouter()); // For /api/system/seed
+
+  // System root routes (sitemap, robots) - Handling mounting inside createSystemRouter
+  // But wait, createSystemRouter defines /sitemap.xml.
+  // If I mount it at /api/system, it becomes /api/system/sitemap.xml
+  // I need to mount system router at root "/" for robots and sitemap!
+  app.use("/", createSystemRouter());
+
+  // User/Auth routes are tricky because they have mix of /api/register and /api/user
+  // createUserRouter should likely be mounted at /api
+  app.use("/api", createUserRouter());
+  app.use("/api", createReviewsRouter());
+
+  // Error handling middleware
+  app.use("/api", (err: any, _req: any, res: any, _next: any) => {
+    console.error("API Error:", err);
+    const status = err.status || 500;
+    const message = err.message || "Internal server error";
+
+    if (err.name === "ZodError") {
+      res.status(400).json({
+        message: "Validation error",
+        errors: err.errors
+      });
+      return;
+    }
+
+    res.status(status).json({ message });
+  });
+
+  app.use("/api", (_req: any, res: any) => {
+    res.status(404).json({ message: "Not Found" });
+  });
+
+  return httpServer;
+}

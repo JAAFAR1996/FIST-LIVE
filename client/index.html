@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>AQUAVO - مستقبل الأحواض</title>
+  <meta name="description" content="وجهتك الأولى لمستلزمات أحواض الأسماك في العراق. فلاتر، سخانات، نباتات، والمزيد." />
+  <meta name="keywords" content="أحواض السمك، مستلزمات الأحواض، أسماك الزينة، فلاتر، سخانات، نباتات مائية، العراق" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="AQUAVO - اكتشف عالم البحار" />
+  <meta property="og:description"
+    content="AQUAVO - وجهتك الأولى لمستلزمات أحواض الأسماك في العراق. فلاتر، سخانات، نباتات، والمزيد." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/logo_aquavo.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AQUAVO - اكتشف عالم البحار" />
+  <meta name="twitter:description" content="AQUAVO - وجهتك الأولى لمستلزمات أحواض الأسماك في العراق." />
+  <meta name="twitter:image" content="/logo_aquavo.png" />
+
+  <!-- Favicons - AQUAVO Logo -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo_aquavo_icon.png" />
+  <meta name="theme-color" content="#199bb8" />
+
+  <!-- PWA Support - 2025 Standard -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AQUAVO" />
+
+  <!-- Performance: DNS prefetch and preconnect -->
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- LCP Optimization: Preload Hero Image (WebP) -->
+  <link rel="preload" as="image" href="/attached_assets/stock_images/planted_aquarium_tan_46df6ed7.webp"
+    type="image/webp" fetchpriority="high">
+
+  <!-- Fonts - Optimized with preload and non-blocking loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Changa:wght@400;600;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet"
+    media="print" onload="this.media='all'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet">
+  </noscript>
+
+  <!-- Critical CSS for Above-the-Fold Content -->
+  <style>
+    :root {
+      /* Deep Navy Background */
+      --background: 222 47% 4%; 
+      --foreground: 210 40% 98%;
+      /* Neon Lime Primary */
+      --primary: 111 100% 54% 
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      margin: 0
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Changa', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-section {
+      position: relative;
+      height: 700px;
+      width: 100%;
+      overflow: hidden
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, hsl(var(--background)));
+      z-index: 10
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

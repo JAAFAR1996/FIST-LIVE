@@ -1,0 +1,111 @@
+import type { Product } from "./schema.js";
+
+/**
+ * Product catalog imported from aquarium-export Excel file
+ * Total: 40+ selected products from 120+ item list
+ * Last updated: 2024-12-06
+ */
+
+// Helper function to generate slug from Arabic name
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\u0600-\u06FF]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Helper to create product ID from row number
+function createId(rowNum: number, nameAr: string): string {
+  return `product-${rowNum}-${slugify(nameAr).substring(0, 20)}`;
+}
+
+export const products: Product[] = [
+  // إضاءات (Lighting)
+  {
+    id: "hygger-hg978-18w",
+    slug: "hygger-hg978-18w",
+    name: "HYGGER HG978-18W",
+    brand: "Hygger",
+    category: "lighting",
+    subcategory: "led",
+    description: "LED Light 45-60cm - إضاءة HYGGER 18W",
+    price: "16751",
+    originalPrice: null,
+    currency: "IQD",
+    images: ["https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_3.jpg"],
+    thumbnail: "https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_3.jpg",
+    rating: "4.5",
+    reviewCount: 8,
+    stock: 8,
+    lowStockThreshold: 3,
+    isNew: true,
+    isBestSeller: true,
+    isProductOfWeek: false,
+    specifications: {
+      difficulty: "easy",
+      ecoFriendly: true,
+    },
+    createdAt: new Date("2024-11-04"),
+    updatedAt: new Date("2024-12-06"),
+    categoryId: null,
+    deletedAt: null,
+  },
+  {
+    id: "hygger-hg978-22w",
+    slug: "hygger-hg978-22w",
+    name: "HYGGER HG978-22W",
+    brand: "Hygger",
+    category: "lighting",
+    subcategory: "led",
+    description: "LED Light 60-76cm - إضاءة HYGGER 22W",
+    price: "20953",
+    originalPrice: null,
+    currency: "IQD",
+    images: ["https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_1.jpg"],
+    thumbnail: "https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_1.jpg",
+    rating: "4.5",
+    reviewCount: 6,
+    stock: 6,
+    lowStockThreshold: 2,
+    isNew: true,
+    isBestSeller: false,
+    isProductOfWeek: false,
+    specifications: {
+      difficulty: "easy",
+      ecoFriendly: true,
+    },
+    createdAt: new Date("2024-11-04"),
+    updatedAt: new Date("2024-12-06"),
+    categoryId: null,
+    deletedAt: null,
+  },
+  {
+    id: "hygger-hg978-26w",
+    slug: "hygger-hg978-26w",
+    name: "HYGGER HG978-26W",
+    brand: "Hygger",
+    category: "lighting",
+    subcategory: "led",
+    description: "LED Light 76-91cm - إضاءة HYGGER 26W",
+    price: "24901",
+    originalPrice: null,
+    currency: "IQD",
+    images: ["https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_6.jpg"],
+    thumbnail: "https://hyggerstore.com/wp-content/uploads/2023/04/HG-978_6.jpg",
+    rating: "4.5",
+    reviewCount: 2,
+    stock: 2,
+    lowStockThreshold: 1,
+    isNew: true,
+    isBestSeller: false,
+    isProductOfWeek: false,
+    specifications: {
+      difficulty: "easy",
+      ecoFriendly: true,
+    },
+    createdAt: new Date("2024-11-04"),
+    updatedAt: new Date("2024-12-06"),
+    categoryId: null,
+    deletedAt: null,
+  },
+];

@@ -1,0 +1,63 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+server/public
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings
+.claude/
+.cursor/
+.local/
+.vite/
+
+# Testing
+coverage
+.nyc_output
+*.lcov
+
+# Temp files
+*.tmp
+*.temp
+.cache
+.parcel-cache
+
+# Package manager
+.pnpm-store
+.npm
+.yarn
+
+# Misc
+vite.config.ts.*
+*.tar.gz
+*.zip
+
+#Ignore cursor AI rules
+.cursor\rules\codacy.mdc
