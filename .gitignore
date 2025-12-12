@@ -3,6 +3,7 @@ node_modules
 
 # Build outputs
 dist
+client/dist
 server/public
 
 # Environment variables
@@ -37,11 +38,14 @@ Thumbs.db
 .cursor/
 .local/
 .vite/
+.qodo/
 
 # Testing
 coverage
 .nyc_output
 *.lcov
+test-results/
+testsprite_tests/
 
 # Temp files
 *.tmp
@@ -59,5 +63,5 @@ vite.config.ts.*
 *.tar.gz
 *.zip
 
-#Ignore cursor AI rules
+# Ignore cursor AI rules
 .cursor\rules\codacy.mdc

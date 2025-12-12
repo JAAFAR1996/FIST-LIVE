@@ -4,8 +4,6 @@ import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package, Trophy, Crown, Camera, ShoppingCart } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import heroImg from "@assets/stock_images/planted_aquarium_tan_46df6ed7.jpg";
-import heroImgWebP from "@assets/stock_images/planted_aquarium_tan_46df6ed7.webp";
 import { BubbleTrail } from "@/components/effects/bubble-trail";
 import { ProductOfTheWeek } from "@/components/home/product-of-the-week";
 import { MasonryGalleryGrid } from "@/components/gallery/masonry-gallery-grid";
@@ -69,14 +67,7 @@ export default function Home() {
           {/* 1. Hero & Video Section (Wide Box: 8 cols, 2 rows) */}
           <div className="lg:col-span-8 lg:row-span-2 rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md">
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <picture>
-              <source srcSet={heroImgWebP} type="image/webp" />
-              <img
-                src={heroImg}
-                alt="Hero Aquarium"
-                className="w-full h-full object-cover transform transition-transform duration-[20s] scale-100 group-hover:scale-110 opacity-60 mix-blend-overlay"
-              />
-            </picture>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent opacity-60"></div>
 
             {/* Overlay Content */}
             <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 z-20 text-right">
