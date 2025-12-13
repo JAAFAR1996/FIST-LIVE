@@ -18,13 +18,14 @@ async function buildApp() {
 
   app.use(
     express.json({
+      limit: '50mb',
       verify: (req: RawBodyRequest, _res: ServerResponse, buf: Buffer, _encoding: string) => {
         req.rawBody = buf;
       },
     }),
   );
 
-  app.use(express.urlencoded({ extended: false }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   console.log("📦 Creating session store...");
   // Use persistent PostgreSQL session store in production

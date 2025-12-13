@@ -8,6 +8,8 @@ import { createAdminRouter } from "./routes/admin.js";
 import { createSystemRouter } from "./routes/system.js";
 import { createFishRouter } from "./routes/fish.js";
 import { createReviewsRouter } from "./routes/reviews.js";
+import { createCartRouter } from "./routes/cart.js";
+import { createFavoritesRouter } from "./routes/favorites.js";
 import { storage } from "./storage/index.js";
 
 // Helper for session type extension if needed
@@ -40,6 +42,8 @@ export async function registerRoutes(
   // createUserRouter should likely be mounted at /api
   app.use("/api", createUserRouter());
   app.use("/api", createReviewsRouter());
+  app.use("/api/cart", createCartRouter());
+  app.use("/api/favorites", createFavoritesRouter());
 
   // Error handling middleware
   app.use("/api", (err: any, _req: any, res: any, _next: any) => {

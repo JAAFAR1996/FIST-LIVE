@@ -9,15 +9,18 @@ const getSessionHelper = (req: express.Request) => (req as any).session;
 export function createGalleryRouter() {
     const router = Router();
 
-    // Get Approved Submissions
-    router.get("/", async (req, res, next) => {
+    const getSubmissions = async (req, res, next) => {
         try {
             const submissions = await storage.getGallerySubmissions(true);
             res.json(submissions);
         } catch (err) {
             next(err);
         }
-    });
+    };
+
+    // Get Approved Submissions
+    router.get("/", getSubmissions);
+    router.get("/submissions", getSubmissions);
 
     // Submit New
     router.post("/", async (req, res, next) => {
