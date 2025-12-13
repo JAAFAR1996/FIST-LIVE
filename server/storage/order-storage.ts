@@ -152,13 +152,35 @@ export class OrderStorage {
 
     async createCoupon(coupon: Partial<Coupon>): Promise<Coupon> {
         const db = this.ensureDb();
-        const result = await db.insert(coupons).values(coupon as any).returning();
+
+        // Sanitize timestamp fields - convert strings to Date objects
+        const sanitizedCoupon = {
+            ...coupon,
+            startDate: coupon.startDate ? new Date(coupon.startDate as any) : undefined,
+            endDate: coupon.endDate ? new Date(coupon.endDate as any) : undefined,
+            // Sanitize numeric fields - convert empty strings to undefined
+            value: coupon.value === '' ? undefined : coupon.value,
+            minOrderAmount: coupon.minOrderAmount === '' ? undefined : coupon.minOrderAmount,
+        };
+
+        const result = await db.insert(coupons).values(sanitizedCoupon as any).returning();
         return result[0];
     }
 
     async updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon | undefined> {
         const db = this.ensureDb();
-        const result = await db.update(coupons).set({ ...updates }).where(eq(coupons.id, id)).returning();
+
+        // Sanitize timestamp fields - convert strings to Date objects
+        const sanitizedUpdates = {
+            ...updates,
+            startDate: updates.startDate ? new Date(updates.startDate as any) : undefined,
+            endDate: updates.endDate ? new Date(updates.endDate as any) : undefined,
+            // Sanitize numeric fields - convert empty strings to undefined
+            value: updates.value === '' ? undefined : updates.value,
+            minOrderAmount: updates.minOrderAmount === '' ? undefined : updates.minOrderAmount,
+        };
+
+        const result = await db.update(coupons).set(sanitizedUpdates).where(eq(coupons.id, id)).returning();
         return result[0];
     }
 

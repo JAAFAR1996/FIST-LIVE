@@ -33,7 +33,7 @@ export async function fetchProductCore(id: string): Promise<Product> {
 }
 
 export async function fetchProductBySlugCore(slug: string): Promise<Product> {
-  return await getJson<Product>(`/api/products/slug/${slug}`);
+  return await getJson<Product>(`/api/products/${slug}`);
 }
 
 // Production functions with fallback to mock data

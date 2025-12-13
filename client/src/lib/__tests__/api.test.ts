@@ -199,7 +199,7 @@ describe('API Client', () => {
       const result = await fetchProductBySlug('test-product');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products/slug/test-product'),
+        expect.stringContaining('/api/products/test-product'),
         expect.objectContaining({
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -217,7 +217,7 @@ describe('API Client', () => {
       await fetchProductBySlug('my-awesome-product');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products/slug/my-awesome-product'),
+        expect.stringContaining('/api/products/my-awesome-product'),
         expect.any(Object)
       );
     });
@@ -231,7 +231,7 @@ describe('API Client', () => {
       await fetchProductBySlug('product-123');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products/slug/product-123'),
+        expect.stringContaining('/api/products/product-123'),
         expect.any(Object)
       );
     });
