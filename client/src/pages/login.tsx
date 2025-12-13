@@ -88,8 +88,8 @@ export default function Login() {
                                 <Fish className="w-8 h-8 text-white" />
                             </div>
                             <CardTitle className="text-2xl">تسجيل الدخول</CardTitle>
-                            <CardDescription>
-                                مرحباً بعودتك! أدخل بياناتك للمتابعة
+                            <CardDescription className="text-lg text-primary/80 font-medium mt-2">
+                                أهلاً بك في عائلتك الثانية! اشتقنا لرؤيتك 💙
                             </CardDescription>
                         </CardHeader>
 

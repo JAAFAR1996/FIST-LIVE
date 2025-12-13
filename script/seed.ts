@@ -1,9 +1,13 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import XLSX from "xlsx";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const XLSX = require("xlsx");
+
 import { db } from "../server/db.js";
-import { products } from "../shared/schema";
+import { products } from "../shared/schema.js";
 
 type RawProduct = {
   "#": number;
@@ -27,7 +31,7 @@ const __dirname = path.dirname(__filename);
 
 const workbookPath = path.resolve(
   __dirname,
-  "../attached_assets/aquarium-export-20251104-1762273765845_1764301726954.xlsx",
+  "../aquarium-export-20251104-1762270489031.xlsx",
 );
 const localImageDir = path.resolve(__dirname, "../client/public/products");
 
