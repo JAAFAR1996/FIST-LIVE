@@ -44,17 +44,17 @@ export default function CommunityGallery() {
   const { user } = useAuth();
 
   const { data: submissions = [], isLoading } = useQuery<GallerySubmission[]>({
-    queryKey: ["/api/gallery/submissions"],
+    queryKey: ["/api/gallery"],
   });
 
   const likeMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await fetch(`/api/gallery/like/${id}`, { method: "POST" });
+      const res = await fetch(`/api/gallery/${id}/like`, { method: "POST" });
       if (!res.ok) throw new Error("Failed to like");
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/gallery/submissions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery"] });
     }
   });
 
