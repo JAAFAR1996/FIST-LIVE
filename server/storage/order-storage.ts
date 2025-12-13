@@ -3,33 +3,45 @@ import { eq, desc, and, sql } from "drizzle-orm";
 import { getDb } from "../db.js";
 
 export class OrderStorage {
-    private db = getDb()!;
+    private db = getDb();
+
+    private ensureDb() {
+        if (!this.db) {
+            throw new Error('Database not connected. Please configure DATABASE_URL in your .env file.');
+        }
+        return this.db;
+    }
 
     async getOrders(userId?: string): Promise<Order[]> {
+        const db = this.ensureDb();
         // Return legacy JSONB 'items' for frontend compatibility
         if (userId) {
-            return await this.db.select().from(orders).where(eq(orders.userId, userId)).orderBy(desc(orders.createdAt));
+            return await db.select().from(orders).where(eq(orders.userId, userId)).orderBy(desc(orders.createdAt));
         }
-        return await this.db.select().from(orders).orderBy(desc(orders.createdAt));
+        return await db.select().from(orders).orderBy(desc(orders.createdAt));
     }
 
     async getOrder(id: string): Promise<Order | undefined> {
-        const result = await this.db.select().from(orders).where(eq(orders.id, id)).limit(1);
+        const db = this.ensureDb();
+        const result = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
         return result[0];
     }
 
     async createOrder(order: Partial<Order>): Promise<Order> {
-        const [newOrder] = await this.db.insert(orders).values(order as any).returning();
+        const db = this.ensureDb();
+        const [newOrder] = await db.insert(orders).values(order as any).returning();
         return newOrder;
     }
 
     async updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined> {
-        const [updatedOrder] = await this.db.update(orders).set(updates).where(eq(orders.id, id)).returning();
+        const db = this.ensureDb();
+        const [updatedOrder] = await db.update(orders).set(updates).where(eq(orders.id, id)).returning();
         return updatedOrder;
     }
 
     async createOrderSecure(userId: string | null, items: any[], customerInfo: any, couponCode?: string): Promise<Order> {
-        return await this.db.transaction(async (tx) => {
+        const db = this.ensureDb();
+        return await db.transaction(async (tx) => {
             // 1. Calculate totals and validate stock
             let subtotal = 0;
             const orderItemsData = [];
@@ -98,53 +110,63 @@ export class OrderStorage {
 
     // Payment Methods
     async createPayment(payment: Partial<Payment>): Promise<Payment> {
-        const [newPayment] = await this.db.insert(payments).values(payment as any).returning();
+        const db = this.ensureDb();
+        const [newPayment] = await db.insert(payments).values(payment as any).returning();
         return newPayment;
     }
 
     // Coupon methods
     async getCoupons(): Promise<Coupon[]> {
-        return await this.db.select().from(coupons).orderBy(desc(coupons.createdAt));
+        const db = this.ensureDb();
+        return await db.select().from(coupons).orderBy(desc(coupons.createdAt));
     }
 
     async getCoupon(id: string): Promise<Coupon | undefined> {
-        return (await this.db.select().from(coupons).where(eq(coupons.id, id)).limit(1))[0];
+        const db = this.ensureDb();
+        return (await db.select().from(coupons).where(eq(coupons.id, id)).limit(1))[0];
     }
 
     async getCouponByCode(code: string): Promise<Coupon | undefined> {
-        return (await this.db.select().from(coupons).where(eq(coupons.code, code)).limit(1))[0];
+        const db = this.ensureDb();
+        return (await db.select().from(coupons).where(eq(coupons.code, code)).limit(1))[0];
     }
 
     async getCouponsByUserId(userId: string): Promise<Coupon[]> {
+        const db = this.ensureDb();
         // Since coupons doesn't have a userId fk effectively (based on schema shown earlier, user_coupons usually linking table), 
         // assuming global access or TODO: specific implementation based on schema if customized.
         // For now returning all active coupons as "available to user" or public coupons
-        return await this.db.select().from(coupons).where(eq(coupons.isActive, true));
+        return await db.select().from(coupons).where(eq(coupons.isActive, true));
     }
 
     async createCoupon(coupon: Partial<Coupon>): Promise<Coupon> {
-        const result = await this.db.insert(coupons).values(coupon as any).returning();
+        const db = this.ensureDb();
+        const result = await db.insert(coupons).values(coupon as any).returning();
         return result[0];
     }
 
     async updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon | undefined> {
-        const result = await this.db.update(coupons).set({ ...updates }).where(eq(coupons.id, id)).returning();
+        const db = this.ensureDb();
+        const result = await db.update(coupons).set({ ...updates }).where(eq(coupons.id, id)).returning();
         return result[0];
     }
 
     async deleteCoupon(id: string): Promise<boolean> {
-        const result = await this.db.delete(coupons).where(eq(coupons.id, id)).returning();
+        const db = this.ensureDb();
+        const result = await db.delete(coupons).where(eq(coupons.id, id)).returning();
         return result.length > 0;
     }
 
     // Audit Logs
     async createAuditLog(log: Partial<AuditLog>): Promise<AuditLog> {
-        const result = await this.db.insert(auditLogs).values(log as any).returning();
+        const db = this.ensureDb();
+        const result = await db.insert(auditLogs).values(log as any).returning();
         return result[0];
     }
 
     async getAuditLogs(filters?: { userId?: string; entityType?: string; entityId?: string }): Promise<AuditLog[]> {
-        let query = this.db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt));
+        const db = this.ensureDb();
+        let query = db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt));
 
         if (filters) {
             const conditions = [];
@@ -161,7 +183,8 @@ export class OrderStorage {
 
     // Cart methods
     async getCartItems(userId: string): Promise<(CartItem & { product: any })[]> {
-        const items = await this.db.select({
+        const db = this.ensureDb();
+        const items = await db.select({
             cartItem: cartItems,
             product: products
         })
@@ -173,17 +196,18 @@ export class OrderStorage {
     }
 
     async addToCart(userId: string, productId: string, quantity: number): Promise<CartItem> {
-        const [existing] = await this.db.select().from(cartItems)
+        const db = this.ensureDb();
+        const [existing] = await db.select().from(cartItems)
             .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)));
 
         if (existing) {
-            const [updated] = await this.db.update(cartItems)
+            const [updated] = await db.update(cartItems)
                 .set({ quantity: (existing.quantity || 0) + quantity })
                 .where(eq(cartItems.id, existing.id))
                 .returning();
             return updated;
         } else {
-            const [created] = await this.db.insert(cartItems)
+            const [created] = await db.insert(cartItems)
                 .values({ userId, productId, quantity })
                 .returning();
             return created;
@@ -191,7 +215,8 @@ export class OrderStorage {
     }
 
     async updateCartItem(userId: string, productId: string, quantity: number): Promise<CartItem> {
-        const [updated] = await this.db.update(cartItems)
+        const db = this.ensureDb();
+        const [updated] = await db.update(cartItems)
             .set({ quantity })
             .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)))
             .returning();
@@ -199,17 +224,20 @@ export class OrderStorage {
     }
 
     async removeFromCart(userId: string, productId: string): Promise<void> {
-        await this.db.delete(cartItems)
+        const db = this.ensureDb();
+        await db.delete(cartItems)
             .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)));
     }
 
     async clearCart(userId: string): Promise<void> {
-        await this.db.delete(cartItems).where(eq(cartItems.userId, userId));
+        const db = this.ensureDb();
+        await db.delete(cartItems).where(eq(cartItems.userId, userId));
     }
 
     // Favorites methods
     async getFavorites(userId: string): Promise<(Favorite & { product: any })[]> {
-        const items = await this.db.select({
+        const db = this.ensureDb();
+        const items = await db.select({
             favorite: favorites,
             product: products
         })
@@ -221,37 +249,42 @@ export class OrderStorage {
     }
 
     async addFavorite(userId: string, productId: string): Promise<Favorite> {
-        const [existing] = await this.db.select().from(favorites)
+        const db = this.ensureDb();
+        const [existing] = await db.select().from(favorites)
             .where(and(eq(favorites.userId, userId), eq(favorites.productId, productId)));
 
         if (existing) return existing;
 
-        const [created] = await this.db.insert(favorites)
+        const [created] = await db.insert(favorites)
             .values({ userId, productId })
             .returning();
         return created;
     }
 
     async removeFavorite(userId: string, productId: string): Promise<void> {
-        await this.db.delete(favorites)
+        const db = this.ensureDb();
+        await db.delete(favorites)
             .where(and(eq(favorites.userId, userId), eq(favorites.productId, productId)));
     }
 
     // Gallery methods (Basic impl)
     async getGallerySubmissions(approvedOnly?: boolean): Promise<GallerySubmission[]> {
+        const db = this.ensureDb();
         if (approvedOnly) {
-            return await this.db.select().from(gallerySubmissions).where(eq(gallerySubmissions.isApproved, true)).orderBy(desc(gallerySubmissions.createdAt));
+            return await db.select().from(gallerySubmissions).where(eq(gallerySubmissions.isApproved, true)).orderBy(desc(gallerySubmissions.createdAt));
         }
-        return await this.db.select().from(gallerySubmissions).orderBy(desc(gallerySubmissions.createdAt));
+        return await db.select().from(gallerySubmissions).orderBy(desc(gallerySubmissions.createdAt));
     }
 
     async createGallerySubmission(submission: Partial<GallerySubmission>): Promise<GallerySubmission> {
-        const [res] = await this.db.insert(gallerySubmissions).values(submission as any).returning();
+        const db = this.ensureDb();
+        const [res] = await db.insert(gallerySubmissions).values(submission as any).returning();
         return res;
     }
 
     async approveGallerySubmission(id: string): Promise<GallerySubmission | undefined> {
-        const [res] = await this.db.update(gallerySubmissions).set({ isApproved: true }).where(eq(gallerySubmissions.id, id)).returning();
+        const db = this.ensureDb();
+        const [res] = await db.update(gallerySubmissions).set({ isApproved: true }).where(eq(gallerySubmissions.id, id)).returning();
         return res;
     }
 
@@ -260,12 +293,14 @@ export class OrderStorage {
     }
 
     async deleteGallerySubmission(id: string): Promise<boolean> {
-        const res = await this.db.delete(gallerySubmissions).where(eq(gallerySubmissions.id, id)).returning();
+        const db = this.ensureDb();
+        const res = await db.delete(gallerySubmissions).where(eq(gallerySubmissions.id, id)).returning();
         return res.length > 0;
     }
 
     async setGalleryWinner(id: string, month: string, prize: string): Promise<void> {
-        await this.db.update(gallerySubmissions).set({ isWinner: true }).where(eq(gallerySubmissions.id, id));
+        const db = this.ensureDb();
+        await db.update(gallerySubmissions).set({ isWinner: true }).where(eq(gallerySubmissions.id, id));
     }
 
     // Gallery Prize methods

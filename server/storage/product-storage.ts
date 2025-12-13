@@ -14,13 +14,23 @@ export interface ProductFilters {
     search?: string;
     limit?: number;
     offset?: number;
+    sortBy?: 'rating' | 'price' | 'createdAt' | 'reviewCount';
+    sortOrder?: 'asc' | 'desc';
 }
 
 export class ProductStorage {
-    private db = getDb()!;
+    private db = getDb();
+
+    private ensureDb() {
+        if (!this.db) {
+            throw new Error('Database not connected. Please configure DATABASE_URL in your .env file.');
+        }
+        return this.db;
+    }
 
     async getProducts(filters?: ProductFilters): Promise<Product[]> {
-        let query = this.db.select().from(products);
+        const db = this.ensureDb();
+        let query = db.select().from(products);
 
         const conditions = [];
         if (filters?.category) conditions.push(sql`lower(${products.category}) = lower(${filters.category})`);
@@ -45,7 +55,19 @@ export class ProductStorage {
             query = query.where(and(...conditions)) as any;
         }
 
-        query = query.orderBy(desc(products.createdAt)) as any;
+        // Apply sorting
+        if (filters?.sortBy) {
+            const sortColumn = filters.sortBy === 'rating' ? products.rating :
+                filters.sortBy === 'price' ? products.price :
+                    filters.sortBy === 'reviewCount' ? products.reviewCount :
+                        products.createdAt;
+
+            query = filters.sortOrder === 'asc'
+                ? query.orderBy(sortColumn) as any
+                : query.orderBy(desc(sortColumn)) as any;
+        } else {
+            query = query.orderBy(desc(products.createdAt)) as any;
+        }
 
         if (filters?.limit) {
             query = query.limit(filters.limit) as any;
@@ -58,20 +80,23 @@ export class ProductStorage {
     }
 
     async getProduct(id: string): Promise<Product | undefined> {
-        const result = await this.db.select().from(products).where(eq(products.id, id)).limit(1);
+        const db = this.ensureDb();
+        const result = await db.select().from(products).where(eq(products.id, id)).limit(1);
         return result[0];
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
-        const result = await this.db.select().from(products).where(eq(products.slug, slug)).limit(1);
+        const db = this.ensureDb();
+        const result = await db.select().from(products).where(eq(products.slug, slug)).limit(1);
         return result[0];
     }
 
     private async resolveCategoryId(categoryName: string): Promise<string | undefined> {
         if (!categoryName) return undefined;
+        const db = this.ensureDb();
 
         // 1. Try to find existing category
-        const existing = await this.db.select().from(categories)
+        const existing = await db.select().from(categories)
             .where(sql`lower(${categories.name}) = lower(${categoryName})`)
             .limit(1);
 
@@ -81,7 +106,7 @@ export class ProductStorage {
 
         // 2. If not found, create it (Auto-seed for migration)
         try {
-            const newCategory = await this.db.insert(categories).values({
+            const newCategory = await db.insert(categories).values({
                 name: categoryName,
                 displayName: categoryName, // Fallback to same name
                 slug: categoryName.toLowerCase().replace(/\s+/g, '-'),
@@ -90,7 +115,7 @@ export class ProductStorage {
             return newCategory[0].id;
         } catch (e) {
             // Check for race condition or unique constraint error, retry fetch
-            const retry = await this.db.select().from(categories)
+            const retry = await db.select().from(categories)
                 .where(sql`lower(${categories.name}) = lower(${categoryName})`)
                 .limit(1);
             return retry[0]?.id;
@@ -98,6 +123,7 @@ export class ProductStorage {
     }
 
     async createProduct(product: Partial<Product>): Promise<Product> {
+        const db = this.ensureDb();
         // Dual Write Logic: Ensure categoryId is set if category is provided
         if (product.category && !product.categoryId) {
             product.categoryId = await this.resolveCategoryId(product.category) || null;
@@ -107,11 +133,12 @@ export class ProductStorage {
             ...product,
             id: product.id || randomUUID(),
         };
-        const result = await this.db.insert(products).values(newProduct as any).returning();
+        const result = await db.insert(products).values(newProduct as any).returning();
         return result[0];
     }
 
     async updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined> {
+        const db = this.ensureDb();
         // Dual Write Logic: Update categoryId if category changes
         if (updates.category) {
             const newCategoryId = await this.resolveCategoryId(updates.category);
@@ -120,13 +147,14 @@ export class ProductStorage {
             }
         }
 
-        const result = await this.db.update(products).set({ ...updates, updatedAt: new Date() }).where(eq(products.id, id)).returning();
+        const result = await db.update(products).set({ ...updates, updatedAt: new Date() }).where(eq(products.id, id)).returning();
         return result[0];
     }
 
     async deleteProduct(id: string): Promise<boolean> {
+        const db = this.ensureDb();
         // Soft delete
-        const result = await this.db.update(products)
+        const result = await db.update(products)
             .set({ deletedAt: new Date(), updatedAt: new Date() })
             .where(eq(products.id, id))
             .returning();
@@ -135,18 +163,21 @@ export class ProductStorage {
 
     // Reviews
     async getReviews(productId: string): Promise<Review[]> {
-        return await this.db.select().from(reviews)
+        const db = this.ensureDb();
+        return await db.select().from(reviews)
             .where(and(eq(reviews.productId, productId), eq(reviews.status, 'approved')))
             .orderBy(desc(reviews.createdAt));
     }
 
     async getReview(id: string): Promise<Review | undefined> {
-        const result = await this.db.select().from(reviews).where(eq(reviews.id, id)).limit(1);
+        const db = this.ensureDb();
+        const result = await db.select().from(reviews).where(eq(reviews.id, id)).limit(1);
         return result[0];
     }
 
     async createReview(review: Partial<Review>): Promise<Review> {
-        const result = await this.db.insert(reviews).values({
+        const db = this.ensureDb();
+        const result = await db.insert(reviews).values({
             ...review,
             status: 'approved', // Auto-approve
         } as any).returning();
@@ -160,7 +191,8 @@ export class ProductStorage {
     }
 
     async updateReview(id: string, updates: Partial<Review>): Promise<Review | undefined> {
-        const result = await this.db.update(reviews)
+        const db = this.ensureDb();
+        const result = await db.update(reviews)
             .set({ ...updates, updatedAt: new Date() })
             .where(eq(reviews.id, id))
             .returning();
@@ -168,8 +200,9 @@ export class ProductStorage {
     }
 
     async deleteReview(id: string): Promise<boolean> {
+        const db = this.ensureDb();
         const review = await this.getReview(id);
-        const result = await this.db.delete(reviews).where(eq(reviews.id, id)).returning();
+        const result = await db.delete(reviews).where(eq(reviews.id, id)).returning();
 
         // Update product rating after deletion
         if (review?.productId) {
@@ -180,8 +213,9 @@ export class ProductStorage {
     }
 
     async markReviewHelpful(reviewId: string, userId: string | null, ipAddress: string): Promise<boolean> {
+        const db = this.ensureDb();
         // Check if already voted
-        const existingVote = await this.db.select().from(reviewRatings)
+        const existingVote = await db.select().from(reviewRatings)
             .where(
                 and(
                     eq(reviewRatings.reviewId, reviewId),
@@ -196,7 +230,7 @@ export class ProductStorage {
         }
 
         // Record the vote
-        await this.db.insert(reviewRatings).values({
+        await db.insert(reviewRatings).values({
             reviewId,
             userId,
             ipAddress,
@@ -204,7 +238,7 @@ export class ProductStorage {
         });
 
         // Increment helpful count
-        await this.db.update(reviews)
+        await db.update(reviews)
             .set({ helpfulCount: sql`COALESCE(${reviews.helpfulCount}, 0) + 1` })
             .where(eq(reviews.id, reviewId));
 
@@ -212,8 +246,9 @@ export class ProductStorage {
     }
 
     async updateProductRating(productId: string): Promise<void> {
+        const db = this.ensureDb();
         // Calculate average rating from approved reviews
-        const result = await this.db.execute(sql`
+        const result = await db.execute(sql`
       SELECT 
         COALESCE(AVG(rating), 0) as avg_rating,
         COUNT(*) as review_count 
@@ -224,7 +259,7 @@ export class ProductStorage {
         const avgRating = Number(result.rows[0]?.avg_rating || 0).toFixed(1);
         const reviewCount = Number(result.rows[0]?.review_count || 0);
 
-        await this.db.update(products)
+        await db.update(products)
             .set({
                 rating: avgRating,
                 reviewCount: reviewCount,
@@ -235,39 +270,46 @@ export class ProductStorage {
 
     // Discounts
     async getDiscounts(productId?: string): Promise<Discount[]> {
+        const db = this.ensureDb();
         if (productId) {
-            return await this.db.select().from(discounts).where(eq(discounts.productId, productId)).orderBy(desc(discounts.createdAt));
+            return await db.select().from(discounts).where(eq(discounts.productId, productId)).orderBy(desc(discounts.createdAt));
         }
-        return await this.db.select().from(discounts).orderBy(desc(discounts.createdAt));
+        return await db.select().from(discounts).orderBy(desc(discounts.createdAt));
     }
 
     async getDiscount(id: string): Promise<Discount | undefined> {
-        const result = await this.db.select().from(discounts).where(eq(discounts.id, id)).limit(1);
+        const db = this.ensureDb();
+        const result = await db.select().from(discounts).where(eq(discounts.id, id)).limit(1);
         return result[0];
     }
 
     async createDiscount(discount: Partial<Discount>): Promise<Discount> {
-        const result = await this.db.insert(discounts).values(discount as any).returning();
+        const db = this.ensureDb();
+        const result = await db.insert(discounts).values(discount as any).returning();
         return result[0];
     }
 
     async updateDiscount(id: string, updates: Partial<Discount>): Promise<Discount | undefined> {
-        const result = await this.db.update(discounts).set({ ...updates, updatedAt: new Date() }).where(eq(discounts.id, id)).returning();
+        const db = this.ensureDb();
+        const result = await db.update(discounts).set({ ...updates, updatedAt: new Date() }).where(eq(discounts.id, id)).returning();
         return result[0];
     }
 
     async deleteDiscount(id: string): Promise<boolean> {
-        const result = await this.db.delete(discounts).where(eq(discounts.id, id)).returning();
+        const db = this.ensureDb();
+        const result = await db.delete(discounts).where(eq(discounts.id, id)).returning();
         return result.length > 0;
     }
 
     // Fish Species methods implementation
     async getAllFishSpecies(): Promise<FishSpecies[]> {
-        return await this.db.select().from(fishSpecies);
+        const db = this.ensureDb();
+        return await db.select().from(fishSpecies);
     }
 
     async getFishSpeciesById(id: string): Promise<FishSpecies | undefined> {
-        const result = await this.db.select().from(fishSpecies).where(eq(fishSpecies.id, id));
+        const db = this.ensureDb();
+        const result = await db.select().from(fishSpecies).where(eq(fishSpecies.id, id));
         return result[0];
     }
 

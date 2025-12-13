@@ -36,7 +36,6 @@ export function createReviewsRouter() {
     router.post("/reviews", reviewLimiter, localRequireAuth, async (req, res, next) => {
         try {
             const sess = getSession(req);
-            // @ts-ignore
             const userId = sess?.userId;
 
             if (!userId) {
@@ -88,7 +87,6 @@ export function createReviewsRouter() {
     router.put("/reviews/:reviewId", localRequireAuth, async (req, res, next) => {
         try {
             const sess = getSession(req);
-            // @ts-ignore
             const userId = sess?.userId;
             const { reviewId } = req.params;
 
@@ -125,7 +123,6 @@ export function createReviewsRouter() {
     router.delete("/reviews/:reviewId", localRequireAuth, async (req, res, next) => {
         try {
             const sess = getSession(req);
-            // @ts-ignore
             const userId = sess?.userId;
             const { reviewId } = req.params;
 
@@ -154,7 +151,6 @@ export function createReviewsRouter() {
     router.post("/reviews/:reviewId/helpful", async (req, res, next) => {
         try {
             const sess = getSession(req);
-            // @ts-ignore
             const userId = sess?.userId || null;
             const { reviewId } = req.params;
 

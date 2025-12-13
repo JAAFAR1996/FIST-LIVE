@@ -36,9 +36,6 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        console.log("✅ Login page mounted successfully");
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

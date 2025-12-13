@@ -291,7 +291,9 @@ export default function AdminDashboard() {
         imageBase64: imageBase64 || undefined,
       };
 
-      console.log('Sending product data:', { ...productPayload, imageBase64: imageBase64 ? '[IMAGE DATA]' : 'none' });
+      if (import.meta.env.DEV) {
+        console.log('Sending product data:', { ...productPayload, imageBase64: imageBase64 ? '[IMAGE DATA]' : 'none' });
+      }
 
       const response = await fetch("/api/admin/products", {
         method: "POST",

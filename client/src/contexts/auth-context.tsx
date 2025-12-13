@@ -78,7 +78,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const userData = await response.json();
-      console.log("✅ Login successful:", userData);
+      if (import.meta.env.DEV) {
+        console.log("✅ Login successful:", userData);
+      }
       setUser(userData);
     } catch (error: any) {
       console.error("❌ Login error:", error);
@@ -113,7 +115,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(error.message || "فشل إنشاء الحساب.");
       }
 
-      console.log("✅ Registration successful");
+      if (import.meta.env.DEV) {
+        console.log("✅ Registration successful");
+      }
       // Automatically login after register (server handles session)
       const userData = await response.json();
       setUser(userData);

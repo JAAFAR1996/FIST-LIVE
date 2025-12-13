@@ -182,11 +182,83 @@ class CombinedStorage implements IStorage {
     getGalleryPrizeByMonth = this.orderStorage.getGalleryPrizeByMonth.bind(this.orderStorage);
     getTopSellingProducts = this.orderStorage.getTopSellingProducts.bind(this.orderStorage);
 
-    // Missing Stubs (from monolithic interface)
-    seedProductsIfNeeded = async () => { };
-    getTrendingProducts = async () => [];
-    getFrequentlyBoughtTogether = async (productId: string) => [];
-    getSimilarProducts = async (productId: string) => [];
+    // Missing Stubs - Now Implemented
+    seedProductsIfNeeded = async () => {
+        // Can be implemented later for seeding initial products
+        // For now, products are added via admin panel
+    };
+
+    getTrendingProducts = async (): Promise<Product[]> => {
+        try {
+            // Strategy: Get best-selling and highly-rated products with stock
+            const products = await this.productStorage.getProducts({
+                limit: 10,
+                sortBy: 'rating',
+                sortOrder: 'desc'
+            });
+
+            // Filter products with stock and good ratings
+            return products
+                .filter(p => (p.stock ?? 0) > 0 && parseFloat(String(p.rating)) >= 4.0)
+                .slice(0, 8);
+        } catch (error) {
+            console.error('Error getting trending products:', error);
+            return [];
+        }
+    };
+
+    getFrequentlyBoughtTogether = async (productId: string): Promise<Product[]> => {
+        try {
+            // Strategy: Get products from the same category
+            // In future: analyze order data for co-purchased items
+            const product = await this.productStorage.getProduct(productId);
+            if (!product) return [];
+
+            const categoryProducts = await this.productStorage.getProducts({
+                category: product.category,
+                limit: 6
+            });
+
+            // Return similar products excluding the current one
+            return categoryProducts
+                .filter(p => p.id !== productId && (p.stock ?? 0) > 0)
+                .slice(0, 4);
+        } catch (error) {
+            console.error('Error getting frequently bought together:', error);
+            return [];
+        }
+    };
+
+    getSimilarProducts = async (productId: string): Promise<Product[]> => {
+        try {
+            const product = await this.productStorage.getProduct(productId);
+            if (!product) return [];
+
+            // Get products from same category and subcategory if possible
+            const categoryProducts = await this.productStorage.getProducts({
+                category: product.category,
+                limit: 8
+            });
+
+            // Prioritize same subcategory, then same category
+            const sameSubcategory = categoryProducts.filter(
+                p => p.id !== productId &&
+                    p.subcategory === product.subcategory &&
+                    (p.stock ?? 0) > 0
+            );
+
+            const sameCategory = categoryProducts.filter(
+                p => p.id !== productId &&
+                    p.subcategory !== product.subcategory &&
+                    (p.stock ?? 0) > 0
+            );
+
+            return [...sameSubcategory, ...sameCategory].slice(0, 5);
+        } catch (error) {
+            console.error('Error getting similar products:', error);
+            return [];
+        }
+    };
 }
 
 export const storage = new CombinedStorage();
