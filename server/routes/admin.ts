@@ -145,7 +145,11 @@ export function createAdminRouter() {
         try {
             // Logic for winner
             const currentPrize = await storage.getCurrentGalleryPrize();
-            if (!currentPrize) return res.status(400).json({ message: "No prize" });
+            if (!currentPrize) {
+                return res.status(400).json({
+                    message: "لا توجد جائزة نشطة للشهر الحالي. يرجى إنشاء جائزة أولاً."
+                });
+            }
             await storage.setGalleryWinner(req.params.id, currentPrize.month, currentPrize.prize);
             res.json({ message: "Winner set" });
         } catch (err) { next(err); }
@@ -167,9 +171,7 @@ export function createAdminRouter() {
                     data.thumbnail = imageUrl;
                 } catch (error) {
                     console.error("Image upload failed:", error);
-                    // Continue without image or return error? 
-                    // Let's warn but continue if possible, or maybe fail?
-                    // Safe to fail if image is critical
+                    throw new Error("Image upload failed. Please check your internet connection or Cloudinary configuration.");
                 }
             }
 
@@ -215,6 +217,7 @@ export function createAdminRouter() {
                     updates.thumbnail = imageUrl;
                 } catch (error) {
                     console.error("Image upload failed:", error);
+                    throw new Error("Image upload failed. Please check your internet connection or Cloudinary configuration.");
                 }
 
                 delete updates.imageBase64;

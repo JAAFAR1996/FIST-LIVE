@@ -370,19 +370,28 @@ export class OrderStorage {
 
     async createOrUpdateGalleryPrize(prize: Partial<GalleryPrize>): Promise<GalleryPrize> {
         const db = this.ensureDb();
-        if (!prize.month) throw new Error("Month is required");
 
-        const [existing] = await db.select().from(galleryPrizes).where(eq(galleryPrizes.month, prize.month));
+        // Auto-generate month if not provided (use current month)
+        const month = prize.month || new Date().toISOString().slice(0, 7); // YYYY-MM
+
+        // Set defaults
+        const prizeData = {
+            ...prize,
+            month,
+            isActive: prize.isActive !== undefined ? prize.isActive : true
+        };
+
+        const [existing] = await db.select().from(galleryPrizes).where(eq(galleryPrizes.month, month));
 
         if (existing) {
             const [updated] = await db.update(galleryPrizes)
-                .set({ ...prize, updatedAt: new Date() })
+                .set({ ...prizeData, updatedAt: new Date() })
                 .where(eq(galleryPrizes.id, existing.id))
                 .returning();
             return updated;
         } else {
             const [created] = await db.insert(galleryPrizes)
-                .values(prize as any)
+                .values(prizeData as any)
                 .returning();
             return created;
         }
