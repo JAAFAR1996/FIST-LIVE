@@ -13,12 +13,15 @@ export const users = pgTable("users", {
   role: text("role").notNull().default("user"), // user, admin
   emailVerified: boolean("email_verified").default(false),
   verificationToken: text("verification_token"),
+  verificationTokenExpiresAt: timestamp("verification_token_expires_at"),
   loyaltyPoints: integer("loyalty_points").default(0),
   loyaltyTier: text("loyalty_tier").default("bronze"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   deletedAt: timestamp("deleted_at"),
-});
+}, (table) => ({
+  emailIdx: index("users_email_idx").on(table.email),
+}));
 
 export const passwordResetTokens = pgTable("password_reset_tokens", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -56,6 +59,11 @@ export const products = pgTable("products", {
 }, (table) => ({
   priceCheck: check("price_check", sql`${table.price} >= 0`),
   stockCheck: check("stock_check", sql`${table.stock} >= 0`),
+  // Optimized Indexing
+  slugIdx: index("products_slug_idx").on(table.slug),
+  categoryIdx: index("products_category_idx").on(table.category), // Keeping legacy for now
+  createdAtIdx: index("products_created_at_idx").on(table.createdAt),
+  ratingIdx: index("products_rating_idx").on(table.rating),
 }));
 
 export const orders = pgTable("orders", {
@@ -68,15 +76,20 @@ export const orders = pgTable("orders", {
   shippingCost: numeric("shipping_cost").notNull().default("0"),
   couponId: text("coupon_id"),
   discountTotal: numeric("discount_total").default("0"),
-  items: jsonb("items").notNull().$type<any[]>(),
-  shippingAddress: jsonb("shipping_address").$type<Record<string, any>>(),
+  // Stronger Typing for JSONB
+  items: jsonb("items").notNull().$type<{ productId: string; quantity: number; priceAtPurchase: number; }[]>(),
+  shippingAddress: jsonb("shipping_address").$type<{ addressLine1: string; city: string; country: string; }>(),
   // Customer info (for guest orders or quick access)
   customerName: text("customer_name"),
   customerEmail: text("customer_email"),
   customerPhone: text("customer_phone"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index("orders_user_id_idx").on(table.userId),
+  createdAtIdx: index("orders_created_at_idx").on(table.createdAt),
+  statusIdx: index("orders_status_idx").on(table.status),
+}));
 
 export const reviews = pgTable("reviews", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -92,7 +105,10 @@ export const reviews = pgTable("reviews", {
   verifiedPurchase: boolean("verified_purchase").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  productIdx: index("reviews_product_id_idx").on(table.productId),
+  createdAtIndex: index("reviews_created_at_idx").on(table.createdAt),
+}));
 
 // Review ratings for tracking helpful votes
 export const reviewRatings = pgTable("review_ratings", {

@@ -34,24 +34,62 @@ app.use(helmet({
 }));
 
 // Security: CORS configuration
+// Security: CORS configuration
 app.use(corsConfig);
-
-// Security: Request body sanitization
-app.use(sanitizeBody);
-
-// Security: Log suspicious activity
-app.use(securityLogger);
 
 app.use(
   express.json({
-    limit: '10mb', // Increase limit for base64 images
+    limit: '20mb', // Increase limit for base64 images - set to 20mb to be safe
     verify: (req: any, _res, buf) => {
       req.rawBody = buf;
     },
   }),
 );
 
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
+// Security: Request body sanitization (must be AFTER parsing)
+app.use(sanitizeBody);
+
+// Security: Log suspicious activity
+app.use(securityLogger);
+
+// Security: CSRF Protection (Strict Origin Validation)
+app.use((req, res, next) => {
+  // Skip for non-state-changing methods
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  // Skip for webhooks if any (e.g. Stripe) - add check here if needed
+
+  const origin = req.headers.origin || req.headers.referer;
+
+  // In production, enforce strict origin check
+  if (process.env.NODE_ENV === 'production') {
+    if (!origin) {
+      // Log warning but maybe block? For now block to address "Missing CSRF Protection"
+      log(`Blocked request with no Origin/Referer: ${req.method} ${req.path}`, 'security', 'warn');
+      return res.status(403).json({ message: "Forbidden - Missing Origin/Referer" });
+    }
+
+    const host = req.headers.host;
+    try {
+      const originHost = new URL(origin).host;
+      // Allow request if origin matches host (Same Origin)
+      if (originHost !== host) {
+        // Check allowlist for expected external origins (if any)
+        // If not matched, block
+        log(`Blocked CSRF attempt: Origin ${originHost} does not match Host ${host}`, 'security', 'warn');
+        return res.status(403).json({ message: "Forbidden - Cross Origin Request Blocked" });
+      }
+    } catch (e) {
+      return res.status(403).json({ message: "Forbidden - Invalid Origin" });
+    }
+  }
+
+  next();
+});
 
 // Session configuration
 const sessionStore = createSessionStore(process.env.NODE_ENV, { enableCleanupTimer: true });

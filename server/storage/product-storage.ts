@@ -23,7 +23,11 @@ export class ProductStorage {
 
     private ensureDb() {
         if (!this.db) {
-            throw new Error('Database not connected. Please configure DATABASE_URL in your .env file.');
+            const error = new Error('Database service unavailable. Please try again later.');
+            (error as any).status = 503;
+            // Log this strictly
+            console.error("[ProductStorage] Database connection missing/failed");
+            throw error;
         }
         return this.db;
     }
@@ -43,8 +47,9 @@ export class ProductStorage {
         if (filters?.maxPrice) conditions.push(lte(products.price, filters.maxPrice.toString()));
 
         if (filters?.search) {
+            const searchTerm = `%${filters.search}%`;
             conditions.push(
-                sql`(${products.name} ILIKE ${`%${filters.search}%`} OR ${products.description} ILIKE ${`%${filters.search}%`})`
+                sql`(${products.name} ILIKE ${searchTerm} OR ${products.description} ILIKE ${searchTerm})`
             );
         }
 
@@ -122,11 +127,40 @@ export class ProductStorage {
         }
     }
 
+    private async ensureUniqueSlug(slug: string, excludeId?: string): Promise<string> {
+        const db = this.ensureDb();
+        let currentSlug = slug;
+        let counter = 1;
+
+        while (true) {
+            const conditions = [eq(products.slug, currentSlug)];
+            if (excludeId) {
+                conditions.push(sql`${products.id} != ${excludeId}`);
+            }
+
+            const existing = await db.select().from(products)
+                .where(and(...conditions))
+                .limit(1);
+
+            if (existing.length === 0) {
+                return currentSlug;
+            }
+
+            currentSlug = `${slug}-${counter}`;
+            counter++;
+        }
+    }
+
     async createProduct(product: Partial<Product>): Promise<Product> {
         const db = this.ensureDb();
         // Dual Write Logic: Ensure categoryId is set if category is provided
         if (product.category && !product.categoryId) {
             product.categoryId = await this.resolveCategoryId(product.category) || null;
+        }
+
+        // Ensure unique slug
+        if (product.slug) {
+            product.slug = await this.ensureUniqueSlug(product.slug);
         }
 
         const newProduct = {
@@ -145,6 +179,11 @@ export class ProductStorage {
             if (newCategoryId) {
                 updates.categoryId = newCategoryId;
             }
+        }
+
+        // Ensure unique slug if it's being updated
+        if (updates.slug) {
+            updates.slug = await this.ensureUniqueSlug(updates.slug, id);
         }
 
         const result = await db.update(products).set({ ...updates, updatedAt: new Date() }).where(eq(products.id, id)).returning();

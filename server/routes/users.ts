@@ -149,16 +149,13 @@ export function createUserRouter() {
             const { token, newPassword } = req.body;
             const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-            const resetRecord = await storage.verifyPasswordResetToken(tokenHash);
-            if (!resetRecord || resetRecord.expiresAt < new Date()) {
+            // Atomic reset to prevent race conditions
+            const success = await storage.processPasswordReset(tokenHash, hashPassword(newPassword));
+
+            if (!success) {
                 res.status(400).json({ message: "Invalid or expired token" });
                 return;
             }
-
-            await storage.updateUser(resetRecord.userId, {
-                passwordHash: hashPassword(newPassword)
-            });
-            await storage.deletePasswordResetToken(tokenHash);
 
             res.json({ message: "Password reset successful" });
         } catch (err) {

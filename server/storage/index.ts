@@ -15,7 +15,7 @@ export interface IStorage {
     createProduct(product: Partial<Product>): Promise<Product>;
     updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
     deleteProduct(id: string): Promise<boolean>;
-    getOrders(userId?: string): Promise<Order[]>;
+    getOrders(userId?: string, options?: { limit?: number, offset?: number }): Promise<Order[]>;
     getOrder(id: string): Promise<Order | undefined>;
     createOrder(order: Partial<Order>): Promise<Order>;
     updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined>;
@@ -94,6 +94,7 @@ export interface IStorage {
     createPasswordResetToken(userId: string, tokenHash: string, expiresAt: Date): Promise<string>;
     verifyPasswordResetToken(tokenHash: string): Promise<{ userId: string; expiresAt: Date } | undefined>;
     deletePasswordResetToken(tokenHash: string): Promise<void>;
+    processPasswordReset(tokenHash: string, newPasswordHash: string): Promise<boolean>;
 
     // Newsletter
     getNewsletterSubscriptionByEmail(email: string): Promise<NewsletterSubscription | undefined>;
@@ -120,6 +121,7 @@ class CombinedStorage implements IStorage {
     createPasswordResetToken = this.userStorage.createPasswordResetToken.bind(this.userStorage);
     verifyPasswordResetToken = this.userStorage.verifyPasswordResetToken.bind(this.userStorage);
     deletePasswordResetToken = this.userStorage.deletePasswordResetToken.bind(this.userStorage);
+    processPasswordReset = this.userStorage.processPasswordReset.bind(this.userStorage);
     getNewsletterSubscriptionByEmail = this.userStorage.getNewsletterSubscriptionByEmail.bind(this.userStorage);
     createNewsletterSubscription = this.userStorage.createNewsletterSubscription.bind(this.userStorage);
 

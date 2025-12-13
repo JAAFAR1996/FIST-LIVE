@@ -60,10 +60,15 @@ export default function CommunityGallery() {
 
   const submitMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      const payload = {
+        ...data,
+        imageBase64: data.imageUrl // Server expects imageBase64
+      };
+
       const res = await fetch("/api/gallery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
 
       if (!res.ok) {

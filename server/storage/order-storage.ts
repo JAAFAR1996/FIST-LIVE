@@ -1,4 +1,4 @@
-import { type Order, type Coupon, type AuditLog, type CartItem, type Favorite, type GallerySubmission, type GalleryPrize, type Payment, orders, coupons, auditLogs, cartItems, favorites, gallerySubmissions, galleryPrizes, payments, products } from "../../shared/schema.js";
+import { type Order, type Coupon, type AuditLog, type CartItem, type Favorite, type GallerySubmission, type GalleryPrize, type Payment, orders, coupons, auditLogs, cartItems, favorites, gallerySubmissions, galleryVotes, galleryPrizes, payments, products } from "../../shared/schema.js";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { getDb } from "../db.js";
 
@@ -12,13 +12,24 @@ export class OrderStorage {
         return this.db;
     }
 
-    async getOrders(userId?: string): Promise<Order[]> {
+    async getOrders(userId?: string, options?: { limit?: number; offset?: number }): Promise<Order[]> {
         const db = this.ensureDb();
-        // Return legacy JSONB 'items' for frontend compatibility
+        let query = db.select().from(orders);
+
         if (userId) {
-            return await db.select().from(orders).where(eq(orders.userId, userId)).orderBy(desc(orders.createdAt));
+            query = query.where(eq(orders.userId, userId)) as any;
         }
-        return await db.select().from(orders).orderBy(desc(orders.createdAt));
+
+        query = query.orderBy(desc(orders.createdAt)) as any;
+
+        if (options?.limit) {
+            query = query.limit(options.limit) as any;
+        }
+        if (options?.offset) {
+            query = query.offset(options.offset) as any;
+        }
+
+        return await query;
     }
 
     async getOrder(id: string): Promise<Order | undefined> {
@@ -196,11 +207,23 @@ export class OrderStorage {
     }
 
     async addToCart(userId: string, productId: string, quantity: number): Promise<CartItem> {
+        if (quantity <= 0) throw new Error("Quantity must be positive");
+
         const db = this.ensureDb();
+
+        const [product] = await db.select().from(products).where(eq(products.id, productId));
+        if (!product) throw new Error("Product not found");
+        if ((product.stock || 0) < quantity) throw new Error("Insufficient stock");
+
         const [existing] = await db.select().from(cartItems)
             .where(and(eq(cartItems.userId, userId), eq(cartItems.productId, productId)));
 
         if (existing) {
+            // Check if adding quantity exceeds stock
+            if ((product.stock || 0) < (existing.quantity || 0) + quantity) {
+                throw new Error("Insufficient stock for requested total quantity");
+            }
+
             const [updated] = await db.update(cartItems)
                 .set({ quantity: (existing.quantity || 0) + quantity })
                 .where(eq(cartItems.id, existing.id))
@@ -289,7 +312,38 @@ export class OrderStorage {
     }
 
     async voteGallerySubmission(id: string, ipAddress: string, userId?: string): Promise<boolean> {
-        return true; // Simplify for now as logic was complex
+        const db = this.ensureDb();
+
+        // Check if already voted using combined logic
+        const conditions = [
+            eq(galleryVotes.galleryId, id)
+        ];
+
+        if (userId) {
+            conditions.push(sql`(${galleryVotes.ipAddress} = ${ipAddress} OR ${galleryVotes.userId} = ${userId})`);
+        } else {
+            conditions.push(eq(galleryVotes.ipAddress, ipAddress));
+        }
+
+        const existingVote = await db.select().from(galleryVotes)
+            .where(and(...conditions))
+            .limit(1);
+
+        if (existingVote.length > 0) return false;
+
+        await db.transaction(async (tx) => {
+            await tx.insert(galleryVotes).values({
+                galleryId: id,
+                userId: userId || null,
+                ipAddress
+            });
+
+            await tx.update(gallerySubmissions)
+                .set({ likes: sql`${gallerySubmissions.likes} + 1` })
+                .where(eq(gallerySubmissions.id, id));
+        });
+
+        return true;
     }
 
     async deleteGallerySubmission(id: string): Promise<boolean> {
@@ -304,9 +358,41 @@ export class OrderStorage {
     }
 
     // Gallery Prize methods
-    async getCurrentGalleryPrize(): Promise<GalleryPrize | null> { return null; }
-    async createOrUpdateGalleryPrize(prize: Partial<GalleryPrize>): Promise<GalleryPrize> { return {} as any; }
-    async getGalleryPrizeByMonth(month: string): Promise<GalleryPrize | null> { return null; }
+    async getCurrentGalleryPrize(): Promise<GalleryPrize | null> {
+        const db = this.ensureDb();
+        const now = new Date();
+        const monthStr = now.toISOString().slice(0, 7); // YYYY-MM
+        const [prize] = await db.select().from(galleryPrizes)
+            .where(and(eq(galleryPrizes.isActive, true), eq(galleryPrizes.month, monthStr)))
+            .limit(1);
+        return prize || null;
+    }
+
+    async createOrUpdateGalleryPrize(prize: Partial<GalleryPrize>): Promise<GalleryPrize> {
+        const db = this.ensureDb();
+        if (!prize.month) throw new Error("Month is required");
+
+        const [existing] = await db.select().from(galleryPrizes).where(eq(galleryPrizes.month, prize.month));
+
+        if (existing) {
+            const [updated] = await db.update(galleryPrizes)
+                .set({ ...prize, updatedAt: new Date() })
+                .where(eq(galleryPrizes.id, existing.id))
+                .returning();
+            return updated;
+        } else {
+            const [created] = await db.insert(galleryPrizes)
+                .values(prize as any)
+                .returning();
+            return created;
+        }
+    }
+
+    async getGalleryPrizeByMonth(month: string): Promise<GalleryPrize | null> {
+        const db = this.ensureDb();
+        const [prize] = await db.select().from(galleryPrizes).where(eq(galleryPrizes.month, month));
+        return prize || null;
+    }
 
 
     // Sales analytics
