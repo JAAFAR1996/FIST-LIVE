@@ -1,0 +1,39 @@
+# FIST-LIVE Code Owners
+# This file specifies which users/teams should review changes to specific areas of the repository
+# GitHub automatically requests review from code owners when a PR touches their owned files
+
+# Default owners for entire repository
+* @JAAFAR1996
+
+# Client/Frontend code
+/client/                @JAAFAR1996
+/shared/                @JAAFAR1996
+
+# Server/Backend code
+/server/                @JAAFAR1996
+/api/                   @JAAFAR1996
+
+# Database
+/migrations/            @JAAFAR1996
+/data/                  @JAAFAR1996
+
+# Configuration and CI/CD
+/.github/               @JAAFAR1996
+/.gitignore             @JAAFAR1996
+package.json            @JAAFAR1996
+pnpm-lock.yaml          @JAAFAR1996
+
+# TypeScript/Build configuration
+tsconfig.json           @JAAFAR1996
+tsconfig.test.json      @JAAFAR1996
+vite.config.ts          @JAAFAR1996
+vitest.config.ts        @JAAFAR1996
+vitest.setup.ts         @JAAFAR1996
+drizzle.config.ts       @JAAFAR1996
+
+# Documentation
+README.md               @JAAFAR1996
+/docs/                  @JAAFAR1996
+
+# Testing
+/test-results/          @JAAFAR1996
