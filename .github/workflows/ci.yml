@@ -1,83 +1,229 @@
-name: CI/CD Pipeline
+name: 🚀 CI - Build & Test Pipeline
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, develop]
   pull_request:
-    branches: [main, master]
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20.11.0
+  PNPM_VERSION: 9.1.0
+  CI: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
-    name: Test & Build
+  # ==================== VALIDATION ====================
+  validate:
+    name: ✅ Validate & Lint
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: 📦 Setup pnpm ${{ env.PNPM_VERSION }}
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
-      - name: TypeScript type check
-        run: npm run check
+      - name: 📚 Install dependencies (frozen lock file)
+        run: pnpm install --frozen-lockfile --prefer-offline
+        timeout-minutes: 10
 
-      - name: Run tests
-        run: npm test -- --run
-        env:
-          NODE_ENV: test
+      - name: 🔍 TypeScript type check
+        run: pnpm run check
+        timeout-minutes: 10
 
-      - name: Run tests with coverage
-        run: npm run test:coverage -- --run
-        continue-on-error: true
+      - name: 📋 Check package.json consistency
+        run: pnpm install --prefer-offline --no-frozen-lockfile
+        timeout-minutes: 5
 
-      - name: Build application
-        run: npm run build:client
+  # ==================== BUILD ====================
+  build:
+    name: 🏗️ Build
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+        timeout-minutes: 10
+
+      - name: 🎨 Build client (Vite)
+        run: pnpm run build:client
         env:
           NODE_ENV: production
+          VITE_APP_TITLE: FIST-LIVE
+        timeout-minutes: 10
 
-  security:
-    name: Security Audit
+      - name: 🔨 Build project (full build)
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+        timeout-minutes: 10
+
+      - name: 📊 Check build output
+        run: |
+          if [ ! -d "dist" ] && [ ! -d "build" ]; then
+            echo "❌ Build output not found!"
+            exit 1
+          fi
+          echo "✅ Build output verified"
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist-${{ github.run_number }}
+          path: |
+            dist/
+            build/
+          retention-days: 7
+          if-no-files-found: warn
+
+  # ==================== TESTS ====================
+  test:
+    name: 🧪 Tests
+    needs: validate
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 20
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
-      - name: Run npm audit
-        run: npm audit --audit-level=high
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+        timeout-minutes: 10
+
+      - name: 🧪 Run unit tests (Vitest)
+        run: pnpm run test --run
+        env:
+          NODE_ENV: test
+        timeout-minutes: 10
+
+      - name: 📊 Generate coverage report
+        run: pnpm run test:coverage
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-report
+          fail_ci_if_error: false
+          verbose: false
+
+  # ==================== SECURITY ====================
+  security:
+    name: 🔐 Security Checks
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+        timeout-minutes: 10
+
+      - name: 🔍 Audit npm packages (moderate)
+        run: pnpm audit --audit-level=moderate
         continue-on-error: true
 
-  lint:
-    name: Code Quality
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 🔐 Check for secrets
+        uses: trufflesecurity/trufflehog@main
         with:
-          node-version: '20'
-          cache: 'npm'
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+        continue-on-error: true
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: TypeScript type check
-        run: npm run check
+  # ==================== COMPLETION ====================
+  pipeline-status:
+    name: ✨ Pipeline Status
+    needs: [validate, build, test, security]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: 📊 Check pipeline status
+        run: |
+          VALIDATE_STATUS="${{ needs.validate.result }}"
+          BUILD_STATUS="${{ needs.build.result }}"
+          TEST_STATUS="${{ needs.test.result }}"
+          SECURITY_STATUS="${{ needs.security.result }}"
+          
+          echo "╔════════════════════════════════════╗"
+          echo "║   CI Pipeline Execution Report     ║"
+          echo "╠════════════════════════════════════╣"
+          echo "║ Validate:  $VALIDATE_STATUS"
+          echo "║ Build:     $BUILD_STATUS"
+          echo "║ Test:      $TEST_STATUS"
+          echo "║ Security:  $SECURITY_STATUS"
+          echo "╚════════════════════════════════════╝"
+          
+          if [[ "$VALIDATE_STATUS" == "failure" || \
+                "$BUILD_STATUS" == "failure" || \
+                "$TEST_STATUS" == "failure" ]]; then
+            echo ""
+            echo "❌ CRITICAL: Pipeline Failed"
+            exit 1
+          else
+            echo ""
+            echo "✅ SUCCESS: All checks passed!"
+          fi
+      
+      - name: 📢 Notify success
+        if: success()
+        run: echo "🎉 Pipeline completed successfully!"
