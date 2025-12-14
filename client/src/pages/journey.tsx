@@ -26,7 +26,6 @@ import {
   Leaf,
   TestTube,
   Clock,
-  Tag,
   RotateCcw,
   Save
 } from "lucide-react";
@@ -1638,34 +1637,7 @@ export default function Journey() {
                       </Button>
                     </div>
 
-                    {/* Journey Bundle Discount */}
-                    <div className="bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-red-500/10 border-2 border-amber-500/30 rounded-xl p-6 relative overflow-hidden">
-                      <div className="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/20 rounded-full blur-2xl" />
-                      <div className="relative z-10">
-                        <div className="flex items-start justify-between gap-4 mb-4">
-                          <div className="flex items-start gap-3">
-                            <div className="p-2 bg-amber-500/20 rounded-full">
-                              <Sparkles className="h-6 w-6 text-amber-500" />
-                            </div>
-                            <div>
-                              <h3 className="text-xl font-bold text-foreground text-right">Journey Bundle - حزمة الرحلة</h3>
-                              <p className="text-sm text-muted-foreground mt-1 text-right">احصل على حزمة كاملة مع خصم 10%</p>
-                            </div>
-                          </div>
-                          <Badge className="bg-amber-500 hover:bg-amber-600 text-white whitespace-nowrap">خصم 10%</Badge>
-                        </div>
-                        <p className="text-sm text-foreground mb-4">
-                          استخدم رمز الخصم <span className="font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded">JOURNEY2024</span> عند الدفع للحصول على خصم 10% على جميع منتجات الرحلة
-                        </p>
-                        <Button
-                          className="w-full bg-amber-600 hover:bg-amber-700 text-white"
-                          size="lg"
-                        >
-                          <Tag className="h-5 w-5 ml-2" />
-                          طبق الكود وأكمل الشراء
-                        </Button>
-                      </div>
-                    </div>
+
 
                     {/* Final Tips */}
                     <div className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20 rounded-xl p-6">
