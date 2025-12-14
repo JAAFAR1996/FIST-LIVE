@@ -163,21 +163,7 @@ export function createUserRouter() {
         }
     });
 
-    // Newsletter
-    router.post("/newsletter/subscribe", async (req, res, next) => {
-        try {
-            const parsed = insertNewsletterSubscriptionSchema.parse(req.body);
-            const existing = await storage.getNewsletterSubscriptionByEmail(parsed.email);
-            if (existing) {
-                res.status(409).json({ message: "Already subscribed" });
-                return;
-            }
-            const sub = await storage.createNewsletterSubscription(parsed);
-            res.status(201).json(sub);
-        } catch (err) {
-            next(err);
-        }
-    });
+
 
     // Addresses
     router.get("/user/addresses", requireAuth, async (req, res, next) => {

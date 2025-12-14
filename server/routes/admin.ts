@@ -3,6 +3,7 @@ import { storage } from "../storage/index.js";
 import { requireAdmin, getSession } from "../middleware/auth.js";
 import { insertProductSchema } from "../../shared/schema.js";
 import express from "express";
+import { broadcastDiscountForProduct } from "./newsletter.js";
 
 export function createAdminRouter() {
     const router = Router();
@@ -268,8 +269,22 @@ export function createAdminRouter() {
                 changes: updates
             });
 
+            // Check if price was provided in updates
+            if (updates.price) {
+                const currentPrice = parseFloat(product.price);
+                const oldPrice = product.originalPrice ? parseFloat(product.originalPrice) : Infinity;
+
+                // If currently discounted (price < originalPrice)
+                if (oldPrice > currentPrice) {
+                    // Trigger broadcast in background
+                    broadcastDiscountForProduct(storage, product.id).catch(err => {
+                        console.error("Failed to auto-broadcast discount:", err);
+                    });
+                }
+            }
+
             res.json(product);
-        } catch (err) { next(err); }
+        } catch (err: any) { next(err); }
     });
 
     router.delete("/products/:id", async (req, res, next) => {
