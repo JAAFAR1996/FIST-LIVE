@@ -1,12 +1,12 @@
 import { type Product, type Review, type ReviewRating, type Discount, type FishSpecies, products, reviews, reviewRatings, discounts, fishSpecies, categories } from "../../shared/schema.js";
-import { eq, desc, and, gte, lte, sql, isNull, notInArray, gt } from "drizzle-orm";
+import { eq, desc, and, gte, lte, sql, isNull, notInArray, gt, inArray } from "drizzle-orm";
 import { getDb } from "../db.js";
 import { randomUUID } from "crypto";
 
 export interface ProductFilters {
-    category?: string;
+    category?: string | string[];
     subcategory?: string;
-    brand?: string;
+    brand?: string | string[];
     minPrice?: number;
     maxPrice?: number;
     isNew?: boolean;
@@ -14,7 +14,7 @@ export interface ProductFilters {
     search?: string;
     limit?: number;
     offset?: number;
-    sortBy?: 'rating' | 'price' | 'createdAt' | 'reviewCount';
+    sortBy?: 'rating' | 'price' | 'createdAt' | 'reviewCount' | 'name';
     sortOrder?: 'asc' | 'desc';
 }
 
@@ -38,9 +38,24 @@ export class ProductStorage {
         let query = db.select().from(products);
 
         const conditions = [];
-        if (filters?.category) conditions.push(sql`lower(${products.category}) = lower(${filters.category})`);
+
+        // Category Filter (Support string or array)
+        if (filters?.category) {
+            const categories = Array.isArray(filters.category) ? filters.category : [filters.category];
+            if (categories.length > 0) {
+                // Using valid categories from DB, so exact match is fine and allows index usage
+                conditions.push(inArray(products.category, categories));
+            }
+        }
         if (filters?.subcategory) conditions.push(sql`lower(${products.subcategory}) = lower(${filters.subcategory})`);
-        if (filters?.brand) conditions.push(sql`lower(${products.brand}) = lower(${filters.brand})`);
+
+        // Brand Filter (Support string or array)
+        if (filters?.brand) {
+            const brands = Array.isArray(filters.brand) ? filters.brand : [filters.brand];
+            if (brands.length > 0) {
+                conditions.push(inArray(products.brand, brands));
+            }
+        }
 
         if (filters?.isNew !== undefined) conditions.push(eq(products.isNew, filters.isNew));
         if (filters?.isBestSeller !== undefined) conditions.push(eq(products.isBestSeller, filters.isBestSeller));
@@ -66,7 +81,8 @@ export class ProductStorage {
             const sortColumn = filters.sortBy === 'rating' ? products.rating :
                 filters.sortBy === 'price' ? products.price :
                     filters.sortBy === 'reviewCount' ? products.reviewCount :
-                        products.createdAt;
+                        filters.sortBy === 'name' ? products.name :
+                            products.createdAt;
 
             query = filters.sortOrder === 'asc'
                 ? query.orderBy(sortColumn) as any
@@ -85,7 +101,7 @@ export class ProductStorage {
         return await query;
     }
 
-    async getProductAttributes(): Promise<{ categories: string[], brands: string[] }> {
+    async getProductAttributes(): Promise<{ categories: string[], brands: string[], minPrice: number, maxPrice: number }> {
         const db = this.ensureDb();
 
         // Fetch categories from the dedicated table
@@ -99,9 +115,17 @@ export class ProductStorage {
             .where(isNull(products.deletedAt))
             .orderBy(products.brand);
 
+        // Fetch price range
+        const priceStats = await db.select({
+            min: sql<string>`min(${products.price})`,
+            max: sql<string>`max(${products.price})`
+        }).from(products).where(isNull(products.deletedAt));
+
         return {
             categories: categoryResults.map(c => c.name).filter(Boolean),
-            brands: brandResults.map(b => b.brand).filter(Boolean)
+            brands: brandResults.map(b => b.brand).filter(Boolean),
+            minPrice: Number(priceStats[0]?.min || 0),
+            maxPrice: Number(priceStats[0]?.max || 1000000)
         };
     }
 

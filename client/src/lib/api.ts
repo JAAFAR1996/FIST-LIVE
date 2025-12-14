@@ -29,11 +29,11 @@ export async function fetchProductsCore(params?: Record<string, any>): Promise<{
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        // Handle arrays (like categories) if backend supports it, but currently backend expects single values for simple filters
-        // If backend supports ?category=a&category=b, append multiple. 
-        // Our backend filter logic in product-storage checks `req.query.category as string`. So single value.
-        // We will assume single value for now or comma separated if needed.
-        query.append(key, String(value));
+        if (Array.isArray(value)) {
+          value.forEach(v => query.append(key, String(v)));
+        } else {
+          query.append(key, String(value));
+        }
       }
     });
   }
@@ -59,12 +59,12 @@ export async function fetchProducts(params?: Record<string, any>): Promise<{ pro
   }
 }
 
-export async function fetchProductAttributes(): Promise<{ categories: string[]; brands: string[] }> {
+export async function fetchProductAttributes(): Promise<{ categories: string[], brands: string[], minPrice: number, maxPrice: number }> {
   try {
-    return await getJson<{ categories: string[]; brands: string[] }>("/api/products/attributes");
+    return await getJson<{ categories: string[]; brands: string[]; minPrice: number; maxPrice: number }>("/api/products/attributes");
   } catch (err) {
     console.warn("Failed to fetch product attributes", err);
-    return { categories: [], brands: [] }; // Fallback
+    return { categories: [], brands: [], minPrice: 0, maxPrice: 0 }; // Fallback
   }
 }
 

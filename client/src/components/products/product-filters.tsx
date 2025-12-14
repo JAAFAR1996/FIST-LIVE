@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -35,12 +35,22 @@ export function ProductFilters({
 }: ProductFiltersProps) {
   const [localFilters, setLocalFilters] = useState<FilterState>(filters);
 
+  // Sync local state with prop changes
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
   const difficulties = ["مبتدئ", "متوسط", "متقدم"];
   const tags = ["جديد", "الأكثر مبيعاً", "صديق للبيئة"];
 
+  // Update visual slider only
   const handlePriceChange = (value: number[]) => {
+    setLocalFilters(prev => ({ ...prev, priceRange: [value[0], value[1]] as [number, number] }));
+  };
+
+  // Commit change to parent (API call)
+  const handlePriceCommit = (value: number[]) => {
     const newFilters = { ...localFilters, priceRange: [value[0], value[1]] as [number, number] };
-    setLocalFilters(newFilters);
     onFilterChange(newFilters);
   };
 
@@ -119,6 +129,7 @@ export function ProductFilters({
             step={10000}
             value={localFilters.priceRange}
             onValueChange={handlePriceChange}
+            onValueCommit={handlePriceCommit}
             className="w-full"
           />
           <div className="flex justify-between text-sm text-muted-foreground">

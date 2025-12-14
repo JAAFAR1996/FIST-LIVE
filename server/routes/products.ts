@@ -11,9 +11,9 @@ export function createProductRouter() {
     router.get("/", async (req, res, next) => {
         try {
             const filters = {
-                category: req.query.category as string,
+                category: req.query.category as string | string[],
                 subcategory: req.query.subcategory as string,
-                brand: req.query.brand as string,
+                brand: req.query.brand as string | string[],
                 minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
                 maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
                 isNew: req.query.isNew === 'true',
@@ -21,6 +21,8 @@ export function createProductRouter() {
                 search: req.query.search as string,
                 limit: req.query.limit ? Number(req.query.limit) : undefined,
                 offset: req.query.offset ? Number(req.query.offset) : undefined,
+                sortBy: req.query.sortBy as any,
+                sortOrder: req.query.sortOrder as 'asc' | 'desc',
             };
 
             const products = await storage.getProducts(filters);

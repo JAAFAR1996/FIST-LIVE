@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type MascotMood = "happy" | "sad" | "thinking" | "excited" | "working" | "drinking";
+type MascotMood = "happy" | "sad" | "thinking" | "excited" | "working" | "drinking" | "guardian" | "relaxed";
 
 interface ShrimpMascotProps {
     mood?: MascotMood;
@@ -27,6 +27,8 @@ export function ShrimpMascot({
             case "excited": return "🎉🦐";
             case "working": return "💼🦐";
             case "drinking": return "🥤🦐";
+            case "guardian": return "🛡️🦐";
+            case "relaxed": return "🩳🦐";
             default: return "🦐";
         }
     };
@@ -41,6 +43,8 @@ export function ShrimpMascot({
             case "excited": return "يا سلام! 🎊";
             case "working": return "شغال عليها...";
             case "drinking": return "بالعافية! 🥤";
+            case "guardian": return "ولا يهمك، الشرمب حارس عليه! 🛡️";
+            case "relaxed": return "ارتاح يا بطل ❤️";
             default: return "";
         }
     };
@@ -54,6 +58,8 @@ export function ShrimpMascot({
             case "excited": return "animate-bounce";
             case "working": return "animate-pulse";
             case "drinking": return "animate-bounce";
+            case "guardian": return "animate-pulse";
+            case "relaxed": return "animate-float";
             default: return "animate-float";
         }
     };
@@ -66,6 +72,8 @@ export function ShrimpMascot({
             case "excited": return "bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-900/20";
             case "working": return "bg-gradient-to-br from-gray-100 to-slate-100 dark:from-gray-900/20 dark:to-slate-900/20";
             case "drinking": return "bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/20 dark:to-amber-900/20";
+            case "guardian": return "bg-gradient-to-br from-slate-100 to-zinc-200 dark:from-slate-900/20 dark:to-zinc-900/20";
+            case "relaxed": return "bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/20 dark:to-rose-900/20";
             default: return "bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/20 dark:to-blue-900/20";
         }
     };
@@ -86,6 +94,8 @@ export function ShrimpMascot({
             case "excited": return "/assets/mascot/shrimp-excited.png";
             case "working": return "/assets/mascot/shrimp-thinking.png"; // Fallback to thinking/happy for working
             case "drinking": return "/assets/mascot/shrimp-drinking.png";
+            case "guardian": return "/assets/mascot/shrimp-knight.png";
+            case "relaxed": return "/assets/mascot/shrimp-underwear.png";
             default: return "/assets/mascot/shrimp-happy.png";
         }
     };

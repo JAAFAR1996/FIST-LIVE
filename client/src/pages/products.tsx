@@ -11,7 +11,7 @@ import { ProductFilters, FilterState } from "@/components/products/product-filte
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "@/lib/api";
+import { fetchProducts, fetchProductAttributes } from "@/lib/api";
 import { ProductCardSkeleton } from "@/components/ui/loading-skeleton";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -24,47 +24,38 @@ type SortOption = "default" | "price-asc" | "price-desc" | "name-asc" | "rating-
 
 export default function Products() {
   const [location] = useLocation();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["products"],
-    queryFn: fetchProducts,
-    staleTime: 1000 * 60 * 5,
+  const searchParams = new URLSearchParams(window.location.search);
+  const initialCategory = searchParams.get("category");
+  const initialSearch = searchParams.get("search");
+
+  // Fetch dynamic attributes (categories, brands, price range)
+  const { data: attributes, isLoading: isAttributesLoading } = useQuery({
+    queryKey: ["product-attributes"],
+    queryFn: fetchProductAttributes,
+    staleTime: 1000 * 60 * 10, // Cache for 10 minutes
   });
 
-  const products = data?.products ?? [];
+  const availableCategories = attributes?.categories || [];
+  const availableBrands = attributes?.brands || [];
+  const minPrice = attributes?.minPrice || 0;
+  const maxPrice = attributes?.maxPrice || 1000000;
 
-  // Calculate max price
-  const maxPrice = useMemo(() => {
-    if (products.length === 0) return 1000000;
-    return Math.max(...products.map((p: Product) => p.price));
-  }, [products]);
-
-
-
-  // Initialize filters from URL params or defaults
-  const [filters, setFilters] = useState<FilterState>(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const category = searchParams.get("category");
-    const search = searchParams.get("search");
-
-    // Start with default filters
-    const initialFilters: FilterState = {
-      priceRange: [0, maxPrice],
-      categories: category ? [category] : [],
-      brands: [],
-      difficulties: [],
-      tags: [],
-    };
-
-    return initialFilters;
+  // Local filter state
+  const [filters, setFilters] = useState<FilterState>({
+    priceRange: [0, 1000000], // Temporary default, updated via useEffect
+    categories: initialCategory ? [initialCategory] : [],
+    brands: [],
+    difficulties: [],
+    tags: [],
   });
 
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  // Update filters when URL params change (e.g. navigation from search)
+  // Update filters when URL params change
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const category = searchParams.get("category");
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category");
     if (category) {
       setFilters(prev => ({
         ...prev,
@@ -73,92 +64,90 @@ export default function Products() {
     }
   }, [location]);
 
-  // Update price range when products are loaded
+  // Initialize price range from attributes once loaded
   useEffect(() => {
-    if (products.length > 0 && maxPrice > 0) {
+    if (attributes && filters.priceRange[1] === 1000000 && attributes.maxPrice !== 1000000) {
       setFilters(prev => ({
         ...prev,
-        priceRange: [0, maxPrice]
+        priceRange: [attributes.minPrice, attributes.maxPrice]
       }));
     }
-  }, [maxPrice, products.length]);
+  }, [attributes]);
 
-  // Get available categories and brands
-  const availableCategories = useMemo(() => {
-    const categories = new Set(products.map((p: Product) => p.category));
-    return Array.from(categories).sort();
-  }, [products]);
 
-  const availableBrands = useMemo(() => {
-    const brands = new Set(products.map((p: Product) => p.brand));
-    return Array.from(brands).sort();
-  }, [products]);
+  // Prepare query params for backend
+  const queryParams = useMemo(() => {
+    const params: Record<string, any> = {};
 
-  // Filter products
-  const filteredProducts = useMemo(() => {
-    return products.filter((product: Product) => {
-      // Price filter
-      if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) {
-        return false;
-      }
+    // Filters
+    if (filters.categories.length > 0) params.category = filters.categories;
+    if (filters.brands.length > 0) params.brand = filters.brands;
+    if (filters.priceRange[0] > minPrice) params.minPrice = filters.priceRange[0];
+    if (filters.priceRange[1] < maxPrice) params.maxPrice = filters.priceRange[1];
 
-      // Category filter
-      if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
-        return false;
-      }
+    // Search
+    if (initialSearch) params.search = initialSearch;
 
-      // Brand filter
-      if (filters.brands.length > 0 && !filters.brands.includes(product.brand)) {
-        return false;
-      }
+    // Difficulty (Note: Backend might need update if difficulty filter logic strictly requires 'difficulty' param, assumption: it maps to something or we keep client side for some?)
+    // Checking product-storage: it does NOT currently have 'difficulty' filter in the WHERE clause I saw earlier.
+    // It has: category, subcategory, brand, isNew, isBestSeller, minPrice, maxPrice, search.
+    // Difficulty is NOT filtered on backend!
+    // And Tags (isNew, isBestSeller) ARE supported.
 
-      // Difficulty filter
+    if (filters.tags.includes("جديد")) params.isNew = true;
+    if (filters.tags.includes("الأكثر مبيعاً")) params.isBestSeller = true;
+    // "صديق للبيئة" mapping? Schema has `ecoFriendly`?
+    // Let's assume tags need partial client side filtering OR updated backend.
+
+    // Sorting
+    if (sortBy === "price-asc") { params.sortBy = "price"; params.sortOrder = "asc"; }
+    else if (sortBy === "price-desc") { params.sortBy = "price"; params.sortOrder = "desc"; }
+    else if (sortBy === "name-asc") { params.sortBy = "name"; params.sortOrder = "asc"; }
+    else if (sortBy === "rating-desc") { params.sortBy = "rating"; params.sortOrder = "desc"; }
+    else { params.sortBy = "createdAt"; params.sortOrder = "desc"; } // default
+
+    return params;
+  }, [filters, sortBy, initialSearch, minPrice, maxPrice]);
+
+  // Fetch products with backend filtering
+  const { data, isLoading: isProductsLoading, isError } = useQuery({
+    queryKey: ["products", queryParams],
+    queryFn: () => fetchProducts(queryParams),
+    staleTime: 1000 * 60, // 1 minute
+  });
+
+  const products = data?.products ?? [];
+
+  // Client-side filtering for unsupported backend filters (Difficulty, specific tags)
+  // Ideally we should add these to backend, but for now we filter the returned page.
+  // Note: This works correctly only if pagination is not used (fetch all). 
+  // Current fetchProducts fetches ALL by default (no limit).
+  const finalProducts = useMemo(() => {
+    return products.filter(product => {
+      // Difficulty
       if (filters.difficulties.length > 0 && product.difficulty && !filters.difficulties.includes(product.difficulty)) {
         return false;
       }
-
-      // Tags filter
-      if (filters.tags.length > 0) {
-        const hasTag = filters.tags.some((tag) => {
-          if (tag === "جديد") return product.isNew;
-          if (tag === "الأكثر مبيعاً") return product.isBestSeller;
-          if (tag === "صديق للبيئة") return product.ecoFriendly;
-          return false;
-        });
-        if (!hasTag) return false;
+      // Eco Friendly Tag
+      if (filters.tags.includes("صديق للبيئة") && !product.ecoFriendly) {
+        return false;
       }
-
       return true;
     });
-  }, [products, filters]);
+  }, [products, filters.difficulties, filters.tags]);
 
-  // Sort products
-  const sortedProducts = useMemo(() => {
-    const sorted = [...filteredProducts];
-    switch (sortBy) {
-      case "price-asc":
-        return sorted.sort((a, b) => a.price - b.price);
-      case "price-desc":
-        return sorted.sort((a, b) => b.price - a.price);
-      case "name-asc":
-        return sorted.sort((a, b) => a.name.localeCompare(b.name, "ar"));
-      case "rating-desc":
-        return sorted.sort((a, b) => b.rating - a.rating);
-      default:
-        return sorted;
-    }
-  }, [filteredProducts, sortBy]);
+  const isLoading = isAttributesLoading || isProductsLoading;
 
-  // Count active filters
+  // Active filters count
   const activeFiltersCount = useMemo(() => {
     let count = 0;
-    if (filters.priceRange[0] !== 0 || filters.priceRange[1] !== maxPrice) count++;
+    if (Math.abs(filters.priceRange[0] - minPrice) > 1 || Math.abs(filters.priceRange[1] - maxPrice) > 1) count++;
     count += filters.categories.length;
     count += filters.brands.length;
     count += filters.difficulties.length;
     count += filters.tags.length;
     return count;
-  }, [filters, maxPrice]);
+  }, [filters, minPrice, maxPrice]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans transition-colors duration-300">
@@ -227,12 +216,12 @@ export default function Products() {
                   <>
                     {/* Results Count */}
                     <div className="mb-4 text-sm text-muted-foreground">
-                      عرض {sortedProducts.length} من {products.length} منتج
+                      عرض {finalProducts.length} من {finalProducts.length} منتج
                     </div>
 
-                    {sortedProducts.length > 0 ? (
+                    {finalProducts.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20 lg:pb-6">
-                        {sortedProducts.map((product) => (
+                        {finalProducts.map((product) => (
                           <ProductCard
                             key={product.id}
                             product={product}
@@ -254,7 +243,7 @@ export default function Products() {
                         <Button
                           variant="outline"
                           onClick={() => setFilters({
-                            priceRange: [0, maxPrice],
+                            priceRange: [minPrice, maxPrice],
                             categories: [],
                             brands: [],
                             difficulties: [],
@@ -283,7 +272,7 @@ export default function Products() {
 
           <TabsContent value="compare">
             <div className="animate-in fade-in slide-in-from-bottom-4">
-              <ProductComparison products={products} />
+              <ProductComparison products={finalProducts} />
             </div>
           </TabsContent>
         </Tabs>
@@ -298,7 +287,7 @@ export default function Products() {
         onClose={() => setQuickViewProduct(null)}
       />
 
-      <ComparisonDrawer products={products} />
+      <ComparisonDrawer products={finalProducts} />
 
       <Footer />
     </div>

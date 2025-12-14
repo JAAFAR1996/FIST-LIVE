@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { HeartFloatAnimation } from "./heart-float-animation";
+import { ShrimpMascot } from "@/components/gamification/shrimp-mascot";
 
 interface WishlistButtonProps {
   product: Product;
@@ -35,7 +36,12 @@ export function WishlistButton({
       removeItem(product.id);
       toast({
         title: "انحذف 💔",
-        description: "الجمبري زعلان منك... بس عادي!",
+        description: (
+          <div className="flex items-center gap-3">
+            <ShrimpMascot mood="relaxed" size="sm" className="w-16 h-16" animate={false} />
+            <span>الشرمب زعلان منك... بس عادي!</span>
+          </div>
+        ),
         variant: "default",
       });
     } else {
@@ -43,7 +49,12 @@ export function WishlistButton({
       setTriggerAnimation(true);
       toast({
         title: "انضاف للمفضلة 💖",
-        description: "ولا يهمك، الجمبري حارس عليه 😉",
+        description: (
+          <div className="flex items-center gap-3">
+            <ShrimpMascot mood="guardian" size="sm" className="w-16 h-16" animate={false} />
+            <span>ولا يهمك، الشرمب حارس عليه 😉</span>
+          </div>
+        ),
       });
     }
   };

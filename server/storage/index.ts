@@ -10,7 +10,7 @@ export interface IStorage {
     createUser(user: InsertUser): Promise<User>;
     updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
     getProducts(filters?: ProductFilters): Promise<Product[]>;
-    getProductAttributes(): Promise<{ categories: string[], brands: string[] }>;
+    getProductAttributes(): Promise<{ categories: string[], brands: string[], minPrice: number, maxPrice: number }>;
     getProduct(id: string): Promise<Product | undefined>;
     getProductBySlug(slug: string): Promise<Product | undefined>;
     createProduct(product: Partial<Product>): Promise<Product>;
