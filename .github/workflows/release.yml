@@ -1,0 +1,163 @@
+name: 🚀 Release & Deployment
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+
+env:
+  NODE_VERSION: 20.11.0
+  PNPM_VERSION: 9.1.0
+
+jobs:
+  # ==================== VALIDATE RELEASE ====================
+  validate-release:
+    name: 🔍 Validate Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: 🔏 Validate version tag
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "❌ Invalid version format: $VERSION"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "✅ Version validated: $VERSION"
+
+      - name: 🔍 Type check
+        run: pnpm run check
+
+      - name: 🧪 Run tests
+        run: pnpm run test --run
+
+  # ==================== BUILD RELEASE ====================
+  build-release:
+    name: 🏗️ Build Release
+    needs: validate-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: 🎨 Build client
+        run: pnpm run build:client
+        env:
+          NODE_ENV: production
+
+      - name: 🔨 Build project
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+
+      - name: 📊 Create tarball
+        run: |
+          mkdir -p release
+          tar -czf release/build-${{ github.run_number }}.tar.gz dist/ build/ package.json pnpm-lock.yaml
+          echo "✅ Build tarball created"
+
+      - name: 📦 Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build
+          path: release/
+          retention-days: 30
+
+  # ==================== CREATE RELEASE ====================
+  create-release:
+    name: 🎉 Create GitHub Release
+    needs: build-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-build
+          path: release/
+
+      - name: 🔐 Generate changelog
+        id: changelog
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          
+          echo "## 🌟 Changes in $VERSION" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          
+          if [[ "$PREV_TAG" != "v0.0.0" ]]; then
+            echo "### 📄 Commits" >> CHANGELOG.md
+            git log $PREV_TAG..HEAD --oneline >> CHANGELOG.md
+          fi
+          
+          cat CHANGELOG.md
+
+      - name: 🌟 Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: release/*
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ==================== NOTIFY ====================
+  notify:
+    name: 📢 Notify Release
+    needs: [validate-release, build-release, create-release]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: 🌟 Release notification
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "🎉 Release $VERSION created successfully!"
+          echo "✨ Release workflow completed"
