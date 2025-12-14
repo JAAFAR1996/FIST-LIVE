@@ -53,7 +53,7 @@ export function metaImagesPlugin(): Plugin {
 }
 
 function getDeploymentUrl(): string | null {
-  return "https://fishweb.iq";
+  return "https://aquavo.iq";
 }
 
 function log(...args: any[]): void {

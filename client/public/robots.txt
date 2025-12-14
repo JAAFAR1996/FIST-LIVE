@@ -1,5 +1,5 @@
-# Robots.txt for FIST-LIVE / Fish Web
-# https://fishweb.iq
+# Robots.txt for AQUAVO
+# https://aquavo.iq
 
 User-agent: *
 Allow: /
@@ -13,7 +13,7 @@ Disallow: /forgot-password
 Disallow: /reset-password
 
 # Sitemaps
-Sitemap: https://fishweb.iq/sitemap.xml
+Sitemap: https://aquavo.iq/sitemap.xml
 
 # Crawl-delay (optional, respected by some bots)
 Crawl-delay: 1

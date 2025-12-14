@@ -96,7 +96,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 }
 
 export async function sendWelcomeEmail(email: string): Promise<boolean> {
-  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://fishweb.iq'}/logo_aquavo.png`;
+  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://aquavo.iq'}/logo_aquavo.png`;
   const html = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -140,7 +140,7 @@ export async function sendWelcomeEmail(email: string): Promise<boolean> {
                 <div class="feature-item">🆕 أحدث المنتجات قبل الجميع</div>
             </div>
 
-            <a href="${process.env.VITE_PUBLIC_BASE_URL || 'https://fishweb.iq'}" class="btn">اكتشف منتجاتنا المميزة</a>
+            <a href="${process.env.VITE_PUBLIC_BASE_URL || 'https://aquavo.iq'}" class="btn">اكتشف منتجاتنا المميزة</a>
         </div>
         <div class="footer">
             <p>© ${new Date().getFullYear()} AQUAVO. جميع الحقوق محفوظة.</p>
@@ -164,7 +164,7 @@ export async function sendProductDiscountEmail(email: string, product: { name: s
     ? Math.round(((parseFloat(product.originalPrice) - parseFloat(product.price)) / parseFloat(product.originalPrice)) * 100)
     : 0;
 
-  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://fishweb.iq'}/logo_aquavo.png`;
+  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://aquavo.iq'}/logo_aquavo.png`;
 
   const html = `
 <!DOCTYPE html>
@@ -209,7 +209,7 @@ export async function sendProductDiscountEmail(email: string, product: { name: s
                 لأنك من عائلتنا المميزة، أردنا أن تكون أول من يعلم بهذا العرض الخاص. الكمية محدودة، لا تضيع الفرصة!
             </div>
 
-            <a href="${process.env.VITE_PUBLIC_BASE_URL || 'https://fishweb.iq'}/product/${product.slug}" class="btn">احصل عليه الآن 🛒</a>
+            <a href="${process.env.VITE_PUBLIC_BASE_URL || 'https://aquavo.iq'}/product/${product.slug}" class="btn">احصل عليه الآن 🛒</a>
         </div>
     </div>
 </body>
@@ -228,7 +228,7 @@ export async function sendProductDiscountEmail(email: string, product: { name: s
 export async function sendPasswordResetEmail(email: string, resetToken: string, baseUrl: string): Promise<boolean> {
   const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
   const userName = email.split('@')[0]; // Extract name from email
-  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://fishweb.iq'}/logo_aquavo.png`;
+  const logoUrl = `${process.env.VITE_PUBLIC_BASE_URL || 'https://aquavo.iq'}/logo_aquavo.png`;
 
 
   const html = `

@@ -339,7 +339,7 @@ export default function PrivacyPolicy() {
                     </div>
                   </a>
                   <a
-                    href="mailto:privacy@fishweb.iq"
+                    href="mailto:privacy@aquavo.iq"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                   >
                     <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
@@ -347,7 +347,7 @@ export default function PrivacyPolicy() {
                     </div>
                     <div>
                       <p className="font-medium">البريد الإلكتروني</p>
-                      <p className="text-sm text-muted-foreground">privacy@fishweb.iq</p>
+                      <p className="text-sm text-muted-foreground">privacy@aquavo.iq</p>
                     </div>
                   </a>
                 </div>

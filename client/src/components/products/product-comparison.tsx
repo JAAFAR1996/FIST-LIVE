@@ -34,7 +34,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 
-const COMPARISON_KEY = "fishweb_comparison";
+const COMPARISON_KEY = "aquavo_comparison";
 const MAX_COMPARE = 4;
 
 // Hook to manage comparison list

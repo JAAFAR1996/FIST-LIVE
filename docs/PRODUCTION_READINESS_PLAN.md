@@ -442,7 +442,7 @@ export async function sendOrderConfirmationSMS(phone: string, orderNumber: strin
     return;
   }
 
-  const message = `شكراً لطلبك من FishWeb! رقم طلبك: ${orderNumber}. سنتواصل معك قريباً للتأكيد.`;
+  const message = `شكراً لطلبك من AQUAVO! رقم طلبك: ${orderNumber}. سنتواصل معك قريباً للتأكيد.`;
 
   try {
     const response = await fetch(

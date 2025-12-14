@@ -46,11 +46,11 @@ const transporter = nodemailer.createTransport({
 
         console.log(`Attempting to send test email to ${user}...`);
         const info = await transporter.sendMail({
-            from: `"FishWeb Test" <${user}>`,
+            from: `"AQUAVO Test" <${user}>`,
             to: user,
-            subject: "FishWeb SMTP Test Message 🐟",
-            text: "Congratulations! If you are reading this, your FishWeb email configuration is working correctly.",
-            html: "<h1>Congratulations! 🎉</h1><p>If you are reading this, your <strong>FishWeb</strong> email configuration is working correctly.</p>"
+            subject: "AQUAVO SMTP Test Message 🐟",
+            text: "Congratulations! If you are reading this, your AQUAVO email configuration is working correctly.",
+            html: "<h1>Congratulations! 🎉</h1><p>If you are reading this, your <strong>AQUAVO</strong> email configuration is working correctly.</p>"
         });
 
         console.log("✅ Email Sent Successfully!");

@@ -235,7 +235,7 @@ ${clientEnv.siteUrl ? `الرابط: ${clientEnv.siteUrl}` : ""}`.trim();
 
             <div className="text-center text-xs text-muted-foreground pt-4 border-t">
               <p>شكراً لتسوقكم من AQUAVO</p>
-              <p className="mt-1">www.fishweb.iq</p>
+              <p className="mt-1">www.aquavo.iq</p>
             </div>
           </div>
         </div>

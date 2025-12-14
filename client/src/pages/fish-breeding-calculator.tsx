@@ -62,6 +62,10 @@ export default function FishBreedingCalculator() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const species = breedingSpecies.find(s => s.id === selectedSpecies);
+  
+  // Debug logging
+  console.log('Selected Species ID:', selectedSpecies);
+  console.log('Found Species:', species);
 
   // Calculate breeding timeline
   const calculateTimeline = () => {

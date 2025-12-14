@@ -14,6 +14,7 @@ import { BubbleTrail } from "@/components/effects/bubble-trail";
 import { initGA, trackPageView } from "@/lib/analytics";
 import "@/lib/sentry"; // Auto-initializes on import
 import { CelebrationOverlay } from "@/components/gallery/celebration-overlay";
+import { WinnerNotificationBanner } from "@/components/notifications/winner-notification-banner";
 
 // Direct imports for critical pages (needed for fast first paint)
 import Home from "@/pages/home";
@@ -279,6 +280,7 @@ function App() {
               <ScrollProgress />
               <FloatingActionButton />
               <BubbleTrail />
+              <WinnerNotificationBanner />
               <CelebrationOverlay />
               <Toaster />
               <Router />

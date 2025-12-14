@@ -10,12 +10,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { 
-  HelpCircle, 
-  Search, 
-  Truck, 
-  CreditCard, 
-  RotateCcw, 
+import {
+  HelpCircle,
+  Search,
+  Truck,
+  CreditCard,
+  RotateCcw,
   Fish,
   Package,
   Shield,
@@ -219,8 +219,8 @@ export default function FAQ() {
   const filteredCategories = categories.map(category => ({
     ...category,
     faqs: category.faqs.filter(
-      faq => 
-        faq.question.includes(searchQuery) || 
+      faq =>
+        faq.question.includes(searchQuery) ||
         faq.answer.includes(searchQuery)
     )
   })).filter(category => searchQuery === "" || category.faqs.length > 0);
@@ -235,13 +235,13 @@ export default function FAQ() {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans" data-testid="faq-page">
       <Navbar />
-      
+
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-primary/5 to-background">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-20 w-64 h-64 bg-primary rounded-full blur-3xl" />
           <div className="absolute bottom-10 left-20 w-48 h-48 bg-purple-500 rounded-full blur-3xl" />
         </div>
-        
+
         <div className="container relative z-10 mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -277,7 +277,7 @@ export default function FAQ() {
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4">
           {searchQuery === "" && (
-            <motion.section 
+            <motion.section
               className="mb-12"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -302,7 +302,7 @@ export default function FAQ() {
           )}
 
           <div className="grid lg:grid-cols-4 gap-8">
-            <motion.aside 
+            <motion.aside
               className="lg:col-span-1"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -314,11 +314,10 @@ export default function FAQ() {
                   <button
                     key={category.id}
                     onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-right ${
-                      activeCategory === category.id 
-                        ? "bg-primary text-primary-foreground" 
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-right ${activeCategory === category.id
+                        ? "bg-primary text-primary-foreground"
                         : "hover:bg-muted"
-                    }`}
+                      }`}
                     data-testid={`button-category-${category.id}`}
                   >
                     <div className={`p-2 rounded-lg ${activeCategory === category.id ? "bg-white/20" : category.color}`}>
@@ -333,7 +332,7 @@ export default function FAQ() {
               </div>
             </motion.aside>
 
-            <motion.div 
+            <motion.div
               className="lg:col-span-3 space-y-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -352,12 +351,12 @@ export default function FAQ() {
                     <CardContent className="p-0">
                       <Accordion type="single" collapsible className="w-full">
                         {category.faqs.map((faq, index) => (
-                          <AccordionItem 
-                            key={index} 
+                          <AccordionItem
+                            key={index}
                             value={`${category.id}-${index}`}
                             className="border-b last:border-0"
                           >
-                            <AccordionTrigger 
+                            <AccordionTrigger
                               className="px-6 py-4 text-right hover:bg-muted/50 [&[data-state=open]]:bg-muted/50"
                               data-testid={`accordion-trigger-${category.id}-${index}`}
                             >
@@ -378,7 +377,7 @@ export default function FAQ() {
                   <HelpCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">لم نجد نتائج</h3>
                   <p className="text-muted-foreground mb-4">جرب كلمات بحث مختلفة أو تصفح الفئات</p>
-                  <button 
+                  <button
                     onClick={() => setSearchQuery("")}
                     className="text-primary hover:underline"
                   >
@@ -389,7 +388,7 @@ export default function FAQ() {
             </motion.div>
           </div>
 
-          <motion.section 
+          <motion.section
             className="mt-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -402,7 +401,7 @@ export default function FAQ() {
                   <p className="text-muted-foreground">فريق الدعم جاهز لمساعدتك على مدار الساعة</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
-                  <a 
+                  <a
                     href="tel:+9647700000000"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                     data-testid="link-contact-phone"
@@ -415,7 +414,7 @@ export default function FAQ() {
                       <p className="text-sm text-muted-foreground" dir="ltr">+964 770 000 0000</p>
                     </div>
                   </a>
-                  <a 
+                  <a
                     href="https://wa.me/9647700000000"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -430,8 +429,8 @@ export default function FAQ() {
                       <p className="text-sm text-muted-foreground">رد خلال دقائق</p>
                     </div>
                   </a>
-                  <a 
-                    href="mailto:support@fishweb.iq"
+                  <a
+                    href="mailto:support@aquavo.iq"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                     data-testid="link-contact-email"
                   >
@@ -440,7 +439,7 @@ export default function FAQ() {
                     </div>
                     <div>
                       <p className="font-medium">البريد الإلكتروني</p>
-                      <p className="text-sm text-muted-foreground">support@fishweb.iq</p>
+                      <p className="text-sm text-muted-foreground">support@aquavo.iq</p>
                     </div>
                   </a>
                 </div>

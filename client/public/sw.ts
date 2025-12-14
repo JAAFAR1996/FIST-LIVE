@@ -1,9 +1,9 @@
 /// <reference lib="webworker" />
 
-const CACHE_NAME = 'fishweb-v1';
-const STATIC_CACHE = 'fishweb-static-v1';
-const IMAGE_CACHE = 'fishweb-images-v1';
-const API_CACHE = 'fishweb-api-v1';
+const CACHE_NAME = 'aquavo-v1';
+const STATIC_CACHE = 'aquavo-static-v1';
+const IMAGE_CACHE = 'aquavo-images-v1';
+const API_CACHE = 'aquavo-api-v1';
 
 // Static assets to pre-cache
 const STATIC_ASSETS = [
@@ -30,7 +30,7 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
             return Promise.all(
                 cacheNames
                     .filter((name) => {
-                        return name.startsWith('fishweb-') &&
+                        return name.startsWith('aquavo-') &&
                             name !== CACHE_NAME &&
                             name !== STATIC_CACHE &&
                             name !== IMAGE_CACHE &&
@@ -208,7 +208,7 @@ self.addEventListener('push', (event: PushEvent) => {
 
     event.waitUntil(
         (self as any).registration.showNotification(
-            data.title || 'فيش ويب',
+            data.title || 'AQUAVO',
             options
         )
     );

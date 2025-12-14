@@ -8,7 +8,7 @@ export function createSystemRouter() {
     router.get("/sitemap.xml", async (req, res) => {
         try {
             const products = await storage.getProducts();
-            const baseUrl = "https://fishweb.iq";
+            const baseUrl = "https://aquavo.iq";
             const today = new Date().toISOString().split('T')[0];
 
             const staticPages = [
@@ -41,7 +41,7 @@ export function createSystemRouter() {
 
     // Robots.txt
     router.get("/robots.txt", (req, res) => {
-        const robots = `User-agent: *\nDisallow: /admin\nDisallow: /api/\nSitemap: https://fishweb.iq/sitemap.xml`;
+        const robots = `User-agent: *\nDisallow: /admin\nDisallow: /api/\nSitemap: https://aquavo.iq/sitemap.xml`;
         res.header("Content-Type", "text/plain");
         res.send(robots);
     });

@@ -2,9 +2,9 @@
 import crypto from "crypto";
 
 function hashPassword(password: string) {
-    const salt = crypto.randomBytes(16).toString("hex");
-    const digest = crypto.scryptSync(password, salt, 64).toString("hex");
-    return `${salt}:${digest}`;
+  const salt = crypto.randomBytes(16).toString("hex");
+  const digest = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${digest}`;
 }
 
 const password = "admin123";
@@ -22,7 +22,7 @@ INSERT INTO users (
   created_at, 
   updated_at
 ) VALUES (
-  'admin@fishweb.com', 
+  'admin@aquavo.iq', 
   '${hash}', 
   'System Admin', 
   'admin', 

@@ -15,7 +15,7 @@ cloudinary.config({
 export async function uploadImage(imageBase64: string): Promise<string> {
     try {
         const result = await cloudinary.uploader.upload(imageBase64, {
-            folder: "fish-web-products",
+            folder: "aquavo-products",
         });
         return result.secure_url;
     } catch (error) {

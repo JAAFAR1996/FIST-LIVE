@@ -34,11 +34,11 @@ export default function SettingsManagement() {
                     <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
                             <Label>اسم المتجر</Label>
-                            <Input defaultValue="FishWeb IQ" />
+                            <Input defaultValue="AQUAVO" />
                         </div>
                         <div className="space-y-2">
                             <Label>البريد الإلكتروني للدعم</Label>
-                            <Input defaultValue="support@fishweb.iq" />
+                            <Input defaultValue="support@aquavo.iq" />
                         </div>
                     </div>
 

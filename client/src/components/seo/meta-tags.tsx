@@ -21,7 +21,7 @@ export function MetaTags({
     title,
     description = "AQUAVO - وجهتك الأولى لمعدات وتقنيات أحواض الأسماك المتطورة في العراق",
     keywords = [],
-    image = "https://fishweb.iq/logo_aquavo.png",
+    image = "https://aquavo.iq/logo_aquavo.png",
     url,
     type = "website",
     price,
@@ -87,7 +87,7 @@ export function MetaTags({
         setMetaTag("twitter:title", title);
         setMetaTag("twitter:description", description.slice(0, 200));
         setMetaTag("twitter:image", image);
-        setMetaTag("twitter:site", "@fishwebiq");
+        setMetaTag("twitter:site", "@aquavoiq");
 
         // Product specific (for e-commerce)
         if (type === "product" && price) {
@@ -235,8 +235,8 @@ export function OrganizationSchema() {
         "@type": "Organization",
         name: "AQUAVO",
         alternateName: "AQUAVO Store",
-        url: "https://fishweb.iq",
-        logo: "https://fishweb.iq/logo_aquavo.png",
+        url: "https://aquavo.iq",
+        logo: "https://aquavo.iq/logo_aquavo.png",
         description: "أفضل منصة لمعدات وتقنيات أحواض الأسماك في العراق",
         contactPoint: {
             "@type": "ContactPoint",
@@ -246,9 +246,9 @@ export function OrganizationSchema() {
             areaServed: "IQ",
         },
         sameAs: [
-            "https://facebook.com/fishwebiq",
-            "https://instagram.com/fishwebiq",
-            "https://twitter.com/fishwebiq",
+            "https://facebook.com/aquavoiq",
+            "https://instagram.com/aquavoiq",
+            "https://twitter.com/aquavoiq",
         ],
         address: {
             "@type": "PostalAddress",
@@ -273,9 +273,9 @@ export function LocalBusinessSchema() {
         "@context": "https://schema.org",
         "@type": "Store",
         name: "AQUAVO",
-        image: "https://fishweb.iq/logo_aquavo.png",
-        "@id": "https://fishweb.iq",
-        url: "https://fishweb.iq",
+        image: "https://aquavo.iq/logo_aquavo.png",
+        "@id": "https://aquavo.iq",
+        url: "https://aquavo.iq",
         telephone: "+964-770-000-0000",
         priceRange: "$$",
         address: {
@@ -372,12 +372,12 @@ export function WebsiteSchema() {
         "@type": "WebSite",
         name: "AQUAVO",
         alternateName: "AQUAVO Store",
-        url: "https://fishweb.iq",
+        url: "https://aquavo.iq",
         potentialAction: {
             "@type": "SearchAction",
             target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://fishweb.iq/search?q={search_term_string}",
+                urlTemplate: "https://aquavo.iq/search?q={search_term_string}",
             },
             "query-input": "required name=search_term_string",
         },
@@ -426,7 +426,7 @@ export function ArticleSchema({
             name: "AQUAVO",
             logo: {
                 "@type": "ImageObject",
-                url: "https://fishweb.iq/logo_aquavo.png",
+                url: "https://aquavo.iq/logo_aquavo.png",
             },
         },
     };

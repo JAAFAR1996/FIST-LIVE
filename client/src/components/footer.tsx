@@ -193,35 +193,60 @@ export default function Footer() {
           {/* Our Story Section */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Heart className="h-4 w-4 text-red-400" />
+              <Heart className="h-4 w-4 text-red-400 animate-pulse" />
               قصتنا
             </h4>
             <div className="text-slate-400 text-sm leading-relaxed space-y-3">
+              <p className="font-medium text-white text-base">
+                💔 سمكة صغيرة... غيّرت كل شي
+              </p>
+              <p className="italic border-r-2 border-primary/50 pr-3">
+                "في يوم ميلادي، أهداني أبي سمكة ذهبية صغيرة. كانت أول صديق حقيقي لي. سميتها 'نور' لأنها كانت تضيء غرفتي بحركتها..."
+              </p>
+              <p>
+                بعد أسبوع واحد فقط، ماتت نور. 😢
+              </p>
+              <p>
+                السبب؟ <span className="text-red-400 font-semibold">منتجات رديئة</span> من بائع لم يهتم. فلتر لا يعمل، طعام منتهي الصلاحية، ونصائح خاطئة.
+              </p>
               <p className="font-medium text-white">
-                من مشكلة واحدة... لحل بسيط
+                لم أنسَ ذلك الألم أبداً. 🔥
               </p>
-              <p>
-                سنة 2021، رحت أشتري فلتر لحوض السمك. البايع استغلني وباعني واحد غالي وما يشتغل صح.
-              </p>
-              <p>
-                وكتها: "لازم يصير في مكان صادق."
-              </p>
-              <p>
-                هاي الفكرة صارت AQUAVO.
-              </p>
+              <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700">
+                <p className="text-white font-semibold mb-2">لهذا أسسنا AQUAVO:</p>
+                <p className="text-slate-300">
+                  لنتأكد أن لا طفل آخر يفقد صديقه... ولا عائلة تخسر سمكتها المحبوبة بسبب منتج رديء أو نصيحة خاطئة.
+                </p>
+              </div>
               <div className="pt-2">
-                <p className="font-medium text-white mb-2">وعدنا البسيط:</p>
-                <ul className="space-y-1">
-                  <li>أسعار عادلة - ما نستغلكم</li>
-                  <li>منتجات مجرّبة - كل شي نختبره أول</li>
-                  <li>نصائح صادقة - حتى لو ما شريتوا</li>
+                <p className="font-medium text-primary mb-2 flex items-center gap-2">
+                  <span className="text-lg">🎯</span> وعدنا لكم:
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <span><strong className="text-white">منتجات نختبرها بأيدينا</strong> - لا نبيع شيئاً لم نستخدمه</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <span><strong className="text-white">أسعار عادلة وشفافة</strong> - لا استغلال أبداً</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <span><strong className="text-white">دعم حقيقي على مدار الساعة</strong> - نجيب حتى في 3 صباحاً</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <span><strong className="text-white">نصائح صادقة</strong> - حتى لو لم تشترِ شيئاً</span>
+                  </li>
                 </ul>
               </div>
-              <p className="text-primary/80 font-medium pt-2">
-                احنا مو بس متجر - احنا عائلة تهتم.
+              <p className="text-primary font-bold pt-2 text-base flex items-center gap-2">
+                <Fish className="h-4 w-4" />
+                لسنا مجرد متجر - نحن عائلة تحب الأسماك مثلك
               </p>
-              <p className="text-xs text-slate-500">
-                AQUAVO - صدق، جودة، ثقة
+              <p className="text-xs text-slate-500 border-t border-slate-700 pt-2 mt-2">
+                +5000 عائلة عراقية تثق بـ AQUAVO 🇮🇶
               </p>
             </div>
           </div>
@@ -263,13 +288,13 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:info@fishweb.iq"
+                  href="mailto:info@aquavo.iq"
                   className="flex items-center gap-3 hover:text-primary transition-colors group"
                 >
                   <div className="p-2 bg-slate-800 group-hover:bg-primary/20 rounded-full transition-colors">
                     <Mail className="h-4 w-4 text-primary" />
                   </div>
-                  <span>info@fishweb.iq</span>
+                  <span>info@aquavo.iq</span>
                 </a>
               </li>
               <li>

@@ -23,7 +23,7 @@ interface SearchAutocompleteProps {
     onSearch?: (query: string) => void;
 }
 
-const RECENT_SEARCHES_KEY = "fishweb_recent_searches";
+const RECENT_SEARCHES_KEY = "aquavo_recent_searches";
 const MAX_RECENT_SEARCHES = 5;
 
 // Debounce hook

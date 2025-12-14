@@ -191,9 +191,9 @@ export default function ProductDetails() {
   const formattedPrice = new Intl.NumberFormat('ar-IQ').format(product.price);
 
   const breadcrumbItems = [
-    { name: "الرئيسية", url: "https://fishweb.iq/" },
-    { name: "المنتجات", url: "https://fishweb.iq/products" },
-    { name: product.name, url: `https://fishweb.iq/products/${product.slug}` }
+    { name: "الرئيسية", url: "https://aquavo.iq/" },
+    { name: "المنتجات", url: "https://aquavo.iq/products" },
+    { name: product.name, url: `https://aquavo.iq/products/${product.slug}` }
   ];
 
   return (
@@ -201,7 +201,7 @@ export default function ProductDetails() {
       <MetaTags
         title={product.name}
         description={product.specs?.substring(0, 160) || `تسوق ${product.name} من AQUAVO بأفضل الأسعار.`}
-        image={product.image || 'https://fishweb.iq/og-image.jpg'}
+        image={product.image || 'https://aquavo.iq/og-image.jpg'}
         type="product"
         price={product.price}
       />

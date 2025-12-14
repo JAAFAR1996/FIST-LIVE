@@ -50,7 +50,7 @@ interface ProductFiltersAdvancedProps {
     className?: string;
 }
 
-const FILTERS_STORAGE_KEY = "fishweb_product_filters";
+const FILTERS_STORAGE_KEY = "aquavo_product_filters";
 const SORT_OPTIONS = [
     { value: "newest", label: "الأحدث" },
     { value: "price_asc", label: "السعر: من الأقل للأعلى" },
@@ -529,7 +529,7 @@ export function ProductSortDropdown({
                                     onChange(option.value);
                                     setIsOpen(false);
                                     // Save to localStorage
-                                    localStorage.setItem("fishweb_sort_preference", option.value);
+                                    localStorage.setItem("aquavo_sort_preference", option.value);
                                 }}
                                 className={cn(
                                     "w-full text-right px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between",

@@ -64,7 +64,7 @@ async function saveToCloudinary(base64Data: string, folder: string): Promise<str
     // It handles data URI automatically.
 
     const uploadOptions = {
-      folder: `fishweb/${folder}`,
+      folder: `aquavo/${folder}`,
       public_id: randomUUID(),
       resource_type: 'auto' as const
     };
@@ -86,14 +86,14 @@ async function saveToCloudinary(base64Data: string, folder: string): Promise<str
 async function deleteFromCloudinary(imageUrl: string): Promise<boolean> {
   try {
     // Extract public_id from URL: 
-    // Example: https://res.cloudinary.com/demo/image/upload/v12345/fishweb/products/sample.jpg
-    // public_id needs to be: fishweb/products/sample
+    // Example: https://res.cloudinary.com/demo/image/upload/v12345/aquavo/products/sample.jpg
+    // public_id needs to be: aquavo/products/sample
 
     const parts = imageUrl.split('/');
     const versionIndex = parts.findIndex(p => p.startsWith('v') && !isNaN(Number(p.substring(1))));
 
     // Safety check just in case URL structure differs
-    const startIndex = versionIndex !== -1 ? versionIndex + 1 : parts.indexOf('fishweb');
+    const startIndex = versionIndex !== -1 ? versionIndex + 1 : parts.indexOf('aquavo');
 
     if (startIndex === -1) {
       console.warn('Could not parse Cloudinary public_id from URL:', imageUrl);

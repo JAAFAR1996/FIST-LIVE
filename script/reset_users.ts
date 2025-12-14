@@ -65,7 +65,7 @@ async function reset() {
         await db.delete(users);
 
         console.log("Creating new admin user...");
-        const adminEmail = "admin@fishweb.com";
+        const adminEmail = "admin@aquavo.iq";
         const adminPass = "admin123";
         const passwordHash = hashPassword(adminPass);
 

@@ -65,7 +65,7 @@ export function corsConfig(req: Request, res: Response, next: NextFunction) {
     'http://localhost:5000',
     'http://localhost:3000',
     'https://fist-live.vercel.app', // Production Vercel domain
-    'https://fishweb.iq', // Custom domain if any
+    'https://aquavo.iq', // Custom domain if any
     process.env.CLIENT_URL
   ].filter(Boolean);
 

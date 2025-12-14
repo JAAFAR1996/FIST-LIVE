@@ -65,7 +65,7 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
 
           {/* Image */}
           <div className="relative pt-[100%] overflow-hidden">
-            <div className="absolute inset-0 p-6 flex items-center justify-center bg-black">
+            <div className="absolute inset-0 p-6 flex items-center justify-center bg-transparent">
               <FloatingElement delay={Math.random() * 2} intensity={10} duration={6}>
                 <img
                   src={`${product.thumbnail || product.image || "/placeholder-product.svg"}?v=1`}

@@ -135,7 +135,7 @@ export function createUserRouter() {
                 const expiresAt = new Date(Date.now() + 3600000); // 1 hour
 
                 await storage.createPasswordResetToken(user.id, tokenHash, expiresAt);
-                await sendPasswordResetEmail(email, token, "https://fishweb.iq");
+                await sendPasswordResetEmail(email, token, "https://aquavo.iq");
             }
             res.json({ message: "If account exists, email sent" });
         } catch (err) {

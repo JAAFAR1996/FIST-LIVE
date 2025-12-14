@@ -343,7 +343,7 @@ export default function Terms() {
                     </div>
                   </a>
                   <a
-                    href="mailto:legal@fishweb.iq"
+                    href="mailto:legal@aquavo.iq"
                     className="flex items-center gap-4 p-4 bg-background/80 rounded-xl hover:bg-background transition-colors group"
                   >
                     <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
@@ -351,7 +351,7 @@ export default function Terms() {
                     </div>
                     <div>
                       <p className="font-medium">البريد الإلكتروني</p>
-                      <p className="text-sm text-muted-foreground">legal@fishweb.iq</p>
+                      <p className="text-sm text-muted-foreground">legal@aquavo.iq</p>
                     </div>
                   </a>
                 </div>

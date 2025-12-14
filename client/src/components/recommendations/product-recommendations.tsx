@@ -10,7 +10,7 @@ import { fetchProducts } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 
-const RECENTLY_VIEWED_KEY = "fishweb_recently_viewed";
+const RECENTLY_VIEWED_KEY = "aquavo_recently_viewed";
 const MAX_RECENTLY_VIEWED = 10;
 
 // Hook to track and get recently viewed products
