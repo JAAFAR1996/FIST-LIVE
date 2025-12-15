@@ -31,6 +31,10 @@ export function createGalleryRouter() {
                 return;
             }
 
+            // Get userId from session if user is logged in
+            const sess = getSessionHelper(req);
+            const userId = sess?.userId || null;
+
             const imageUrl = await saveBase64Image(imageBase64);
             const submission = await storage.createGallerySubmission({
                 customerName,
@@ -39,7 +43,8 @@ export function createGalleryRouter() {
                 tankSize,
                 description,
                 isApproved: false,
-                likes: 0
+                likes: 0,
+                userId: userId // Save the user ID so we can show celebration later
             });
             res.status(201).json(submission);
         } catch (err) {

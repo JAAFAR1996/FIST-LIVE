@@ -397,6 +397,14 @@ export class OrderStorage {
 
     async setGalleryWinner(id: string, month: string, prize: string, couponCode: string): Promise<void> {
         const db = this.ensureDb();
+
+        // CRITICAL: First, clear isWinner from ALL previous winners
+        // This ensures only ONE winner exists at a time in the gallery
+        await db.update(gallerySubmissions).set({
+            isWinner: false
+        }).where(eq(gallerySubmissions.isWinner, true));
+
+        // Now set the new winner
         await db.update(gallerySubmissions).set({
             isWinner: true,
             winnerMonth: month,

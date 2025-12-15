@@ -695,12 +695,12 @@ export default function AdminDashboard() {
                             <div className="w-16 h-16 flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden border border-border">
                               {product.thumbnail || product.images?.[0] ? (
                                 <img
-                                  src={product.thumbnail || product.images?.[0] || "/placeholder.jpg"}
+                                  src={product.thumbnail || product.images?.[0] || "/placeholder-product.svg"}
                                   alt={product.name}
                                   className="w-full h-full object-contain p-2"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
-                                    target.src = "/placeholder.jpg";
+                                    target.src = "/placeholder-product.svg";
                                   }}
                                 />
                               ) : (
