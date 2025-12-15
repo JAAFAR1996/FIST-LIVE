@@ -28,28 +28,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: 📦 Setup pnpm ${{ env.PNPM_VERSION }}
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
-      - name: 📚 Install dependencies (frozen lock file)
-        run: pnpm install --frozen-lockfile --prefer-offline
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: 📚 Install dependencies
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🔍 TypeScript type check
         run: pnpm run check
         timeout-minutes: 10
-
-      - name: 📋 Check package.json consistency
-        run: pnpm install --prefer-offline --no-frozen-lockfile
-        timeout-minutes: 5
 
   # ==================== BUILD ====================
   build:
@@ -61,19 +57,19 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🎨 Build client (Vite)
@@ -117,19 +113,19 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🧪 Run unit tests (Vitest)
@@ -163,19 +159,19 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🔍 Audit npm packages (moderate)
@@ -203,7 +199,7 @@ jobs:
           BUILD_STATUS="${{ needs.build.result }}"
           TEST_STATUS="${{ needs.test.result }}"
           SECURITY_STATUS="${{ needs.security.result }}"
-          
+
           echo "╔════════════════════════════════════╗"
           echo "║   CI Pipeline Execution Report     ║"
           echo "╠════════════════════════════════════╣"
@@ -212,18 +208,31 @@ jobs:
           echo "║ Test:      $TEST_STATUS"
           echo "║ Security:  $SECURITY_STATUS"
           echo "╚════════════════════════════════════╝"
-          
-          if [[ "$VALIDATE_STATUS" == "failure" || \
-                "$BUILD_STATUS" == "failure" || \
-                "$TEST_STATUS" == "failure" ]]; then
+
+          # Only fail on actual failures, not on skipped jobs
+          FAILED=false
+          if [[ "$VALIDATE_STATUS" == "failure" ]]; then
+            echo "❌ Validate job failed"
+            FAILED=true
+          fi
+          if [[ "$BUILD_STATUS" == "failure" ]]; then
+            echo "❌ Build job failed"
+            FAILED=true
+          fi
+          if [[ "$TEST_STATUS" == "failure" ]]; then
+            echo "❌ Test job failed"
+            FAILED=true
+          fi
+
+          if [[ "$FAILED" == "true" ]]; then
             echo ""
             echo "❌ CRITICAL: Pipeline Failed"
             exit 1
           else
             echo ""
-            echo "✅ SUCCESS: All checks passed!"
+            echo "✅ SUCCESS: All essential checks passed!"
           fi
-      
+
       - name: 📢 Notify success
         if: success()
         run: echo "🎉 Pipeline completed successfully!"

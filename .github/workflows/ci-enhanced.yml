@@ -4,9 +4,9 @@ on:
   push:
     branches: [main, develop]
     paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - '.gitignore'
+      - "docs/**"
+      - "**.md"
+      - ".gitignore"
   pull_request:
     branches: [main, develop]
     types: [opened, synchronize, reopened]
@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: 📚 Install dependencies
         run: pnpm install --prefer-offline
@@ -99,7 +99,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: 📚 Install dependencies
         run: pnpm install --prefer-offline
@@ -128,7 +128,7 @@ jobs:
   # ==================== BUILD ====================
   build:
     name: 🏗️ Build
-    needs: [lint]
+    needs: [setup, lint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -149,7 +149,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: 📚 Install dependencies
         run: pnpm install --prefer-offline
@@ -188,7 +188,7 @@ jobs:
   # ==================== SECURITY ====================
   security:
     name: 🔐 Security Checks
-    needs: [lint]
+    needs: [setup, lint]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -212,7 +212,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: 📚 Install dependencies
         run: pnpm install --prefer-offline
@@ -246,7 +246,7 @@ jobs:
           echo "║ Build:     ${{ needs.build.result }}"
           echo "║ Security:  ${{ needs.security.result }}"
           echo "╚════════════════════════════════════╝"
-          
+
           if [[ "${{ needs.lint.result }}" == "failure" || \
                 "${{ needs.test.result }}" == "failure" || \
                 "${{ needs.build.result }}" == "failure" ]]; then
