@@ -50,9 +50,12 @@ export function AdvancedDiscountsTab() {
         queryKey: ["/api/admin/discounts"],
     });
 
-    const { data: products } = useQuery<Product[]>({
+    const { data: productsData } = useQuery<{ products: Product[] }>({
         queryKey: ["/api/products"],
     });
+
+    // Extract products array from the response
+    const products = productsData?.products || [];
 
     const createMutation = useMutation({
         mutationFn: async (discountData: any) => {
