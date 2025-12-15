@@ -65,3 +65,6 @@ vite.config.ts.*
 
 # Ignore cursor AI rules
 .cursor\rules\codacy.mdc
+
+.vercel
+.env*.local
