@@ -84,6 +84,10 @@ export function GalleryManagement() {
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/admin/gallery/set-winner/${id}`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          couponCode: currentPrize?.discountCode || ""
+        }),
         credentials: "include"
       });
       if (!res.ok) throw new Error("Failed to set winner");

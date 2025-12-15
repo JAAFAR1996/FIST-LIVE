@@ -161,8 +161,11 @@ export function createAdminRouter() {
                 return res.status(404).json({ message: "Submission not found" });
             }
 
-            // Generate Coupon
-            const code = `WINNER-${currentPrize.month.replace('-', '')}-${nanoid(6).toUpperCase()}`;
+            // Use admin-provided coupon code or generate one automatically
+            const { couponCode: adminCouponCode } = req.body;
+            const code = adminCouponCode && adminCouponCode.trim()
+                ? adminCouponCode.trim().toUpperCase()
+                : `WINNER-${currentPrize.month.replace('-', '')}-${nanoid(6).toUpperCase()}`;
 
             // Determine value/type from prize or default
             const couponValue = currentPrize.discountPercentage ? currentPrize.discountPercentage.toString() : "0";
@@ -225,6 +228,51 @@ export function createAdminRouter() {
             });
 
             res.json({ message: "Winner deleted successfully" });
+        } catch (err) { next(err); }
+    });
+
+    // ============ REVIEWS MANAGEMENT ============
+
+    // Get all reviews for admin
+    router.get("/reviews", async (req, res, next) => {
+        try {
+            const reviews = await storage.getAllReviews();
+
+            // Enrich with product and user info
+            const enrichedReviews = await Promise.all(reviews.map(async (review) => {
+                const product = await storage.getProduct(review.productId);
+                const user = review.userId ? await storage.getUser(review.userId) : null;
+                return {
+                    ...review,
+                    productName: product?.name || "منتج محذوف",
+                    userName: user?.fullName || user?.email?.split('@')[0] || "زائر",
+                };
+            }));
+
+            res.json(enrichedReviews);
+        } catch (err) { next(err); }
+    });
+
+    // Delete a review (admin only)
+    router.delete("/reviews/:id", async (req, res, next) => {
+        try {
+            const review = await storage.getReview(req.params.id);
+            if (!review) {
+                return res.status(404).json({ message: "المراجعة غير موجودة" });
+            }
+
+            await storage.deleteReview(req.params.id);
+
+            // Audit Log
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "delete",
+                entityType: "review",
+                entityId: req.params.id,
+                changes: { comment: review.comment?.substring(0, 50) }
+            });
+
+            res.json({ message: "تم حذف المراجعة بنجاح" });
         } catch (err) { next(err); }
     });
 

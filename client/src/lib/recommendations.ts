@@ -16,7 +16,7 @@ function mapToClientProduct(p: any): Product {
 }
 
 export async function fetchTrendingProducts(): Promise<Product[]> {
-    const res = await apiRequest("GET", "/api/products/trending");
+    const res = await apiRequest("GET", "/api/products/info/trending");
     const data = await res.json();
     return data.map(mapToClientProduct);
 }

@@ -68,7 +68,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🔍 TypeScript type check
@@ -102,7 +102,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🧪 Run unit tests
@@ -117,8 +117,10 @@ jobs:
 
       - name: 📤 Upload coverage to Codecov
         uses: codecov/codecov-action@v4
-        if: always()
+        if: ${{ github.event_name != 'pull_request' && hashFiles('./coverage/coverage-final.json') != '' }}
+        continue-on-error: true
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
           flags: unittests
           fail_ci_if_error: false
@@ -150,7 +152,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🎨 Build client
@@ -213,7 +215,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm install --prefer-offline
         timeout-minutes: 10
 
       - name: 🔍 Audit npm packages

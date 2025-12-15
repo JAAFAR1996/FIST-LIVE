@@ -278,6 +278,13 @@ export class ProductStorage {
             .orderBy(desc(reviews.createdAt));
     }
 
+    // Get all reviews for admin (all statuses)
+    async getAllReviews(): Promise<Review[]> {
+        const db = this.ensureDb();
+        return await db.select().from(reviews)
+            .orderBy(desc(reviews.createdAt));
+    }
+
     async getReview(id: string): Promise<Review | undefined> {
         const db = this.ensureDb();
         const result = await db.select().from(reviews).where(eq(reviews.id, id)).limit(1);

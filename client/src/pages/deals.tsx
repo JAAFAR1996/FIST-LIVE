@@ -171,7 +171,7 @@ export default function Deals() {
                     <Link href={`/products/${product.slug}`}>
                       <div className="relative aspect-square bg-muted/20 overflow-hidden cursor-pointer">
                         <img
-                          src={product.image}
+                          src={product.thumbnail || product.images?.[0] || '/placeholder-product.png'}
                           alt={product.name}
                           loading="lazy"
                           decoding="async"

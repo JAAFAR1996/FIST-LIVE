@@ -43,12 +43,16 @@ const staticPages = [
   { title: "رحلتك", url: "/journey", keywords: ["journey", "رحلة", "دليل"] },
 ];
 
-// Popular/Quick Links
+// Popular/Quick Links with Arabic keywords for search
 const popularItems = [
-  { title: "فلاتر المياه", url: "/products?category=Filters", category: "فلاتر" },
-  { title: "سخانات الحوض", url: "/products?category=Heaters", category: "سخانات" },
-  { title: "الإضاءة LED", url: "/products?category=Lighting", category: "إضاءة" },
-  { title: "النباتات المائية", url: "/products?category=Plants", category: "نباتات" },
+  { title: "فلاتر المياه", url: "/products?category=Filters", category: "فلاتر", keywords: ["فلتر", "فلاتر", "filter", "filters", "تصفية"] },
+  { title: "سخانات الحوض", url: "/products?category=Heaters", category: "سخانات", keywords: ["سخان", "سخانات", "heater", "heaters", "تسخين", "حرارة"] },
+  { title: "الإضاءة LED", url: "/products?category=Lighting", category: "إضاءة", keywords: ["ضوء", "إضاءة", "ليد", "led", "lighting", "أضواء"] },
+  { title: "النباتات المائية", url: "/products?category=Plants", category: "نباتات", keywords: ["نبات", "نباتات", "plant", "plants", "زرع"] },
+  { title: "الديكورات", url: "/products?category=Decorations", category: "ديكور", keywords: ["ديكور", "زينة", "حجر", "صخور", "decoration"] },
+  { title: "مضخات الهواء", url: "/products?category=Air Pumps", category: "مضخات", keywords: ["مضخة", "هواء", "أكسجين", "pump", "air"] },
+  { title: "أغذية الأسماك", url: "/products?category=Food", category: "أغذية", keywords: ["طعام", "غذاء", "أكل", "food", "علف"] },
+  { title: "معالجات المياه", url: "/products?category=Water Treatment", category: "معالجات", keywords: ["معالج", "كيماوي", "ماء", "treatment", "conditioner"] },
 ];
 
 // Fuzzy matching helper
@@ -157,6 +161,28 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
           title: page.title,
           url: page.url,
         });
+      }
+    });
+
+    // Search popular category items by keywords
+    popularItems.forEach((item) => {
+      const matchesTitle = fuzzyMatch(item.title, lowerQuery);
+      const matchesCategory = fuzzyMatch(item.category, lowerQuery);
+      const matchesKeywords = item.keywords?.some((keyword) =>
+        fuzzyMatch(keyword, lowerQuery)
+      );
+
+      if (matchesTitle || matchesCategory || matchesKeywords) {
+        // Avoid duplicates
+        if (!results.find(r => r.url === item.url)) {
+          results.push({
+            id: item.url,
+            type: "page",
+            title: item.title,
+            subtitle: item.category,
+            url: item.url,
+          });
+        }
       }
     });
 

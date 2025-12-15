@@ -301,63 +301,126 @@ export function OrdersManagement() {
         </Table>
       </div>
 
-      {/* Order Detail Dialog */}
+      {/* Order Detail Dialog - Professional Invoice */}
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <DialogContent className="max-w-2xl" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>
-              تفاصيل الطلب <span className="text-primary font-mono">{selectedOrder?.orderNumber || selectedOrder?.id.slice(0, 8)}</span>
-            </DialogTitle>
-            <DialogDescription>
-              تاريخ الطلب: {selectedOrder && new Date(selectedOrder.createdAt).toLocaleString('ar-IQ')}
-            </DialogDescription>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
+          <DialogHeader className="border-b pb-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <DialogTitle className="text-2xl">
+                  فاتورة الطلب
+                </DialogTitle>
+                <DialogDescription>
+                  رقم الطلب: <span className="text-primary font-mono font-bold">{selectedOrder?.orderNumber || selectedOrder?.id.slice(0, 8)}</span>
+                </DialogDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.print()}
+                className="print:hidden"
+              >
+                🖨️ طباعة
+              </Button>
+            </div>
           </DialogHeader>
 
           {selectedOrder && (
-            <div className="space-y-4">
+            <div className="space-y-6 print:text-black">
+              {/* Store Header */}
+              <div className="text-center border-b pb-4">
+                <h2 className="text-2xl font-bold text-primary">AQUAVO</h2>
+                <p className="text-sm text-muted-foreground">متجر أدوات ومستلزمات الأحواض المائية</p>
+              </div>
+
               {/* Customer Info */}
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold mb-2">معلومات العميل</h3>
-                <p>الاسم: {selectedOrder.customerName || "غير محدد"}</p>
-                <p>البريد الإلكتروني: {selectedOrder.customerEmail || "غير محدد"}</p>
-                {selectedOrder.shippingAddress && (
-                  <p>عنوان الشحن: {selectedOrder.shippingAddress}</p>
-                )}
+              <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div>
+                  <h3 className="font-semibold text-sm text-muted-foreground mb-2">معلومات العميل</h3>
+                  <p className="font-medium">{selectedOrder.customerName || "غير محدد"}</p>
+                  <p className="text-sm text-muted-foreground">{selectedOrder.customerEmail || "غير محدد"}</p>
+                  {selectedOrder.shippingAddress && (
+                    <p className="text-sm mt-1">{selectedOrder.shippingAddress}</p>
+                  )}
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-sm text-muted-foreground mb-2">تفاصيل الطلب</h3>
+                  <p className="text-sm">التاريخ: {new Date(selectedOrder.createdAt).toLocaleDateString('ar-IQ')}</p>
+                  <p className="text-sm">الوقت: {new Date(selectedOrder.createdAt).toLocaleTimeString('ar-IQ')}</p>
+                  <Badge className={getStatusInfo(selectedOrder.status).color + " mt-2"}>
+                    {getStatusInfo(selectedOrder.status).label}
+                  </Badge>
+                </div>
               </div>
 
               {/* Order Items */}
               <div>
-                <h3 className="font-semibold mb-2">المنتجات</h3>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-right">المنتج</TableHead>
-                      <TableHead className="text-right">الكمية</TableHead>
-                      <TableHead className="text-right">السعر</TableHead>
-                      <TableHead className="text-right">المجموع</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {selectedOrder.items?.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.productName}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{item.price.toLocaleString()} د.ع</TableCell>
-                        <TableCell className="font-semibold">
-                          {(item.price * item.quantity).toLocaleString()} د.ع
-                        </TableCell>
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  المنتجات المطلوبة
+                </h3>
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-muted/50">
+                      <TableRow>
+                        <TableHead className="text-right">المنتج</TableHead>
+                        <TableHead className="text-center">الكمية</TableHead>
+                        <TableHead className="text-center">السعر</TableHead>
+                        <TableHead className="text-left">المجموع</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {selectedOrder.items?.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{item.productName}</TableCell>
+                          <TableCell className="text-center">{item.quantity}</TableCell>
+                          <TableCell className="text-center">{item.price.toLocaleString()} د.ع</TableCell>
+                          <TableCell className="text-left font-semibold">
+                            {(item.price * item.quantity).toLocaleString()} د.ع
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
 
-              {/* Total */}
-              <div className="flex justify-between items-center p-4 bg-primary/10 rounded-lg">
-                <span className="font-semibold">المبلغ الإجمالي:</span>
-                <span className="text-2xl font-bold text-primary">
-                  {selectedOrder.totalAmount?.toLocaleString()} د.ع
-                </span>
+              {/* Totals */}
+              <div className="border-t pt-4 space-y-2">
+                {selectedOrder.shippingCost && selectedOrder.shippingCost > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">تكلفة الشحن:</span>
+                    <span>{selectedOrder.shippingCost.toLocaleString()} د.ع</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center p-4 bg-primary/10 rounded-lg">
+                  <span className="font-bold text-lg">المبلغ الإجمالي:</span>
+                  <span className="text-3xl font-bold text-primary">
+                    {selectedOrder.totalAmount?.toLocaleString()} د.ع
+                  </span>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {selectedOrder.notes && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm font-semibold text-yellow-800">ملاحظات:</p>
+                  <p className="text-sm text-yellow-700">{selectedOrder.notes}</p>
+                </div>
+              )}
+
+              {/* Tracking */}
+              {selectedOrder.trackingNumber && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-semibold text-blue-800">رقم التتبع:</p>
+                  <p className="text-lg font-mono text-blue-700">{selectedOrder.trackingNumber}</p>
+                </div>
+              )}
+
+              {/* Footer */}
+              <div className="text-center text-xs text-muted-foreground border-t pt-4">
+                <p>شكراً لتسوقكم من AQUAVO</p>
+                <p>للاستفسارات: support@aquavo.iq</p>
               </div>
             </div>
           )}
