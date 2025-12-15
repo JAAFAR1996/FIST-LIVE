@@ -170,11 +170,13 @@ jobs:
 
       - name: 📊 Verify build output
         run: |
-          if [ ! -d "dist" ] && [ ! -d "build" ]; then
+          if [ ! -d "dist/client" ] && [ ! -d "dist" ] && [ ! -d "build" ]; then
             echo "❌ Build output not found!"
+            ls -la
             exit 1
           fi
           echo "✅ Build output verified"
+          ls -la dist/ || true
 
       - name: 📦 Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -182,8 +184,8 @@ jobs:
           name: build-dist-${{ github.run_number }}
           path: |
             dist/
-            build/
           retention-days: 7
+          if-no-files-found: warn
 
   # ==================== SECURITY ====================
   security:

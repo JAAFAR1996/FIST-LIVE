@@ -436,11 +436,11 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const insertUserAddressSchema = createInsertSchema(userAddresses);
 
 export const insertProductSchema = createInsertSchema(products).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true
 }).extend({
+  id: z.string().min(1, "Product ID is required"),
   images: z.array(z.string()),
   specifications: z.record(z.string(), z.any()),
 });
