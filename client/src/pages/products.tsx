@@ -56,7 +56,7 @@ export default function Products() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   // Comparison - user-initiated
-  const { compareIds, removeFromCompare } = useComparison();
+  const { compareIds, addToCompare, removeFromCompare } = useComparison();
 
   // Update filters when URL params change
   useEffect(() => {
@@ -247,6 +247,7 @@ export default function Products() {
                             key={product.id}
                             product={product}
                             onQuickView={(p) => setQuickViewProduct(p)}
+                            onCompare={(p) => addToCompare(p.id)}
                           />
                         ))}
                       </div>

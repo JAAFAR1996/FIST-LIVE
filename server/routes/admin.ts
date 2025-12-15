@@ -308,5 +308,41 @@ export function createAdminRouter() {
         } catch (err) { next(err); }
     });
 
+    // ============ SETTINGS MANAGEMENT ============
+
+    // Get all settings
+    router.get("/settings", async (req, res, next) => {
+        try {
+            const allSettings = await storage.getAllSettings();
+            res.json(allSettings);
+        } catch (err) { next(err); }
+    });
+
+    // Update settings
+    router.put("/settings", async (req, res, next) => {
+        try {
+            const updates = req.body;
+
+            // Validate that body is an object with string values
+            if (typeof updates !== 'object' || updates === null) {
+                res.status(400).json({ message: "Invalid settings format" });
+                return;
+            }
+
+            await storage.updateAllSettings(updates);
+
+            // Audit Log
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "update",
+                entityType: "settings",
+                entityId: "store_settings",
+                changes: updates
+            });
+
+            res.json({ message: "Settings updated successfully" });
+        } catch (err) { next(err); }
+    });
+
     return router;
 }

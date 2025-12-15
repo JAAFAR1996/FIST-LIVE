@@ -564,3 +564,12 @@ export type InsertJourneyPlan = z.infer<typeof insertJourneyPlanSchema>;
 export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens);
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
+
+// Store Settings
+export const settings = pgTable("settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type Setting = typeof settings.$inferSelect;

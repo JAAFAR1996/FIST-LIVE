@@ -41,45 +41,76 @@ export function CelebrationOverlay() {
         }
     }, [winningSubmission]);
 
-    // Elegant celebration - not too intrusive
+    // EPIC celebration with fireworks and explosions!
     const triggerCelebration = () => {
-        // Phase 1: Gentle confetti from sides (3 seconds)
-        const confettiColors = ["#22c55e", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
+        const goldColors = ["#FFD700", "#FFA500", "#FFDF00", "#F4C430", "#DAA520"];
+        const confettiColors = ["#22c55e", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#FFD700"];
 
-        // Initial burst from both sides
+        // ===== PHASE 1: Massive initial explosion from center =====
         confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { x: 0, y: 0.6 },
-            colors: confettiColors,
-            startVelocity: 25,
-            ticks: 150,
-            zIndex: 9999
+            particleCount: 150,
+            spread: 360,
+            origin: { x: 0.5, y: 0.5 },
+            colors: goldColors,
+            startVelocity: 45,
+            ticks: 200,
+            zIndex: 9999,
+            shapes: ['circle', 'square'],
+            scalar: 1.2
         });
 
-        confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { x: 1, y: 0.6 },
-            colors: confettiColors,
-            startVelocity: 25,
-            ticks: 150,
-            zIndex: 9999
-        });
-
-        // Phase 2: Gentle falling confetti (after 500ms)
+        // ===== PHASE 2: Fireworks from corners =====
         setTimeout(() => {
-            const duration = 3000;
-            const animationEnd = Date.now() + duration;
-            const defaults = {
-                startVelocity: 15,
-                spread: 180,
-                ticks: 80,
-                zIndex: 9999,
+            // Bottom left firework
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: 0, y: 1 },
                 colors: confettiColors,
-                gravity: 0.8,
-                scalar: 0.9
-            };
+                startVelocity: 55,
+                ticks: 200,
+                zIndex: 9999
+            });
+            // Bottom right firework
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: 1, y: 1 },
+                colors: confettiColors,
+                startVelocity: 55,
+                ticks: 200,
+                zIndex: 9999
+            });
+        }, 300);
+
+        // ===== PHASE 3: Star-shaped fireworks =====
+        setTimeout(() => {
+            const starPositions = [
+                { x: 0.2, y: 0.3 },
+                { x: 0.8, y: 0.3 },
+                { x: 0.5, y: 0.2 },
+            ];
+            starPositions.forEach((pos, i) => {
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 80,
+                        spread: 360,
+                        origin: pos,
+                        colors: goldColors,
+                        startVelocity: 35,
+                        ticks: 150,
+                        zIndex: 9999,
+                        shapes: ['star'],
+                        scalar: 1.5
+                    });
+                }, i * 200);
+            });
+        }, 700);
+
+        // ===== PHASE 4: Continuous golden rain =====
+        setTimeout(() => {
+            const duration = 4000;
+            const animationEnd = Date.now() + duration;
 
             const interval = setInterval(() => {
                 const timeLeft = animationEnd - Date.now();
@@ -88,31 +119,79 @@ export function CelebrationOverlay() {
                     return clearInterval(interval);
                 }
 
-                const particleCount = 15 * (timeLeft / duration);
-
-                // Gentle rain from top
+                // Golden rain from top
                 confetti({
-                    ...defaults,
-                    particleCount,
-                    origin: { x: Math.random(), y: -0.1 }
+                    particleCount: 8,
+                    spread: 100,
+                    origin: { x: Math.random(), y: -0.1 },
+                    colors: goldColors,
+                    startVelocity: 25,
+                    ticks: 150,
+                    zIndex: 9999,
+                    gravity: 0.6,
+                    scalar: 1.2
                 });
-            }, 300);
-        }, 500);
+            }, 100);
+        }, 1000);
 
-        // Phase 3: Final celebration burst (after 2 seconds)
+        // ===== PHASE 5: Side cannons =====
         setTimeout(() => {
+            // Left cannon
             confetti({
                 particleCount: 80,
-                spread: 100,
-                origin: { x: 0.5, y: 0.5 },
+                angle: 60,
+                spread: 55,
+                origin: { x: 0, y: 0.65 },
                 colors: confettiColors,
-                startVelocity: 20,
-                ticks: 100,
-                zIndex: 9999,
-                shapes: ['circle', 'square'],
-                scalar: 0.8
+                startVelocity: 50,
+                ticks: 200,
+                zIndex: 9999
             });
-        }, 2000);
+            // Right cannon
+            confetti({
+                particleCount: 80,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1, y: 0.65 },
+                colors: confettiColors,
+                startVelocity: 50,
+                ticks: 200,
+                zIndex: 9999
+            });
+        }, 1500);
+
+        // ===== PHASE 6: Grand finale - Multiple explosions =====
+        setTimeout(() => {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 100,
+                        spread: 360,
+                        origin: { x: 0.2 + Math.random() * 0.6, y: 0.3 + Math.random() * 0.4 },
+                        colors: [...goldColors, ...confettiColors],
+                        startVelocity: 40 + Math.random() * 20,
+                        ticks: 180,
+                        zIndex: 9999,
+                        shapes: ['circle', 'square', 'star']
+                    });
+                }, i * 150);
+            }
+        }, 2500);
+
+        // ===== PHASE 7: Final mega burst =====
+        setTimeout(() => {
+            confetti({
+                particleCount: 250,
+                spread: 360,
+                origin: { x: 0.5, y: 0.4 },
+                colors: goldColors,
+                startVelocity: 60,
+                ticks: 300,
+                zIndex: 9999,
+                shapes: ['star', 'circle'],
+                scalar: 1.5
+            });
+        }, 3500);
     };
 
     const copyCode = () => {
@@ -139,52 +218,130 @@ export function CelebrationOverlay() {
 
     return (
         <>
-            {/* Floating elements - reduced count for less intrusion */}
+            {/* EPIC Floating celebration elements */}
             <div className="fixed inset-0 pointer-events-none z-[9998] overflow-hidden">
-                {/* Floating balloons - fewer and slower */}
-                {Array.from({ length: 8 }).map((_, i) => (
+                {/* Colorful balloons - MORE of them! */}
+                {Array.from({ length: 20 }).map((_, i) => (
                     <motion.div
                         key={i}
-                        initial={{ y: "120vh", x: `${10 + Math.random() * 80}vw`, opacity: 0 }}
+                        initial={{ y: "120vh", x: `${5 + Math.random() * 90}vw`, opacity: 0 }}
                         animate={{
                             y: "-20vh",
-                            opacity: [0, 0.9, 0.9, 0],
+                            opacity: [0, 1, 1, 0.8, 0],
                         }}
                         transition={{
-                            duration: Math.random() * 6 + 6,
-                            delay: Math.random() * 2,
+                            duration: Math.random() * 5 + 4,
+                            delay: Math.random() * 3,
                             ease: "easeOut",
-                            repeat: 0 // No repeat - only once
+                            repeat: 0
                         }}
-                        className="absolute text-4xl"
+                        className="absolute"
+                        style={{ fontSize: `${2 + Math.random() * 2}rem` }}
                     >
-                        🎈
+                        {['🎈', '🎈', '🎈', '🎊', '🎉'][Math.floor(Math.random() * 5)]}
                     </motion.div>
                 ))}
 
-                {/* Sparkles - subtle */}
+                {/* Fireworks emojis */}
+                {Array.from({ length: 12 }).map((_, i) => (
+                    <motion.div
+                        key={`firework-${i}`}
+                        initial={{
+                            x: `${10 + Math.random() * 80}vw`,
+                            y: `${10 + Math.random() * 60}vh`,
+                            scale: 0,
+                            opacity: 0
+                        }}
+                        animate={{
+                            scale: [0, 1.5, 1, 0],
+                            opacity: [0, 1, 1, 0],
+                            rotate: [0, 180]
+                        }}
+                        transition={{
+                            duration: 1.5,
+                            delay: Math.random() * 4,
+                            repeat: 2,
+                            repeatDelay: 2
+                        }}
+                        className="absolute"
+                        style={{ fontSize: `${2 + Math.random() * 2}rem` }}
+                    >
+                        {['🎆', '🎇', '✨', '💫', '⭐'][Math.floor(Math.random() * 5)]}
+                    </motion.div>
+                ))}
+
+                {/* Trophy and crown floating */}
                 {Array.from({ length: 6 }).map((_, i) => (
                     <motion.div
-                        key={`sparkle-${i}`}
+                        key={`trophy-${i}`}
                         initial={{
-                            x: `${20 + Math.random() * 60}vw`,
+                            x: `${15 + Math.random() * 70}vw`,
                             y: `${20 + Math.random() * 60}vh`,
                             scale: 0,
                             opacity: 0
                         }}
                         animate={{
-                            scale: [0, 1, 0],
+                            scale: [0, 1.2, 1, 1.2, 0],
+                            opacity: [0, 1, 1, 1, 0],
+                            y: [`${20 + Math.random() * 60}vh`, `${10 + Math.random() * 30}vh`]
+                        }}
+                        transition={{
+                            duration: 3,
+                            delay: i * 0.8 + Math.random(),
+                            repeat: 1,
+                            repeatDelay: 2
+                        }}
+                        className="absolute text-4xl"
+                    >
+                        {['🏆', '👑', '🥇', '🎖️'][i % 4]}
+                    </motion.div>
+                ))}
+
+                {/* Sparkles everywhere */}
+                {Array.from({ length: 15 }).map((_, i) => (
+                    <motion.div
+                        key={`sparkle-${i}`}
+                        initial={{
+                            x: `${Math.random() * 100}vw`,
+                            y: `${Math.random() * 100}vh`,
+                            scale: 0,
+                            opacity: 0
+                        }}
+                        animate={{
+                            scale: [0, 1.5, 0],
                             opacity: [0, 1, 0],
                         }}
                         transition={{
-                            duration: 2,
-                            delay: Math.random() * 3,
-                            repeat: 2,
-                            repeatDelay: 1
+                            duration: 1,
+                            delay: Math.random() * 5,
+                            repeat: 4,
+                            repeatDelay: Math.random() * 2
+                        }}
+                        className="absolute text-3xl"
+                    >
+                        ✨
+                    </motion.div>
+                ))}
+
+                {/* Confetti ribbons */}
+                {Array.from({ length: 10 }).map((_, i) => (
+                    <motion.div
+                        key={`ribbon-${i}`}
+                        initial={{ y: "-10vh", x: `${Math.random() * 100}vw`, rotate: 0, opacity: 0 }}
+                        animate={{
+                            y: "110vh",
+                            rotate: 360 * (Math.random() > 0.5 ? 1 : -1),
+                            opacity: [0, 1, 1, 0.5, 0],
+                        }}
+                        transition={{
+                            duration: Math.random() * 5 + 5,
+                            delay: Math.random() * 2,
+                            ease: "linear",
+                            repeat: 0
                         }}
                         className="absolute text-2xl"
                     >
-                        ✨
+                        {['🎀', '🎗️', '🎐'][Math.floor(Math.random() * 3)]}
                     </motion.div>
                 ))}
             </div>

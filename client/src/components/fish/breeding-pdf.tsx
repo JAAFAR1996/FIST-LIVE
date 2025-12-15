@@ -1,15 +1,30 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import type { BreedingSpecies } from "@/data/breeding-data";
 
-// Register fonts
-// Note: In a real app, you need to point to a valid font file for Arabic
-// For now, we will use a standard font and try to support Arabic characters
-// or fallback to English if Arabic rendering is complex in PDF
-Font.register({
-    family: "Cairo",
-    src: "https://fonts.gstatic.com/s/cairo/v20/SLXGc1nY6HkvangtZmpcMw.ttf",
-});
+// Register fonts with error handling
+// Using try-catch to prevent silent failures
+try {
+    Font.register({
+        family: "Cairo",
+        fonts: [
+            {
+                src: "https://fonts.gstatic.com/s/cairo/v28/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hOA-a1TiKQ.woff2",
+                fontWeight: 400,
+            },
+            {
+                src: "https://fonts.gstatic.com/s/cairo/v28/SLXgc1nY6HkvangtZmpQdkhzfH5lkSs2SgRjCAGMQ1z0hD4-a1TiKQ.woff2",
+                fontWeight: 700,
+            },
+        ],
+    });
+} catch (error) {
+    console.warn("Failed to register Cairo font for PDF, using default font", error);
+}
+
+// Fallback font in case Cairo fails
+Font.registerHyphenationCallback((word) => [word]);
+
 
 const styles = StyleSheet.create({
     page: {

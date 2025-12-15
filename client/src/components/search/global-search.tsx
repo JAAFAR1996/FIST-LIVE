@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { Product } from "@/types";
 import { SearchIcon, Clock, TrendingUp, Package, X, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -356,17 +356,16 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {popularItems.map((item) => (
-                    <Link key={item.title} href={item.url}>
-                      <button
-                        onClick={() => onOpenChange(false)}
-                        className="w-full p-3 rounded-lg border hover:bg-muted transition-colors text-right"
-                      >
-                        <div className="font-medium text-sm">{item.title}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {item.category}
-                        </div>
-                      </button>
-                    </Link>
+                    <button
+                      key={item.title}
+                      onClick={() => handleResultClick(item.url)}
+                      className="w-full p-3 rounded-lg border hover:bg-muted transition-colors text-right"
+                    >
+                      <div className="font-medium text-sm">{item.title}</div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {item.category}
+                      </div>
+                    </button>
                   ))}
                 </div>
               </div>

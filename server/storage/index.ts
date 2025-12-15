@@ -2,6 +2,7 @@ import { User, InsertUser, Product, Order, Review, ReviewRating, Discount, Audit
 import { UserStorage } from "./user-storage.js";
 import { ProductStorage, ProductFilters } from "./product-storage.js";
 import { OrderStorage } from "./order-storage.js";
+import { SettingsStorage } from "./settings-storage.js";
 
 export interface IStorage {
     getUser(id: string): Promise<User | undefined>;
@@ -110,6 +111,12 @@ export interface IStorage {
     deleteJourneyPlan(userId?: string, sessionId?: string): Promise<boolean>;
 
     seedGalleryIfNeeded(): Promise<void>;
+
+    // Settings methods
+    getAllSettings(): Promise<Record<string, string>>;
+    getSetting(key: string): Promise<string | null>;
+    updateSetting(key: string, value: string): Promise<void>;
+    updateAllSettings(settings: Record<string, string>): Promise<void>;
 }
 import { getDb } from "../db.js";
 
@@ -120,6 +127,7 @@ class CombinedStorage implements IStorage {
     private userStorage = new UserStorage();
     private productStorage = new ProductStorage();
     private orderStorage = new OrderStorage();
+    private settingsStorage = new SettingsStorage();
 
     // User Delegation
     getUser = this.userStorage.getUser.bind(this.userStorage);
@@ -340,6 +348,12 @@ class CombinedStorage implements IStorage {
 
         return true;
     };
+
+    // Settings Delegation
+    getAllSettings = this.settingsStorage.getAllSettings.bind(this.settingsStorage);
+    getSetting = this.settingsStorage.getSetting.bind(this.settingsStorage);
+    updateSetting = this.settingsStorage.updateSetting.bind(this.settingsStorage);
+    updateAllSettings = this.settingsStorage.updateAllSettings.bind(this.settingsStorage);
 }
 
 export const storage = new CombinedStorage();
