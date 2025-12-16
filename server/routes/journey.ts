@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { storage } from "../storage/index.js";
 
@@ -12,11 +12,11 @@ declare module "express-session" {
 const router = Router();
 
 // Helper to get session data safely
-const getSessionUserId = (req: express.Request): string | undefined => {
+const getSessionUserId = (req: Request): string | undefined => {
     return (req as any).session?.userId;
 };
 
-const getSessionId = (req: express.Request): string => {
+const getSessionId = (req: Request): string => {
     return (req as any).sessionID || "";
 };
 
@@ -40,7 +40,7 @@ const journeyPlanSchema = z.object({
 });
 
 // Save or update journey plan
-router.post("/api/journey/plans", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+router.post("/api/journey/plans", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const planData = journeyPlanSchema.parse(req.body);
         const userId = getSessionUserId(req);
@@ -77,7 +77,7 @@ router.post("/api/journey/plans", async (req: express.Request, res: express.Resp
 });
 
 // Get journey plan
-router.get("/api/journey/plans", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+router.get("/api/journey/plans", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getSessionUserId(req);
         const sessionId = getSessionId(req);
@@ -91,7 +91,7 @@ router.get("/api/journey/plans", async (req: express.Request, res: express.Respo
 });
 
 // Delete journey plan (reset)
-router.delete("/api/journey/plans", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+router.delete("/api/journey/plans", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getSessionUserId(req);
         const sessionId = getSessionId(req);

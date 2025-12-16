@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { storage } from "../storage/index.js";
 import { insertUserSchema, insertUserAddressSchema, insertNewsletterSubscriptionSchema } from "../../shared/schema.js";
 import { requireAuth, getSession } from "../middleware/auth.js";
@@ -12,7 +12,7 @@ export function createUserRouter() {
     const router = Router();
 
     // Register
-    router.post("/register", authLimiter, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/register", authLimiter, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email, password, fullName, phone } = req.body;
             const existingUser = await storage.getUserByEmail(email);
@@ -68,7 +68,7 @@ export function createUserRouter() {
     });
 
     // Login
-    router.post("/login", authLimiter, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/login", authLimiter, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email, password } = req.body;
             const user = await storage.getUserByEmail(email);
@@ -97,7 +97,7 @@ export function createUserRouter() {
     });
 
     // Logout
-    router.post("/logout", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/logout", async (req: Request, res: Response, next: NextFunction) => {
         if ((req as any).session) {
             (req as any).session.destroy((err: any) => {
                 if (err) return next(err);
@@ -109,7 +109,7 @@ export function createUserRouter() {
     });
 
     // Get Current User
-    router.get("/user", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.get("/user", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             if (!sess?.userId) {
@@ -124,7 +124,7 @@ export function createUserRouter() {
     });
 
     // Forgot Password
-    router.post("/auth/forgot-password", passwordResetLimiter, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/auth/forgot-password", passwordResetLimiter, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email } = req.body;
             const user = await storage.getUserByEmail(email);
@@ -143,7 +143,7 @@ export function createUserRouter() {
     });
 
     // Reset Password
-    router.post("/auth/reset-password", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/auth/reset-password", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { token, newPassword } = req.body;
             const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
@@ -165,7 +165,7 @@ export function createUserRouter() {
 
 
     // Addresses
-    router.get("/user/addresses", requireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.get("/user/addresses", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             if (!sess?.userId) return res.sendStatus(401);
@@ -176,7 +176,7 @@ export function createUserRouter() {
         }
     });
 
-    router.post("/user/addresses", requireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/user/addresses", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             if (!sess?.userId) return res.sendStatus(401);
@@ -189,7 +189,7 @@ export function createUserRouter() {
     });
 
     // Coupons (My Coupons)
-    router.get("/coupons/my-coupons", requireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.get("/coupons/my-coupons", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             if (!sess?.userId) return res.sendStatus(401);
@@ -201,7 +201,7 @@ export function createUserRouter() {
     });
 
     // Validate Coupon Public
-    router.post("/coupons/validate", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/coupons/validate", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { code, totalAmount } = req.body;
             const coupon = await storage.getCouponByCode(code);

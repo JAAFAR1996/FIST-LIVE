@@ -1,15 +1,15 @@
-import express, { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { storage } from "../storage/index.js";
 
 export function createFavoritesRouter() {
     const router = Router();
 
-    const getSessionUserId = (req: express.Request): string | undefined => {
+    const getSessionUserId = (req: Request): string | undefined => {
         return (req as any).session?.userId;
     };
 
     // Middleware to ensure user is logged in
-    const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const requireAuth = (req: Request, res: Response, next: NextFunction) => {
         const userId = getSessionUserId(req);
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
@@ -19,7 +19,7 @@ export function createFavoritesRouter() {
 
     router.use(requireAuth);
 
-    router.get("/", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.get("/", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = getSessionUserId(req)!;
             const items = await storage.getFavorites(userId);
@@ -29,7 +29,7 @@ export function createFavoritesRouter() {
         }
     });
 
-    router.post("/:productId", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/:productId", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = getSessionUserId(req)!;
             const { productId } = req.params;
@@ -56,7 +56,7 @@ export function createFavoritesRouter() {
         }
     });
 
-    router.delete("/:productId", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.delete("/:productId", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = getSessionUserId(req)!;
             const { productId } = req.params;

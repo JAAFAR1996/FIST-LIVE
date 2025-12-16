@@ -1,5 +1,5 @@
 
-import express, { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { storage } from "../storage/index.js";
 import { localRequireAuth, getSession } from "../utils/auth-helpers.js";
 import { reviewLimiter } from "../middleware/rate-limit.js";
@@ -8,7 +8,7 @@ export function createReviewsRouter() {
     const router = Router();
 
     // Get reviews for a product (Public)
-    router.get("/reviews/:productId", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.get("/reviews/:productId", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { productId } = req.params;
             const reviews = await storage.getReviews(productId);
@@ -33,7 +33,7 @@ export function createReviewsRouter() {
     });
 
     // Create a review
-    router.post("/reviews", reviewLimiter, localRequireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/reviews", reviewLimiter, localRequireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             const userId = sess?.userId;
@@ -84,7 +84,7 @@ export function createReviewsRouter() {
     });
 
     // Update a review
-    router.put("/reviews/:reviewId", localRequireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.put("/reviews/:reviewId", localRequireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             const userId = sess?.userId;
@@ -120,7 +120,7 @@ export function createReviewsRouter() {
     });
 
     // Delete a review
-    router.delete("/reviews/:reviewId", localRequireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.delete("/reviews/:reviewId", localRequireAuth, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             const userId = sess?.userId;
@@ -148,7 +148,7 @@ export function createReviewsRouter() {
     });
 
     // Mark helpful
-    router.post("/reviews/:reviewId/helpful", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    router.post("/reviews/:reviewId/helpful", async (req: Request, res: Response, next: NextFunction) => {
         try {
             const sess = getSession(req);
             const userId = sess?.userId || null;
