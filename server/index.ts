@@ -11,6 +11,8 @@ import { serveStatic } from "./static.js";
 import { createSessionStore, buildSessionSecret } from "./session-config.js";
 import { corsConfig, sanitizeBody, securityLogger } from "./middleware/security.js";
 import { verifyEmailConnection } from "./utils/email.js";
+import { getDb } from "./db.js";
+import { sql } from "drizzle-orm";
 
 // Extend express Request type for rawBody
 declare global {
@@ -57,6 +59,38 @@ app.use(sanitizeBody);
 
 // Security: Log suspicious activity
 app.use(securityLogger);
+
+// Health check endpoint - BEFORE session middleware
+// This allows Railway to verify the app is running without hitting the database
+app.get("/health", (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    port: process.env.PORT || "5000",
+    env: process.env.NODE_ENV || "development",
+    dbConfigured: !!process.env.DATABASE_URL,
+  });
+});
+
+// Database health check
+app.get("/health/db", async (_req, res) => {
+  try {
+    const db = getDb();
+    if (!db) {
+      return res.status(503).json({ status: "error", message: "Database not configured" });
+    }
+    // Simple query to test connection with timeout
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Database timeout after 5s")), 5000)
+    );
+    const queryPromise = db.execute(sql`SELECT 1 as test`);
+    await Promise.race([queryPromise, timeoutPromise]);
+    res.status(200).json({ status: "ok", database: "connected" });
+  } catch (error: any) {
+    console.error("Database health check failed:", error.message);
+    res.status(503).json({ status: "error", message: error.message });
+  }
+});
 
 // Security: CSRF Protection (Strict Origin Validation)
 app.use((req, res, next) => {
