@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 import http from "http";
-import express, { type Request, Response, NextFunction } from "express";
+import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import { registerRoutes } from "./routes.js";
@@ -164,7 +164,7 @@ export function log(message: string, source = "express", level: LogLevel = "info
   }
 }
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
@@ -202,7 +202,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 (async () => {
   await registerRoutes(httpServer, app);
 
-  app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const httpError = err as HttpError;
     const status =
       typeof httpError.status === "number"

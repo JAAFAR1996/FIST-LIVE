@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import express, { Router } from "express";
 import { storage } from "../storage/index.js";
 import { requireAuth, getSession } from "../middleware/auth.js";
 import { insertOrderSchema } from "../../shared/schema.js";
@@ -7,7 +7,7 @@ export function createOrderRouter() {
     const router = Router();
 
     // Create Order
-    router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+    router.post("/", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const sess = getSession(req);
             const userId = sess?.userId;
@@ -37,7 +37,7 @@ export function createOrderRouter() {
     });
 
     // Get My Orders
-    router.get("/", requireAuth, async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/", requireAuth, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const sess = getSession(req);
             const orders = await storage.getOrders(sess?.userId);
@@ -48,7 +48,7 @@ export function createOrderRouter() {
     });
 
     // Track Order Publicly
-    router.get("/track/:orderNumber", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/track/:orderNumber", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const order = await storage.getOrder(req.params.orderNumber);
             if (!order) {

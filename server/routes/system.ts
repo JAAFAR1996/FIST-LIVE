@@ -1,11 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
+import express, { Router } from "express";
 import { storage } from "../storage/index.js";
 
 export function createSystemRouter() {
     const router = Router();
 
     // Sitemap
-    router.get("/sitemap.xml", async (req: Request, res: Response) => {
+    router.get("/sitemap.xml", async (req: express.Request, res: express.Response) => {
         try {
             const products = await storage.getProducts();
             const baseUrl = "https://aquavo.iq";
@@ -40,14 +40,14 @@ export function createSystemRouter() {
     });
 
     // Robots.txt
-    router.get("/robots.txt", (req: Request, res: Response) => {
+    router.get("/robots.txt", (req: express.Request, res: express.Response) => {
         const robots = `User-agent: *\nDisallow: /admin\nDisallow: /api/\nSitemap: https://aquavo.iq/sitemap.xml`;
         res.header("Content-Type", "text/plain");
         res.send(robots);
     });
 
     // Seeding (Admin/System only ideally, but public in routes.ts for Vercel)
-    router.get("/seed", async (req: Request, res: Response) => {
+    router.get("/seed", async (req: express.Request, res: express.Response) => {
         try {
             await storage.seedProductsIfNeeded();
             await storage.seedFishSpeciesIfNeeded();

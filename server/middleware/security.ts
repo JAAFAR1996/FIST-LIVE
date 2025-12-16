@@ -2,7 +2,7 @@
  * Security middleware for Express
  */
 
-import { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import { checkRateLimit, getClientIP } from '../utils/validation';
 
 /**
@@ -12,7 +12,7 @@ export function rateLimiter(
   maxRequests: number = 100,
   windowMs: number = 60000
 ) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const ip = getClientIP(req);
 
     if (checkRateLimit(ip, maxRequests, windowMs)) {
@@ -29,7 +29,7 @@ export function rateLimiter(
 /**
  * Security headers middleware
  */
-export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+export function securityHeaders(req: express.Request, res: express.Response, next: express.NextFunction) {
   // Prevent clickjacking
   res.setHeader('X-Frame-Options', 'DENY');
 
@@ -60,7 +60,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 /**
  * CORS configuration
  */
-export function corsConfig(req: Request, res: Response, next: NextFunction) {
+export function corsConfig(req: express.Request, res: express.Response, next: express.NextFunction) {
   const allowedOrigins = [
     'http://localhost:5000',
     'http://localhost:3000',
@@ -91,7 +91,7 @@ export function corsConfig(req: Request, res: Response, next: NextFunction) {
  * Request size limiter
  */
 export function requestSizeLimit(maxSize: number = 1024 * 1024) { // 1MB default
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const contentLength = parseInt(req.headers['content-length'] || '0');
 
     if (contentLength > maxSize) {
@@ -107,7 +107,7 @@ export function requestSizeLimit(maxSize: number = 1024 * 1024) { // 1MB default
 /**
  * Sanitize request body middleware
  */
-export function sanitizeBody(req: Request, res: Response, next: NextFunction) {
+export function sanitizeBody(req: express.Request, res: express.Response, next: express.NextFunction) {
   if (req.body && typeof req.body === 'object') {
     // Remove dangerous properties
     const dangerousProps = ['__proto__', 'constructor', 'prototype'];
@@ -137,7 +137,7 @@ export function sanitizeBody(req: Request, res: Response, next: NextFunction) {
 /**
  * Log security events
  */
-export function securityLogger(req: Request, res: Response, next: NextFunction) {
+export function securityLogger(req: express.Request, res: express.Response, next: express.NextFunction) {
   const ip = getClientIP(req);
   const timestamp = new Date().toISOString();
 

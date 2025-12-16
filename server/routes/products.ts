@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import express, { Router } from "express";
 import { storage } from "../storage/index.js";
 import { insertProductSchema, insertReviewSchema, insertDiscountSchema } from "../../shared/schema.js";
 import { requireAuth, getSession } from "../middleware/auth.js";
@@ -7,21 +7,22 @@ export function createProductRouter() {
     const router = Router();
 
     // Get all products
-    router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
+            const query = req.query as Record<string, string | string[] | undefined>;
             const filters = {
-                category: req.query.category as string | string[],
-                subcategory: req.query.subcategory as string,
-                brand: req.query.brand as string | string[],
-                minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
-                maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
-                isNew: req.query.isNew !== undefined ? req.query.isNew === 'true' : undefined,
-                isBestSeller: req.query.isBestSeller !== undefined ? req.query.isBestSeller === 'true' : undefined,
-                search: req.query.search as string,
-                limit: req.query.limit ? Number(req.query.limit) : undefined,
-                offset: req.query.offset ? Number(req.query.offset) : undefined,
-                sortBy: req.query.sortBy as any,
-                sortOrder: req.query.sortOrder as 'asc' | 'desc',
+                category: query.category as string | string[],
+                subcategory: query.subcategory as string,
+                brand: query.brand as string | string[],
+                minPrice: query.minPrice ? Number(query.minPrice) : undefined,
+                maxPrice: query.maxPrice ? Number(query.maxPrice) : undefined,
+                isNew: query.isNew !== undefined ? query.isNew === 'true' : undefined,
+                isBestSeller: query.isBestSeller !== undefined ? query.isBestSeller === 'true' : undefined,
+                search: query.search as string,
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                sortBy: query.sortBy as any,
+                sortOrder: query.sortOrder as 'asc' | 'desc',
             };
 
             const products = await storage.getProducts(filters);
@@ -32,7 +33,7 @@ export function createProductRouter() {
     });
 
     // Top selling (Specific route BEFORE :idOrSlug)
-    router.get("/top-selling", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/top-selling", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const result = await storage.getTopSellingProducts();
             res.json(result);
@@ -42,7 +43,7 @@ export function createProductRouter() {
     });
 
     // Trending (Specific route BEFORE :idOrSlug)
-    router.get("/info/trending", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/info/trending", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const products = await storage.getTrendingProducts();
             res.json(products);
@@ -52,7 +53,7 @@ export function createProductRouter() {
     });
 
     // Attributes (Categories & Brands)
-    router.get("/attributes", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/attributes", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const attributes = await storage.getProductAttributes();
             res.json(attributes);
@@ -62,7 +63,7 @@ export function createProductRouter() {
     });
 
     // Get single product (by ID or Slug)
-    router.get("/:idOrSlug", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:idOrSlug", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const { idOrSlug } = req.params;
             let product;
@@ -89,7 +90,7 @@ export function createProductRouter() {
 
     // ============ DISCOUNTS ============
     // Get Discounts
-    router.get("/:productId/discounts", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:productId/discounts", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const discounts = await storage.getDiscounts(req.params.productId);
             res.json(discounts);
@@ -99,7 +100,7 @@ export function createProductRouter() {
     });
 
     // ============ RECOMMENDATIONS ============
-    router.get("/:id/similar", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:id/similar", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const products = await storage.getSimilarProducts(req.params.id);
             res.json(products);
@@ -108,7 +109,7 @@ export function createProductRouter() {
         }
     });
 
-    router.get("/:id/frequently-bought-together", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:id/frequently-bought-together", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         try {
             const products = await storage.getFrequentlyBoughtTogether(req.params.id);
             res.json(products);
@@ -119,3 +120,4 @@ export function createProductRouter() {
 
     return router;
 }
+
