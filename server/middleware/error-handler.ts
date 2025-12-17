@@ -3,7 +3,7 @@
  * Prevents leaking sensitive information in error messages
  */
 
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 
 interface AppError extends Error {
@@ -16,9 +16,9 @@ interface AppError extends Error {
  */
 export function errorHandler(
   err: AppError,
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) {
   // Log error for debugging (in production, use proper logging service)
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -97,7 +97,7 @@ function getClientErrorMessage(err: AppError, statusCode: number): string {
 /**
  * 404 handler
  */
-export function notFoundHandler(req: express.Request, res: express.Response) {
+export function notFoundHandler(req: Request, res: Response) {
   res.status(404).json({
     error: 'المسار غير موجود',
     path: req.path
@@ -108,7 +108,7 @@ export function notFoundHandler(req: express.Request, res: express.Response) {
  * Async error wrapper
  */
 export function asyncHandler(fn: Function) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 }

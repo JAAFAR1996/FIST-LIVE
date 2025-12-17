@@ -2,7 +2,7 @@
  * Security middleware for Express
  */
 
-import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { checkRateLimit, getClientIP } from '../utils/validation';
 
 /**
@@ -12,7 +12,7 @@ export function rateLimiter(
   maxRequests: number = 100,
   windowMs: number = 60000
 ) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const ip = getClientIP(req);
 
     if (checkRateLimit(ip, maxRequests, windowMs)) {
@@ -29,7 +29,7 @@ export function rateLimiter(
 /**
  * Security headers middleware
  */
-export function securityHeaders(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function securityHeaders(req: Request, res: Response, next: NextFunction) {
   // Prevent clickjacking
   res.setHeader('X-Frame-Options', 'DENY');
 
@@ -42,11 +42,11 @@ export function securityHeaders(req: express.Request, res: express.Response, nex
   // Referrer policy
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-  // Content Security Policy
+  // Content Security Policy - Improved security without unsafe directives
   res.setHeader(
     'Content-Security-Policy',
     "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; " +
+    "script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "img-src 'self' data: https: blob:; " +
     "font-src 'self' data: https://fonts.gstatic.com; " +
@@ -60,7 +60,7 @@ export function securityHeaders(req: express.Request, res: express.Response, nex
 /**
  * CORS configuration
  */
-export function corsConfig(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function corsConfig(req: Request, res: Response, next: NextFunction) {
   const allowedOrigins = [
     'http://localhost:5000',
     'http://localhost:3000',
@@ -91,7 +91,7 @@ export function corsConfig(req: express.Request, res: express.Response, next: ex
  * Request size limiter
  */
 export function requestSizeLimit(maxSize: number = 1024 * 1024) { // 1MB default
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const contentLength = parseInt(req.headers['content-length'] || '0');
 
     if (contentLength > maxSize) {
@@ -107,7 +107,7 @@ export function requestSizeLimit(maxSize: number = 1024 * 1024) { // 1MB default
 /**
  * Sanitize request body middleware
  */
-export function sanitizeBody(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function sanitizeBody(req: Request, res: Response, next: NextFunction) {
   if (req.body && typeof req.body === 'object') {
     // Remove dangerous properties
     const dangerousProps = ['__proto__', 'constructor', 'prototype'];
@@ -137,7 +137,7 @@ export function sanitizeBody(req: express.Request, res: express.Response, next: 
 /**
  * Log security events
  */
-export function securityLogger(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function securityLogger(req: Request, res: Response, next: NextFunction) {
   const ip = getClientIP(req);
   const timestamp = new Date().toISOString();
 

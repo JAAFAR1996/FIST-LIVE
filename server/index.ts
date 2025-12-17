@@ -3,13 +3,14 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 dotenv.config();
 import http from "http";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import helmet from "helmet";
 import { registerRoutes } from "./routes.js";
 import { serveStatic } from "./static.js";
 import { createSessionStore, buildSessionSecret } from "./session-config.js";
-import { corsConfig, sanitizeBody, securityLogger } from "./middleware/security.js";
+import { corsConfig, sanitizeBody, securityLogger, securityHeaders } from "./middleware/security.js";
+import { errorHandler } from "./middleware/error-handler.js";
 import { verifyEmailConnection } from "./utils/email.js";
 import { getDb } from "./db.js";
 import { sql } from "drizzle-orm";
@@ -46,12 +47,14 @@ app.set("trust proxy", 1);
 
 // Security: Helmet for comprehensive HTTP security headers
 app.use(helmet({
-  contentSecurityPolicy: false, // Using custom CSP if needed
+  contentSecurityPolicy: false, // Using custom CSP from securityHeaders middleware
   crossOriginEmbedderPolicy: false, // Allow embedding resources
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin resources
 }));
 
-// Security: CORS configuration
+// Security: Custom security headers with CSP
+app.use(securityHeaders);
+
 // Security: CORS configuration
 app.use(corsConfig);
 
@@ -210,7 +213,7 @@ export function log(message: string, source = "express", level: LogLevel = "info
   }
 }
 
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
@@ -248,33 +251,8 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 (async () => {
   await registerRoutes(httpServer, app);
 
-  app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    const httpError = err as HttpError;
-    const status =
-      typeof httpError.status === "number"
-        ? httpError.status
-        : typeof httpError.statusCode === "number"
-          ? httpError.statusCode
-          : 500;
-    const message =
-      httpError.expose === true
-        ? httpError.message
-        : httpError.message || "Internal Server Error";
-
-    // Log error with context
-    const errorContext = {
-      error: httpError.message,
-      stack: process.env.NODE_ENV === "development" ? httpError.stack : undefined,
-      method: req.method,
-      path: req.path,
-      statusCode: status,
-      userAgent: req.get("user-agent"),
-      ip: req.ip,
-    };
-
-    log(JSON.stringify(errorContext), "error-handler", "error");
-    res.status(status).json({ message });
-  });
+  // Use professional error handler from middleware
+  app.use(errorHandler);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
