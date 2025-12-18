@@ -1,4 +1,4 @@
-import type { Router as RouterType, Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { Router } from "express";
 import { z } from "zod";
 import { storage } from "../storage/index.js";
@@ -10,7 +10,7 @@ declare module "express-session" {
     }
 }
 
-const router: RouterType = Router();
+const router = Router();
 
 // Helper to get session data safely
 const getSessionUserId = (req: Request): string | undefined => {
