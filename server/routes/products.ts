@@ -1,13 +1,14 @@
-import { Router, Request, Response, NextFunction } from "express";
+import type { Router as RouterType, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import { storage } from "../storage/index.js";
 import { insertProductSchema, insertReviewSchema, insertDiscountSchema } from "../../shared/schema.js";
 import { requireAuth, getSession } from "../middleware/auth.js";
 
-export function createProductRouter() {
+export function createProductRouter(): RouterType {
     const router = Router();
 
     // Get all products
-    router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const query = req.query as Record<string, string | string[] | undefined>;
             const filters = {
@@ -33,7 +34,7 @@ export function createProductRouter() {
     });
 
     // Top selling (Specific route BEFORE :idOrSlug)
-    router.get("/top-selling", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/top-selling", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const result = await storage.getTopSellingProducts();
             res.json(result);
@@ -43,7 +44,7 @@ export function createProductRouter() {
     });
 
     // Trending (Specific route BEFORE :idOrSlug)
-    router.get("/info/trending", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/info/trending", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const products = await storage.getTrendingProducts();
             res.json(products);
@@ -53,7 +54,7 @@ export function createProductRouter() {
     });
 
     // Attributes (Categories & Brands)
-    router.get("/attributes", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/attributes", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const attributes = await storage.getProductAttributes();
             res.json(attributes);
@@ -63,9 +64,9 @@ export function createProductRouter() {
     });
 
     // Get single product (by ID or Slug)
-    router.get("/:idOrSlug", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:idOrSlug", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { idOrSlug } = req.params;
+            const { idOrSlug } = req.params as { idOrSlug: string };
             let product;
 
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -90,9 +91,10 @@ export function createProductRouter() {
 
     // ============ DISCOUNTS ============
     // Get Discounts
-    router.get("/:productId/discounts", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:productId/discounts", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const discounts = await storage.getDiscounts(req.params.productId);
+            const { productId } = req.params as { productId: string };
+            const discounts = await storage.getDiscounts(productId);
             res.json(discounts);
         } catch (err) {
             next(err);
@@ -100,18 +102,20 @@ export function createProductRouter() {
     });
 
     // ============ RECOMMENDATIONS ============
-    router.get("/:id/similar", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:id/similar", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const products = await storage.getSimilarProducts(req.params.id);
+            const { id } = req.params as { id: string };
+            const products = await storage.getSimilarProducts(id);
             res.json(products);
         } catch (err) {
             next(err);
         }
     });
 
-    router.get("/:id/frequently-bought-together", async (req: Request, res: Response, next: NextFunction) => {
+    router.get("/:id/frequently-bought-together", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const products = await storage.getFrequentlyBoughtTogether(req.params.id);
+            const { id } = req.params as { id: string };
+            const products = await storage.getFrequentlyBoughtTogether(id);
             res.json(products);
         } catch (err) {
             next(err);
