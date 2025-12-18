@@ -1,41 +1,53 @@
-import { Router, Request, Response } from "express";
+import type { Router as RouterType, Request, Response } from "express";
+import { Router } from "express";
 import { storage } from "../storage/index.js";
 
-export function createCouponRouter() {
+interface CouponValidateRequest {
+    code?: string;
+    totalAmount?: number;
+}
+
+export function createCouponRouter(): RouterType {
     const router = Router();
 
     // Validate Coupon
-    router.post("/validate", async (req: Request, res: Response) => {
+    router.post("/validate", async (req: Request, res: Response): Promise<void> => {
         try {
-            const { code, totalAmount } = req.body;
+            const { code, totalAmount } = req.body as CouponValidateRequest;
 
             if (!code) {
-                return res.status(400).json({ message: "رمز الكوبون مطلوب" });
+                res.status(400).json({ message: "رمز الكوبون مطلوب" });
+                return;
             }
 
             const coupon = await storage.getCouponByCode(code);
 
             if (!coupon) {
-                return res.status(404).json({ message: "رمز الكوبون غير صحيح" });
+                res.status(404).json({ message: "رمز الكوبون غير صحيح" });
+                return;
             }
 
             if (!coupon.isActive) {
-                return res.status(400).json({ message: "هذا الكوبون غير فعال حالياً" });
+                res.status(400).json({ message: "هذا الكوبون غير فعال حالياً" });
+                return;
             }
 
             const now = new Date();
             if (coupon.startDate && new Date(coupon.startDate) > now) {
-                return res.status(400).json({ message: "هذا الكوبون لم يبدأ بعد" });
+                res.status(400).json({ message: "هذا الكوبون لم يبدأ بعد" });
+                return;
             }
 
             if (coupon.endDate && new Date(coupon.endDate) < now) {
-                return res.status(400).json({ message: "انتهت صلاحية هذا الكوبون" });
+                res.status(400).json({ message: "انتهت صلاحية هذا الكوبون" });
+                return;
             }
 
-            if (coupon.minOrderAmount && totalAmount < Number(coupon.minOrderAmount)) {
-                return res.status(400).json({
+            if (coupon.minOrderAmount && totalAmount && totalAmount < Number(coupon.minOrderAmount)) {
+                res.status(400).json({
                     message: `يجب أن يكون مجموع الطلب ${coupon.minOrderAmount} د.ع على الأقل لاستخدام هذا الكوبون`
                 });
+                return;
             }
 
             res.json(coupon);
