@@ -1,0 +1,31 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "target": "ES2022",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "noEmit": false,
+        "outDir": "../dist",
+        "rootDir": "..",
+        "baseUrl": "..",
+        "types": [
+            "node",
+            "express",
+            "express-session"
+        ]
+    },
+    "include": [
+        "./**/*",
+        "../server/**/*",
+        "../shared/**/*"
+    ],
+    "exclude": [
+        "../node_modules",
+        "../client",
+        "../dist"
+    ]
+}
