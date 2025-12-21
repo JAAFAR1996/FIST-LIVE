@@ -3,12 +3,33 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { metaImagesPlugin } from "./vite-plugin-meta-images";
+import viteCompression from "vite-plugin-compression";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
     metaImagesPlugin(),
+    // Gzip compression for 60-80% file size reduction
+    viteCompression({
+      algorithm: "gzip",
+      ext: ".gz",
+      threshold: 1024, // Only compress files > 1KB
+    }),
+    // Brotli compression (better than gzip, supported by modern browsers)
+    viteCompression({
+      algorithm: "brotliCompress",
+      ext: ".br",
+      threshold: 1024,
+    }),
+    // Bundle analyzer - generates stats.html after build
+    visualizer({
+      filename: "dist/stats.html",
+      open: false,
+      gzipSize: true,
+      brotliSize: true,
+    }),
   ],
   // Remove console.log and debugger statements in production
   esbuild: {
@@ -50,8 +71,9 @@ export default defineConfig({
             '@radix-ui/react-tooltip',
             '@radix-ui/react-popover',
             '@radix-ui/react-accordion',
-            'lucide-react',
           ],
+          // Icons chunk - separated for better tree-shaking
+          'vendor-icons': ['lucide-react'],
           // Heavy animation library - separate chunk for lazy loading
           'vendor-animation': ['framer-motion'],
           // Data/Charts chunk

@@ -72,6 +72,9 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
                   alt={`صورة منتج ${product.name} من ${product.brand}`}
                   className="w-full h-full object-contain filter drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
+                  width={300}
+                  height={300}
+                  decoding="async"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     if (target.src !== "/placeholder-product.svg") {
