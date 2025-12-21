@@ -66,7 +66,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 auto-rows-[minmax(180px,auto)] gap-4 md:gap-6">
 
           {/* 1. Hero & Video Section (Wide Box: 8 cols, 2 rows) */}
-          <div className="lg:col-span-8 lg:row-span-2 rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md">
+          <div className="lg:col-span-8 lg:row-span-2 rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md min-h-[400px] md:min-h-[500px]">
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -101,7 +101,7 @@ export default function Home() {
           </div>
 
           {/* 2. Best Sellers List (Tall Box: 4 cols, 3 rows) */}
-          <div className="lg:col-span-4 lg:row-span-3 rounded-[2.5rem] bg-card/80 dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-xl p-6 flex flex-col shadow-xl overflow-hidden relative">
+          <div className="lg:col-span-4 lg:row-span-3 rounded-[2.5rem] bg-card/80 dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-xl p-6 flex flex-col shadow-xl overflow-hidden relative min-h-[600px]">
             <div className="flex justify-between items-center mb-6 z-10 relative">
               <Link href="/products?sort=best-selling">
                 <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">المزيد</Button>
@@ -151,7 +151,7 @@ export default function Home() {
           </div>
 
           {/* 3. Product of the Day (Small Box: 4 cols, 1 row) */}
-          <div className="lg:col-span-4 lg:row-span-1 rounded-[2.5rem] bg-card dark:bg-[#0a0f1c] border border-border dark:border-border/50 p-6 flex relative overflow-hidden group hover:border-primary/50 transition-colors">
+          <div className="lg:col-span-4 lg:row-span-1 rounded-[2.5rem] bg-card dark:bg-[#0a0f1c] border border-border dark:border-border/50 p-6 flex relative overflow-hidden group hover:border-primary/50 transition-colors min-h-[180px]">
             <div className="absolute top-0 right-0 bg-accent text-white px-4 py-1 rounded-bl-2xl font-bold text-sm shadow-lg z-10">صفقة الأسبوع</div>
             {salesIsLoading || !featuredProduct ? (
               <div className="flex w-full gap-4">
