@@ -81,10 +81,22 @@ export default function Home() {
           {/* 1. Hero & Video Section (Wide Box: 8 cols, 2 rows) */}
           <div className="lg:col-span-8 lg:row-span-2 rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md min-h-[400px] md:min-h-[500px]">
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url("${heroImage}")` }}
-            />
+            {/* Video Background */}
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              poster={heroImage}
+            >
+              <source src="/images/hero/Aquarium_Animation_Request_Fulfilled.mp4" type="video/mp4" />
+              {/* Fallback to image if video doesn't load */}
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url("${heroImage}")` }}
+              />
+            </video>
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent opacity-60"></div>
 
             {/* Overlay Content */}
