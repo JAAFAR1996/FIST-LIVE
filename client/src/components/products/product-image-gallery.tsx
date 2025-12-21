@@ -62,7 +62,7 @@ export function ProductImageGallery({
             <div className="relative group">
                 <div
                     ref={imageRef}
-                    className="relative aspect-square cursor-zoom-in"
+                    className="relative aspect-square cursor-zoom-in overflow-hidden max-w-lg mx-auto"
                     onMouseMove={handleMouseMove}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
@@ -74,7 +74,7 @@ export function ProductImageGallery({
                         alt={`${productName} - صورة ${selectedIndex + 1}`}
                         className={cn(
                             "w-full h-full object-contain transition-transform duration-300",
-                            isZoomed && "scale-150"
+                            isZoomed && "scale-110"
                         )}
                         style={isZoomed ? {
                             transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`
