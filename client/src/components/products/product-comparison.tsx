@@ -97,12 +97,14 @@ export function CompareButton({
     const { toast } = useToast();
     const inCompare = isInCompare(productId);
 
-    const handleToggle = () => {
+    const handleToggle = (e: React.MouseEvent) => {
+        // Stop propagation to prevent navigation to product page
+        e.preventDefault();
+        e.stopPropagation();
+
         if (inCompare) {
             removeFromCompare(productId);
-            toast({
-                title: "تمت الإزالة من المقارنة",
-            });
+            // No toast, just visual feedback from button state change
         } else {
             if (!canAdd) {
                 toast({
@@ -113,9 +115,23 @@ export function CompareButton({
                 return;
             }
             addToCompare(productId);
-            toast({
-                title: "تمت الإضافة للمقارنة",
-                description: "انتقل إلى صفحة المقارنة لعرض التفاصيل",
+
+            // Confetti effect like wishlist
+            import('canvas-confetti').then((confetti) => {
+                const button = e.currentTarget as HTMLElement;
+                const rect = button.getBoundingClientRect();
+                const x = (rect.left + rect.width / 2) / window.innerWidth;
+                const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+                confetti.default({
+                    particleCount: 30,
+                    spread: 60,
+                    origin: { x, y },
+                    colors: ['#10b981', '#3b82f6', '#8b5cf6'],
+                    startVelocity: 15,
+                    gravity: 0.8,
+                    scalar: 0.8,
+                });
             });
         }
     };
@@ -125,7 +141,7 @@ export function CompareButton({
             <Button
                 variant={inCompare ? "default" : "outline"}
                 size="icon"
-                className={cn("h-9 w-9", className)}
+                className={cn("h-9 w-9 transition-all", inCompare && "bg-primary scale-110", className)}
                 onClick={handleToggle}
                 title={inCompare ? "إزالة من المقارنة" : "إضافة للمقارنة"}
             >
@@ -136,9 +152,9 @@ export function CompareButton({
 
     return (
         <Button
-            variant={inCompare ? "secondary" : "outline"}
+            variant={inCompare ? "default" : "outline"}
             size="sm"
-            className={cn("gap-1", className)}
+            className={cn("gap-1 transition-all", inCompare && "bg-primary text-primary-foreground scale-105", className)}
             onClick={handleToggle}
         >
             {inCompare ? (
