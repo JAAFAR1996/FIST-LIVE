@@ -683,3 +683,62 @@ export type ReferralCode = typeof referralCodes.$inferSelect;
 export type InsertReferralCode = z.infer<typeof insertReferralCodeSchema>;
 export type Referral = typeof referrals.$inferSelect;
 export type InsertReferral = z.infer<typeof insertReferralSchema>;
+
+// ========================================
+// Security System (نظام الأمان)
+// ========================================
+
+// Login Attempts - تسجيل محاولات الدخول
+export const loginAttempts = pgTable("login_attempts", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id), // null إذا كان المستخدم غير موجود
+  email: text("email").notNull(), // البريد المستخدم في المحاولة
+  success: boolean("success").notNull(), // هل نجحت المحاولة؟
+  ipAddress: text("ip_address"), // عنوان IP
+  userAgent: text("user_agent"), // معلومات المتصفح
+  failureReason: text("failure_reason"), // سبب الفشل (كلمة مرور خاطئة، حساب غير موجود...)
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  emailIdx: index("login_attempts_email_idx").on(table.email),
+  ipIdx: index("login_attempts_ip_idx").on(table.ipAddress),
+  createdAtIdx: index("login_attempts_created_at_idx").on(table.createdAt),
+  successIdx: index("login_attempts_success_idx").on(table.success),
+}));
+
+// Blocked IPs - العناوين المحظورة
+export const blockedIPs = pgTable("blocked_ips", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  ipAddress: text("ip_address").notNull().unique(),
+  reason: text("reason").notNull(), // سبب الحظر
+  failedAttempts: integer("failed_attempts").default(0), // عدد المحاولات الفاشلة
+  blockedAt: timestamp("blocked_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"), // null = حظر دائم
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  ipIdx: index("blocked_ips_ip_idx").on(table.ipAddress),
+  isActiveIdx: index("blocked_ips_is_active_idx").on(table.isActive),
+}));
+
+// Zod Schemas
+export const insertLoginAttemptSchema = z.object({
+  userId: z.string().optional(),
+  email: z.string().email(),
+  success: z.boolean(),
+  ipAddress: z.string().optional(),
+  userAgent: z.string().optional(),
+  failureReason: z.string().optional(),
+});
+
+export const insertBlockedIPSchema = z.object({
+  ipAddress: z.string().min(1),
+  reason: z.string().min(1),
+  failedAttempts: z.number().optional(),
+  expiresAt: z.date().optional(),
+});
+
+// Types
+export type LoginAttempt = typeof loginAttempts.$inferSelect;
+export type InsertLoginAttempt = z.infer<typeof insertLoginAttemptSchema>;
+export type BlockedIP = typeof blockedIPs.$inferSelect;
+export type InsertBlockedIP = z.infer<typeof insertBlockedIPSchema>;

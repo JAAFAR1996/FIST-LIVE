@@ -42,6 +42,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CouponsManagement } from "@/components/admin/coupons-management";
 import { AuditLogsTab } from "@/components/admin/audit-logs-tab";
 import { AdvancedDiscountsTab } from "@/components/admin/advanced-discounts-tab";
+import SecurityManagement from "@/components/admin/security-management";
 import {
   Plus,
   Pencil,
@@ -65,6 +66,7 @@ import {
   Crown,
   Heart,
   Tag,
+  Shield,
 } from "lucide-react";
 import { addCsrfHeader } from "@/lib/csrf";
 
@@ -613,7 +615,7 @@ export default function AdminDashboard() {
 
       <Tabs defaultValue="products" className="w-full">
 
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 h-auto p-1">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 h-auto p-1">
           <TabsTrigger value="products">المنتجات</TabsTrigger>
           <TabsTrigger value="discounts">الخصومات</TabsTrigger>
           <TabsTrigger value="coupons">الكوبونات</TabsTrigger>
@@ -622,6 +624,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="reviews">المراجعات</TabsTrigger>
           <TabsTrigger value="gallery">المعرض</TabsTrigger>
           <TabsTrigger value="audit-logs">السجلات</TabsTrigger>
+          <TabsTrigger value="security">الأمان</TabsTrigger>
           <TabsTrigger value="settings">الإعدادات</TabsTrigger>
         </TabsList>
 
@@ -631,6 +634,10 @@ export default function AdminDashboard() {
 
         <TabsContent value="audit-logs" className="space-y-4">
           <AuditLogsTab />
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-4">
+          <SecurityManagement />
         </TabsContent>
 
         <TabsContent value="products" className="space-y-4">
