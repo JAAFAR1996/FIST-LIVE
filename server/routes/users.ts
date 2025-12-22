@@ -6,8 +6,10 @@ import { requireAuth, getSession } from "../middleware/auth.js";
 import { sendPasswordResetEmail } from "../utils/email.js";
 import { authLimiter, passwordResetLimiter } from "../middleware/rate-limit.js";
 import { hashPassword, verifyPassword } from "../utils/auth.js";
+import { SecurityStorage } from "../storage/security-storage.js";
 import crypto from "crypto";
 
+const securityStorage = new SecurityStorage();
 
 export function createUserRouter(): RouterType {
     const router = Router();
@@ -72,11 +74,52 @@ export function createUserRouter(): RouterType {
     router.post("/login", authLimiter, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { email, password } = req.body;
+            const ipAddress = req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
+            const userAgent = req.headers['user-agent'] || 'unknown';
+
             const user = await storage.getUserByEmail(email);
 
+            // Check if IP is blocked
+            try {
+                const isBlocked = await securityStorage.isIPBlocked(ipAddress);
+                if (isBlocked) {
+                    res.status(429).json({ message: "تم حظر عنوان IP الخاص بك مؤقتاً بسبب محاولات دخول متعددة فاشلة" });
+                    return;
+                }
+            } catch (blockErr) {
+                console.error("Error checking blocked IP:", blockErr);
+            }
+
             if (!user || !verifyPassword(password, user.passwordHash)) {
+                // Record failed login attempt
+                try {
+                    await securityStorage.recordLoginAttempt({
+                        userId: user?.id,
+                        email,
+                        success: false,
+                        ipAddress,
+                        userAgent,
+                        failureReason: !user ? "حساب غير موجود" : "كلمة مرور خاطئة",
+                    });
+                } catch (logErr) {
+                    console.error("Error recording login attempt:", logErr);
+                }
+
                 res.status(401).json({ message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
                 return;
+            }
+
+            // Record successful login attempt
+            try {
+                await securityStorage.recordLoginAttempt({
+                    userId: user.id,
+                    email,
+                    success: true,
+                    ipAddress,
+                    userAgent,
+                });
+            } catch (logErr) {
+                console.error("Error recording login attempt:", logErr);
             }
 
             const sess = getSession(req);
