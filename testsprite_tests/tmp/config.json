@@ -1,8 +1,8 @@
 {
-  "status": "commited",
-  "type": "backend",
+  "status": "init",
+  "type": "frontend",
   "scope": "codebase",
-  "localEndpoint": "http://localhost:5000",
+  "localEndpoint": "http://localhost:5000/",
   "backendAuthType": "public",
   "executionArgs": {
     "projectName": "FishWebClean",
@@ -13,5 +13,6 @@
       "API_KEY": "sk-user-PqeqiDdp12WwHGt0BM-XT_lv4KuSZG4SxNHHAJ95lfO-5PQQNPd9RdJEKHoL9N0ucnBASiYmSNOwdpj5La8jF4X7lol7cd0pwo-VB_IQIeLKCrGBz58irmrYwRQ4QlbRjLI"
     }
   },
-  "proxy": "http://997313a3-dace-448b-a01f-0dbc79eed543:7R24gPi4t4ZFfQeRy4UwwwcCYUrbhCEM@tun.testsprite.com:8080"
+  "proxy": "http://997313a3-dace-448b-a01f-0dbc79eed543:7R24gPi4t4ZFfQeRy4UwwwcCYUrbhCEM@tun.testsprite.com:8080",
+  "serverPort": 61796
 }

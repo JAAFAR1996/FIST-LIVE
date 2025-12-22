@@ -61,7 +61,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
       "form-action 'self';"
     );
   } else {
-    // Production: Strict CSP following OWASP 2025 best practices
+    // Production: Strict CSP following OWASP best practices
     res.setHeader(
       'Content-Security-Policy',
       "default-src 'self'; " +

@@ -43,6 +43,7 @@ import { CouponsManagement } from "@/components/admin/coupons-management";
 import { AuditLogsTab } from "@/components/admin/audit-logs-tab";
 import { AdvancedDiscountsTab } from "@/components/admin/advanced-discounts-tab";
 import SecurityManagement from "@/components/admin/security-management";
+import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
 import {
   Plus,
   Pencil,
@@ -624,6 +625,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="reviews">المراجعات</TabsTrigger>
           <TabsTrigger value="gallery">المعرض</TabsTrigger>
           <TabsTrigger value="audit-logs">السجلات</TabsTrigger>
+          <TabsTrigger value="analytics">التحليلات</TabsTrigger>
           <TabsTrigger value="security">الأمان</TabsTrigger>
           <TabsTrigger value="settings">الإعدادات</TabsTrigger>
         </TabsList>
@@ -638,6 +640,10 @@ export default function AdminDashboard() {
 
         <TabsContent value="security" className="space-y-4">
           <SecurityManagement />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <AnalyticsDashboard />
         </TabsContent>
 
         <TabsContent value="products" className="space-y-4">

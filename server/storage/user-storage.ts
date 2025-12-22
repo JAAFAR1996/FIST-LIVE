@@ -125,7 +125,7 @@ export class UserStorage {
             // But usually rows.length > 0 if RETURNING is used
             return result.rows.length > 0;
         } catch (error) {
-            // Log error for debugging but don't expose to user (2025 Security Best Practice)
+            // Log error for debugging
             console.error("processPasswordReset database error:", error);
             return false; // Return false instead of throwing - safer UX
         }

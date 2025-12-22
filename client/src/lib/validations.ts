@@ -1,6 +1,6 @@
 /**
  * Zod validation schemas for form inputs
- * Following OWASP input validation best practices 2025
+ * Following OWASP input validation best practices
  */
 
 import { z } from 'zod';

@@ -72,6 +72,8 @@ function getNextTier(currentTier: TierKey): TierKey | null {
 interface ProfileLoyaltyProps {
     loyaltyPoints: number;
     loyaltyTier: string;
+    cashbackBalance?: number;
+    birthDate?: string | null;
 }
 
 export function ProfileLoyalty({ loyaltyPoints, loyaltyTier }: ProfileLoyaltyProps) {
@@ -164,10 +166,10 @@ export function ProfileLoyalty({ loyaltyPoints, loyaltyTier }: ProfileLoyaltyPro
                             <div
                                 key={tierKey}
                                 className={`text-center p-3 sm:p-4 rounded-xl transition-all ${isCurrentTier
-                                        ? "bg-primary/10 border-2 border-primary shadow-lg scale-105"
-                                        : isAchieved
-                                            ? "bg-muted/80"
-                                            : "bg-muted/30 opacity-60"
+                                    ? "bg-primary/10 border-2 border-primary shadow-lg scale-105"
+                                    : isAchieved
+                                        ? "bg-muted/80"
+                                        : "bg-muted/30 opacity-60"
                                     }`}
                             >
                                 <div className={`w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full flex items-center justify-center mb-2 ${isCurrentTier ? tier.iconBg : isAchieved ? "bg-green-500" : "bg-muted"
@@ -246,11 +248,19 @@ export function ProfileLoyalty({ loyaltyPoints, loyaltyTier }: ProfileLoyaltyPro
                         )}
                         <div className="flex items-center gap-2 text-sm">
                             <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span>كاش باك 2% من كل طلب</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
                             <span>أولوية في الشحن</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span>عروض حصرية للأعضاء</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                            <Gift className="w-4 h-4 text-pink-500" />
+                            <span>هدية خاصة في عيد ميلادك</span>
                         </div>
                         {actualTier === "gold" || actualTier === "platinum" ? (
                             <div className="flex items-center gap-2 text-sm">

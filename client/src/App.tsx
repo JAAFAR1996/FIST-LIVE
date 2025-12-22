@@ -18,6 +18,7 @@ import { WinnerNotificationBanner } from "@/components/notifications/winner-noti
 import { ShrimpProvider } from "@/contexts/shrimp-context";
 import { ComparisonProvider } from "@/contexts/comparison-context";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { LiveChatWidget } from "@/components/chat/live-chat-widget";
 
 // Direct imports for critical pages (needed for fast first paint)
 import Home from "@/pages/home";
@@ -332,6 +333,7 @@ function App() {
                   <WinnerNotificationBanner />
                   <CelebrationOverlay />
                   <Toaster />
+                  <LiveChatWidget />
                   <Router />
                 </TooltipProvider>
               </ComparisonProvider>

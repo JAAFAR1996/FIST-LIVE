@@ -5,7 +5,7 @@ import { requireAuth, getSession } from "../middleware/auth.js";
 import { insertOrderSchema } from "../../shared/schema.js";
 import { z } from "zod";
 
-// Order validation schema (2025 Best Practices)
+// Order validation schema
 const createOrderItemSchema = z.object({
     productId: z.string().uuid("Invalid product ID format"),
     quantity: z.number().int().positive("Quantity must be positive").max(100, "Maximum 100 items per product")
@@ -33,7 +33,7 @@ export function createOrderRouter(): RouterType {
             const sess = getSession(req);
             const userId = sess?.userId;
 
-            // Validate input (2025 Best Practice: Always validate before processing)
+            // Validate input
             const validationResult = createOrderSchema.safeParse(req.body);
             if (!validationResult.success) {
                 res.status(400).json({
@@ -66,8 +66,8 @@ export function createOrderRouter(): RouterType {
 
             res.status(201).json(order);
         } catch (err: any) {
-            // Convert known validation errors to 400 (2025 Best Practice)
-            if (err.message?.includes('not found') || 
+            // Convert known validation errors to 400
+            if (err.message?.includes('not found') ||
                 err.message?.includes('Insufficient stock') ||
                 err.message?.includes('Invalid')) {
                 res.status(400).json({ message: err.message });

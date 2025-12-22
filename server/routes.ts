@@ -14,6 +14,9 @@ import { createCouponRouter } from "./routes/coupons.js";
 import { createNewsletterRouter } from "./routes/newsletter.js";
 import { createReferralRouter } from "./routes/referral.js";
 import { createSecurityRouter } from "./routes/security.js";
+import { createUploadRouter } from "./routes/upload.js";
+import { createAnalyticsRouter } from "./routes/analytics.js";
+import { createNotificationsRouter } from "./routes/notifications.js";
 import journeyRoutes from "./routes/journey.js";
 import { storage } from "./storage/index.js";
 
@@ -33,11 +36,13 @@ export async function registerRoutes(
   app.use("/api/fish", createFishRouter(storage));
   app.use("/api/products", createProductRouter());
   app.use("/api/orders", createOrderRouter());
-  app.use("/api/admin", createAdminRouter()); // Contains /admin/orders, /admin/users etc.
-  app.use("/api/admin/security", createSecurityRouter()); // Security dashboard
+  app.use("/api/admin", createAdminRouter());
+  app.use("/api/admin/security", createSecurityRouter());
+  app.use("/api/admin/analytics", createAnalyticsRouter());
+  app.use("/api/notifications", createNotificationsRouter());
   app.use("/api/gallery", createGalleryRouter());
-  app.use("/api/system", createSystemRouter()); // For /api/system/seed
-  app.use("/api/referral", createReferralRouter()); // Referral system
+  app.use("/api/system", createSystemRouter());
+  app.use("/api/referral", createReferralRouter());
 
   // System root routes (sitemap, robots) - Handling mounting inside createSystemRouter
   // But wait, createSystemRouter defines /sitemap.xml.
@@ -53,6 +58,7 @@ export async function registerRoutes(
   app.use("/api/favorites", createFavoritesRouter());
   app.use("/api/coupons", createCouponRouter());
   app.use("/api/newsletter", createNewsletterRouter(storage));
+  app.use("/api/upload", createUploadRouter());
 
   // Journey wizard routes
   app.use(journeyRoutes);

@@ -194,7 +194,7 @@ export function createUserRouter(): RouterType {
         try {
             const { token, newPassword } = req.body;
 
-            // Input validation (2025 Best Practice: Validate before processing)
+            // Input validation
             if (!token || typeof token !== 'string') {
                 res.status(400).json({ message: "Token is required" });
                 return;

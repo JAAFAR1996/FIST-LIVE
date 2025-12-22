@@ -10,12 +10,14 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   fullName: text("full_name"),
   phone: text("phone"),
-  role: text("role").notNull().default("user"), // user, admin
+  birthDate: timestamp("birth_date"),
+  role: text("role").notNull().default("user"),
   emailVerified: boolean("email_verified").default(false),
   verificationToken: text("verification_token"),
   verificationTokenExpiresAt: timestamp("verification_token_expires_at"),
   loyaltyPoints: integer("loyalty_points").default(0),
   loyaltyTier: text("loyalty_tier").default("bronze"),
+  cashbackBalance: integer("cashback_balance").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   deletedAt: timestamp("deleted_at"),
@@ -106,7 +108,8 @@ export const reviews = pgTable("reviews", {
   title: text("title"),
   comment: text("comment"),
   images: jsonb("images").$type<string[]>(),
-  status: text("status").notNull().default("approved"), // pending, approved, rejected
+  videoUrl: text("video_url"),
+  status: text("status").notNull().default("approved"),
   ipAddress: text("ip_address"),
   helpfulCount: integer("helpful_count").default(0),
   verifiedPurchase: boolean("verified_purchase").default(false),
@@ -742,3 +745,82 @@ export type LoginAttempt = typeof loginAttempts.$inferSelect;
 export type InsertLoginAttempt = z.infer<typeof insertLoginAttemptSchema>;
 export type BlockedIP = typeof blockedIPs.$inferSelect;
 export type InsertBlockedIP = z.infer<typeof insertBlockedIPSchema>;
+
+// ==================== Analytics Tables ====================
+
+export const pageViews = pgTable("page_views", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id),
+  sessionId: text("session_id"),
+  pagePath: text("page_path").notNull(),
+  pageTitle: text("page_title"),
+  referrer: text("referrer"),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  country: text("country"),
+  city: text("city"),
+  deviceType: text("device_type"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index("page_views_user_idx").on(table.userId),
+  pathIdx: index("page_views_path_idx").on(table.pagePath),
+  createdAtIdx: index("page_views_created_at_idx").on(table.createdAt),
+}));
+
+export const salesStats = pgTable("sales_stats", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: timestamp("date").notNull(),
+  totalOrders: integer("total_orders").default(0),
+  totalRevenue: integer("total_revenue").default(0),
+  averageOrderValue: integer("average_order_value").default(0),
+  newCustomers: integer("new_customers").default(0),
+  returningCustomers: integer("returning_customers").default(0),
+  conversionRate: numeric("conversion_rate", { precision: 5, scale: 2 }),
+  topProducts: jsonb("top_products").$type<{ productId: string; sales: number }[]>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  dateIdx: index("sales_stats_date_idx").on(table.date),
+}));
+
+// ==================== Email Campaigns ====================
+
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(),
+  userId: text("user_id").references(() => users.id).notNull(),
+  subject: text("subject").notNull(),
+  content: text("content"),
+  status: text("status").notNull().default("pending"),
+  sentAt: timestamp("sent_at"),
+  openedAt: timestamp("opened_at"),
+  clickedAt: timestamp("clicked_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index("email_campaigns_user_idx").on(table.userId),
+  typeIdx: index("email_campaigns_type_idx").on(table.type),
+  statusIdx: index("email_campaigns_status_idx").on(table.status),
+}));
+
+// ==================== Push Notifications ====================
+
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  userAgent: text("user_agent"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdx: index("push_subscriptions_user_idx").on(table.userId),
+  endpointIdx: index("push_subscriptions_endpoint_idx").on(table.endpoint),
+}));
+
+// Types for new tables
+export type PageView = typeof pageViews.$inferSelect;
+export type SalesStats = typeof salesStats.$inferSelect;
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+
