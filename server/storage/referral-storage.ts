@@ -15,13 +15,12 @@ const REFERRAL_POINTS_REWARD = 50; // نقاط المُحيل عند تسجيل 
 const REFERRED_DISCOUNT_PERCENT = 5; // خصم الصديق بعد أول شراء
 
 export class ReferralStorage {
-    private db = getDb();
-
     private ensureDb() {
-        if (!this.db) {
+        const db = getDb();
+        if (!db) {
             throw new Error('Database not connected.');
         }
-        return this.db;
+        return db;
     }
 
     // ========================================

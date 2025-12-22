@@ -10,6 +10,7 @@ interface User {
   phone?: string;
   loyaltyPoints?: number;
   loyaltyTier?: string;
+  createdAt?: string;
 }
 
 interface AuthContextType {

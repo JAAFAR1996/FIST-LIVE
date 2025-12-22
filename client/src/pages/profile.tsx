@@ -52,10 +52,15 @@ export default function Profile() {
         enabled: !!user,
     });
 
+    // Format member since date from user's createdAt
+    const memberSinceDate = user?.createdAt
+        ? new Date(user.createdAt).toLocaleDateString("ar-IQ", { month: "long", year: "numeric" })
+        : "ديسمبر 2025";
+
     // Mock extra user data that isn't in core auth yet (profile details)
     const [extraData, setExtraData] = useState<UserProfileExtra>({
-        phone: "0770XXXXXXX",
-        memberSince: "نوفمبر 2024",
+        phone: user?.phone || "0770XXXXXXX",
+        memberSince: memberSinceDate,
         avatar: "",
         addresses: [],
     });
