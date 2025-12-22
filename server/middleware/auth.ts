@@ -10,12 +10,21 @@ declare module "express-session" {
 export const getSession = (req: any): (session.Session & Partial<session.SessionData>) | undefined =>
   req.session;
 
-export function requireAuth(req: any, res: any, next: any) {
+export async function requireAuth(req: any, res: any, next: any) {
   const sess = getSession(req);
   if (!sess?.userId) {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
+
+  // Fetch user and attach to request
+  const user = await storage.getUser(sess.userId);
+  if (!user) {
+    res.status(401).json({ message: "User not found" });
+    return;
+  }
+
+  req.user = user;
   next();
 }
 
