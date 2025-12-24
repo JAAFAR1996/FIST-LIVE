@@ -426,7 +426,7 @@ export default function CommunityGallery() {
                       <span>{submission.likes}</span>
                     </Button>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(submission.createdAt).toLocaleDateString('ar-IQ')}
+                      {new Date(submission.createdAt).toLocaleDateString('en-GB')}
                     </span>
                   </CardFooter>
                 </Card>

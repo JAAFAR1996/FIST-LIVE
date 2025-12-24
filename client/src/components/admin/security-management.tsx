@@ -139,7 +139,7 @@ export default function SecurityManagement() {
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString("ar-IQ", {
+        return new Date(dateString).toLocaleString("en-GB", {
             year: "numeric",
             month: "short",
             day: "numeric",

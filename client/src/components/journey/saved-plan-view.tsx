@@ -31,7 +31,7 @@ export function SavedPlanView({ plan, onContinue, onDelete }: SavedPlanViewProps
                             <span className="text-muted-foreground">تاريخ الإنشاء:</span>
                             <span className="font-bold flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-primary" />
-                                {new Date(plan.createdAt).toLocaleDateString('ar-IQ')}
+                                {new Date(plan.createdAt).toLocaleDateString('en-GB')}
                             </span>
                         </div>
 

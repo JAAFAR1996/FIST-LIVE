@@ -241,7 +241,7 @@ export function OrdersManagement() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString('ar-IQ')}
+                      {new Date(order.createdAt).toLocaleDateString('en-GB')}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
@@ -346,8 +346,8 @@ export function OrdersManagement() {
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold text-sm text-muted-foreground mb-2">تفاصيل الطلب</h3>
-                  <p className="text-sm">التاريخ: {new Date(selectedOrder.createdAt).toLocaleDateString('ar-IQ')}</p>
-                  <p className="text-sm">الوقت: {new Date(selectedOrder.createdAt).toLocaleTimeString('ar-IQ')}</p>
+                  <p className="text-sm">التاريخ: {new Date(selectedOrder.createdAt).toLocaleDateString('en-GB')}</p>
+                  <p className="text-sm">الوقت: {new Date(selectedOrder.createdAt).toLocaleTimeString('en-GB')}</p>
                   <Badge className={getStatusInfo(selectedOrder.status).color + " mt-2"}>
                     {getStatusInfo(selectedOrder.status).label}
                   </Badge>

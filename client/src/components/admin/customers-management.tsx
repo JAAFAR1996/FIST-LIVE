@@ -128,7 +128,7 @@ export default function CustomersManagement() {
                                         <TableCell className="text-center">
                                             <div className="flex items-center justify-center gap-1 text-muted-foreground text-sm">
                                                 <Calendar className="h-4 w-4" />
-                                                {user.createdAt ? new Date(user.createdAt).toLocaleDateString('ar-IQ') : "غير متوفر"}
+                                                {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB') : "غير متوفر"}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-center">

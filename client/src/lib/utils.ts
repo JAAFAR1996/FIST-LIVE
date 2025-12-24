@@ -24,7 +24,8 @@ export function generateOrderNumber(): string {
 }
 
 export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('ar-IQ', {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Baghdad',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -34,9 +35,11 @@ export function formatDate(date: Date): string {
 }
 
 export function formatShortDate(date: Date): string {
-  return new Intl.DateTimeFormat('ar-IQ', {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Baghdad',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
   }).format(date);
 }
+

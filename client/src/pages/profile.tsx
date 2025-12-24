@@ -54,7 +54,7 @@ export default function Profile() {
 
     // Format member since date from user's createdAt
     const memberSinceDate = user?.createdAt
-        ? new Date(user.createdAt).toLocaleDateString("ar-IQ", { month: "long", year: "numeric" })
+        ? new Date(user.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" })
         : "ديسمبر 2025";
 
     // Mock extra user data that isn't in core auth yet (profile details)

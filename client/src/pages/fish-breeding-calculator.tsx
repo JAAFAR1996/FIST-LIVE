@@ -44,6 +44,7 @@ import {
 import { breedingSpecies, type BreedingSpecies, type FryGrowthStage } from "@/data/breeding-data";
 import { toast } from "sonner";
 import { addCsrfHeader } from "@/lib/csrf";
+import { generateBreedingPDF } from "@/lib/pdf-generator";
 
 export default function FishBreedingCalculator() {
   const [selectedSpecies, setSelectedSpecies] = useState<string>("");
@@ -144,63 +145,30 @@ export default function FishBreedingCalculator() {
     }
 
     setIsGeneratingPDF(true);
+    const loadingToast = toast.loading("جاري تحضير ملف PDF...");
 
     try {
-      // Dynamically import jspdf and html2canvas
-      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
-        import('jspdf'),
-        import('html2canvas')
-      ]);
+      const fileName = `breeding-plan-${species.id}-${new Date().toISOString().split('T')[0]}.pdf`;
 
-      // Find the content to capture
-      const element = document.getElementById('breeding-plan-content');
-      if (!element) {
-        throw new Error("لم يتم العثور على محتوى الخطة");
-      }
+      // Use the new PDF generator with better error handling
+      await generateBreedingPDF('breeding-plan-content', fileName);
 
-      toast.info("جاري إنشاء PDF...");
-
-      // Capture the element as canvas
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#0a0a0a',
-        logging: false,
-      });
-
-      // Create PDF
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 10;
-
-      // Add title
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(16);
-      pdf.text(`Breeding Plan - ${species.name}`, pdfWidth / 2, 8, { align: 'center' });
-
-      // Add image
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-
-      // Download
-      pdf.save(`breeding-plan-${species.id}-${new Date().toISOString().split('T')[0]}.pdf`);
-
-      toast.success("تم تحميل الخطة بنجاح!");
+      toast.dismiss(loadingToast);
+      toast.success("✓ تم تحميل الخطة بنجاح!");
 
     } catch (error) {
       console.error('[PDF] Generation error:', error);
-      const errorMessage = error instanceof Error ? error.message : "خطأ غير معروف";
-      toast.error(`فشل في إنشاء PDF: ${errorMessage}`);
+      toast.dismiss(loadingToast);
+
+      let errorMessage = "خطأ غير معروف";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      toast.error(`فشل في إنشاء PDF: ${errorMessage}`, {
+        duration: 5000,
+        description: "تأكد من اختيار النوع وإدخال جميع البيانات"
+      });
     } finally {
       setIsGeneratingPDF(false);
     }
@@ -744,7 +712,7 @@ export default function FishBreedingCalculator() {
                                     <span className="font-bold text-lg">{event.eventAr}</span>
                                     <Badge variant="outline">
                                       <Clock className="h-3 w-3 mr-1" />
-                                      {event.date.toLocaleDateString('ar-IQ')}
+                                      {event.date.toLocaleDateString('en-GB')}
                                     </Badge>
                                   </div>
                                   <p className="text-sm text-muted-foreground">

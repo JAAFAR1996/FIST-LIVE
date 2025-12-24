@@ -110,7 +110,7 @@ export default function FAQ() {
       faqs: [
         {
           question: "ما هي سياسة الإرجاع؟",
-          answer: "يمكنك إرجاع المنتجات خلال 30 يوم من الاستلام بشرط أن تكون في حالتها الأصلية. الأسماك والنباتات الحية غير قابلة للإرجاع."
+          answer: "يمكنك إرجاع المنتجات خلال 7 أيام من الاستلام بشرط أن تكون في حالتها الأصلية. الأسماك والنباتات الحية غير قابلة للإرجاع."
         },
         {
           question: "كيف أطلب إرجاع منتج؟",
@@ -315,8 +315,8 @@ export default function FAQ() {
                     key={category.id}
                     onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-right ${activeCategory === category.id
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
                       }`}
                     data-testid={`button-category-${category.id}`}
                   >

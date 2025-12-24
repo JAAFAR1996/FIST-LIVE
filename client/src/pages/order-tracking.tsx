@@ -97,7 +97,7 @@ export default function OrderTracking() {
 
       const mappedOrder: OrderDetails = {
         orderNumber: data.orderNumber || data.id,
-        orderDate: new Date(data.createdAt).toLocaleDateString("ar-IQ"),
+        orderDate: new Date(data.createdAt).toLocaleDateString("en-GB"),
         estimatedDelivery: "قريباً",
         status: data.status,
         customerName: shippingInfo.name || "عميل",
@@ -117,7 +117,7 @@ export default function OrderTracking() {
             id: "ordered",
             title: "تم استلام الطلب",
             description: "تم استلام طلبك",
-            time: new Date(data.createdAt).toLocaleString("ar-IQ"),
+            time: new Date(data.createdAt).toLocaleString("en-GB"),
             completed: true,
             current: data.status === "pending"
           },
@@ -127,7 +127,7 @@ export default function OrderTracking() {
             description: data.status === "pending" ? "في الانتظار" :
               data.status === "processing" ? "جاري التجهيز" :
                 data.status === "shipped" ? "تم الشحن" : "تم التوصيل",
-            time: new Date().toLocaleString("ar-IQ"),
+            time: new Date().toLocaleString("en-GB"),
             completed: data.status === "delivered",
             current: true // Simplified for now
           }

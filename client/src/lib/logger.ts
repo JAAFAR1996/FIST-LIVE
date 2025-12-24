@@ -74,7 +74,7 @@ const log = (level: LogLevel, message: string, data?: unknown, options?: LogOpti
 
     const emoji = getEmoji(level);
     const method = getConsoleMethod(level);
-    const timestamp = new Date().toLocaleTimeString('ar-IQ');
+    const timestamp = new Date().toLocaleTimeString('en-GB');
 
     if (data !== undefined) {
         console[method](`${emoji} [${timestamp}] ${message}`, data);

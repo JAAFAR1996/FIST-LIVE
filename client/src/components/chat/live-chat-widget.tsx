@@ -139,7 +139,7 @@ export function LiveChatWidget() {
     }, [handleSendMessage]);
 
     const formatTime = (date: Date) => {
-        return date.toLocaleTimeString("ar-IQ", {
+        return date.toLocaleTimeString("en-GB", {
             hour: "2-digit",
             minute: "2-digit"
         });
@@ -231,8 +231,8 @@ export function LiveChatWidget() {
                             >
                                 <div className={`flex items-end gap-2 max-w-[85%] ${message.sender === "user" ? "flex-row-reverse" : ""}`}>
                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${message.sender === "user"
-                                            ? "bg-primary text-white"
-                                            : "bg-cyan-500 text-white"
+                                        ? "bg-primary text-white"
+                                        : "bg-cyan-500 text-white"
                                         }`}>
                                         {message.sender === "user" ? (
                                             <User className="h-4 w-4" />
@@ -241,8 +241,8 @@ export function LiveChatWidget() {
                                         )}
                                     </div>
                                     <div className={`rounded-2xl px-4 py-2 ${message.sender === "user"
-                                            ? "bg-primary text-white rounded-br-sm"
-                                            : "bg-muted rounded-bl-sm"
+                                        ? "bg-primary text-white rounded-br-sm"
+                                        : "bg-muted rounded-bl-sm"
                                         }`}>
                                         <p className="text-sm">{message.content}</p>
                                         <p className={`text-xs mt-1 ${message.sender === "user" ? "text-white/70" : "text-muted-foreground"

@@ -57,7 +57,7 @@ export function WhatsAppWidget() {
                             كيف يمكننا مساعدتك اليوم؟
                         </p>
                         <span className="text-[10px] text-muted-foreground mt-1 block text-left">
-                            {new Date().toLocaleTimeString("ar-IQ", { hour: "2-digit", minute: "2-digit" })}
+                            {new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                     </div>
                 </div>

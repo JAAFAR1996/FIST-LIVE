@@ -169,7 +169,7 @@ export function ReviewList({ productId, className }: ReviewListProps) {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString("ar-IQ", {
+        return date.toLocaleDateString("en-GB", {
             year: "numeric",
             month: "long",
             day: "numeric",

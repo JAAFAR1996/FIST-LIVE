@@ -56,7 +56,7 @@ export function ProfileOrders({ orders, isLoading }: ProfileOrdersProps) {
                                             #{order.id.slice(0, 8)}...
                                         </p>
                                         <p className="text-sm text-muted-foreground">
-                                            {new Date(order.createdAt).toLocaleDateString("ar-IQ")} • {order.items?.length || 0} منتجات
+                                            {new Date(order.createdAt).toLocaleDateString("en-GB")} • {order.items?.length || 0} منتجات
                                         </p>
                                     </div>
                                 </div>

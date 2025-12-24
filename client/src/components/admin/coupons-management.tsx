@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+// Using default English locale for dates
 import {
     Table,
     TableBody,

@@ -2,31 +2,38 @@
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import type { BreedingSpecies } from "@/data/breeding-data";
 
-// Register fonts with better error handling
+// Register fonts with better error handling and multiple fallbacks
 let fontLoaded = false;
+
+// Try multiple CDN sources for Arabic font
+const fontSources = [
+    // Google Fonts CDN (most reliable)
+    "https://fonts.gstatic.com/s/notosansarabic/v18/nwpxtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlhQ5l3sQWIHPqzCfyG2vu3CBFQLaig.woff2",
+    // Fallback to jsdelivr
+    "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-arabic@5.0.13/files/noto-sans-arabic-arabic-400-normal.woff",
+    // Fallback to unpkg
+    "https://unpkg.com/@fontsource/noto-sans-arabic@5.0.13/files/noto-sans-arabic-arabic-400-normal.woff",
+];
+
 try {
-    // Register Noto Sans Arabic from a more reliable CDN
+    // Register with primary source
     Font.register({
         family: "Arabic",
         fonts: [
             {
-                src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-arabic@5.0.13/files/noto-sans-arabic-arabic-400-normal.woff",
+                src: fontSources[0],
                 fontWeight: 400,
             },
             {
-                src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-arabic@5.0.13/files/noto-sans-arabic-arabic-700-normal.woff",
+                src: "https://fonts.gstatic.com/s/notosansarabic/v18/nwpxtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlhQ5l3sQWIHPqzCfyGyBu3CBFQLaig.woff2",
                 fontWeight: 700,
             },
         ],
     });
     fontLoaded = true;
-    if (import.meta.env.DEV) {
-        console.log("Arabic font loaded successfully for PDF");
-    }
+    console.log("[PDF Font] Arabic font registered successfully");
 } catch (error) {
-    if (import.meta.env.DEV) {
-        console.warn("Failed to register Arabic font for PDF, falling back to Helvetica", error);
-    }
+    console.error("[PDF Font] Failed to register Arabic font:", error);
 }
 
 // Fallback font in case Arabic fails

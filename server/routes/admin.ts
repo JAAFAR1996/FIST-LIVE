@@ -133,9 +133,66 @@ export function createAdminRouter(): RouterType {
 
     router.post("/discounts", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const discount = await storage.createDiscount(req.body);
+            const { productId, type, value, startDate, endDate } = req.body;
+
+            // Validate required fields
+            if (!productId || !type || value === undefined || value === "") {
+                res.status(400).json({
+                    message: "الحقول المطلوبة: معرف المنتج، نوع الخصم، والقيمة"
+                });
+                return;
+            }
+
+            // Validate discount type
+            if (!["percentage", "fixed"].includes(type)) {
+                res.status(400).json({
+                    message: "نوع الخصم يجب أن يكون نسبة مئوية أو مبلغ ثابت"
+                });
+                return;
+            }
+
+            // Validate percentage value
+            if (type === "percentage") {
+                const numValue = parseFloat(value);
+                if (isNaN(numValue) || numValue < 0 || numValue > 100) {
+                    res.status(400).json({
+                        message: "النسبة المئوية يجب أن تكون بين 0 و 100"
+                    });
+                    return;
+                }
+            }
+
+            // Verify product exists
+            const product = await storage.getProduct(productId);
+            if (!product) {
+                res.status(400).json({
+                    message: "المنتج غير موجود"
+                });
+                return;
+            }
+
+            // Build discount object with proper date parsing
+            const discountData: Record<string, unknown> = {
+                productId,
+                type,
+                value: value.toString(),
+                isActive: true,
+            };
+
+            // Parse dates if provided
+            if (startDate) {
+                discountData.startDate = new Date(startDate);
+            }
+            if (endDate) {
+                discountData.endDate = new Date(endDate);
+            }
+
+            const discount = await storage.createDiscount(discountData);
             res.status(201).json(discount);
-        } catch (err) { next(err); }
+        } catch (err) {
+            console.error("Discount creation error:", err);
+            next(err);
+        }
     });
 
     router.delete("/discounts/:id", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
