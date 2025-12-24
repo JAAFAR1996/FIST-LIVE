@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Tag, Plus, Trash2, Loader2, Percent } from "lucide-react";
 import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+// Using default English locale for dates
 import { addCsrfHeader } from "@/lib/csrf";
 
 interface Discount {
@@ -58,11 +58,11 @@ export function AdvancedDiscountsTab() {
     // Extract products array from the response
     const products = productsData?.products || [];
 
-    // Discount input interface
+    // Discount input interface - productId is string (UUID), value is string for numeric column
     interface DiscountInput {
-        productId: number;
+        productId: string;
         type: string;
-        value: number;
+        value: string;
         startDate: string;
         endDate?: string;
     }
@@ -75,7 +75,10 @@ export function AdvancedDiscountsTab() {
                 credentials: "include",
                 body: JSON.stringify(discountData),
             });
-            if (!res.ok) throw new Error("Failed to create discount");
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || "Failed to create discount");
+            }
             return res.json();
         },
         onSuccess: () => {
@@ -117,15 +120,18 @@ export function AdvancedDiscountsTab() {
             toast({ title: "الرجاء ملء جميع الحقول المطلوبة", variant: "destructive" });
             return;
         }
+        // productId is already a string (UUID), value should be string for numeric column
         createMutation.mutate({
-            ...newDiscount,
-            productId: parseInt(newDiscount.productId),
-            value: parseFloat(newDiscount.value),
+            productId: newDiscount.productId,
+            type: newDiscount.type,
+            value: newDiscount.value,
+            startDate: newDiscount.startDate,
+            ...(newDiscount.endDate ? { endDate: newDiscount.endDate } : {}),
         });
     };
 
-    const getProductName = (id: number) => {
-        return products?.find((p) => p.id === id)?.name || `المنتج #${id}`;
+    const getProductName = (id: number | string) => {
+        return products?.find((p) => p.id.toString() === id.toString())?.name || `المنتج #${id}`;
     };
 
     if (isLoading) {
@@ -255,11 +261,11 @@ export function AdvancedDiscountsTab() {
                                         {discount.type === "percentage" ? `${discount.value}%` : discount.value}
                                     </TableCell>
                                     <TableCell>
-                                        {format(new Date(discount.startDate), "dd/MM/yyyy HH:mm", { locale: ar })}
+                                        {format(new Date(discount.startDate), "dd/MM/yyyy HH:mm")}
                                     </TableCell>
                                     <TableCell>
                                         {discount.endDate ? (
-                                            format(new Date(discount.endDate), "dd/MM/yyyy HH:mm", { locale: ar })
+                                            format(new Date(discount.endDate), "dd/MM/yyyy HH:mm")
                                         ) : (
                                             <span className="text-muted-foreground">دائم</span>
                                         )}

@@ -188,6 +188,43 @@ export class SecurityStorage {
         return true;
     }
 
+    // Get block info with expiry time for countdown timer
+    async getBlockInfo(ipAddress: string): Promise<{ isBlocked: boolean; expiresAt: Date | null; remainingSeconds: number } | null> {
+        const db = this.ensureDb();
+
+        const [blocked] = await db
+            .select()
+            .from(blockedIPs)
+            .where(
+                and(
+                    eq(blockedIPs.ipAddress, ipAddress),
+                    eq(blockedIPs.isActive, true)
+                )
+            )
+            .limit(1);
+
+        if (!blocked) return null;
+
+        // Check if block has expired
+        if (blocked.expiresAt && blocked.expiresAt < new Date()) {
+            // Unblock expired IP
+            await db.update(blockedIPs)
+                .set({ isActive: false })
+                .where(eq(blockedIPs.id, blocked.id));
+            return null;
+        }
+
+        const remainingSeconds = blocked.expiresAt
+            ? Math.max(0, Math.ceil((blocked.expiresAt.getTime() - Date.now()) / 1000))
+            : 0;
+
+        return {
+            isBlocked: true,
+            expiresAt: blocked.expiresAt,
+            remainingSeconds
+        };
+    }
+
     // Get all blocked IPs
     async getBlockedIPs(): Promise<BlockedIP[]> {
         const db = this.ensureDb();

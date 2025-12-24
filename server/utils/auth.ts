@@ -21,11 +21,20 @@ export function verifyPassword(password: string, stored: string) {
         // Ignore scrypt errors, proceed to fallback
     }
 
-    // 2. Try PBKDF2 (Legacy) - Fallback
+    // 2. Try PBKDF2 with 15000 iterations (used by admin scripts)
     try {
-        // Attempt standard defaults which were likely used
-        const checkLegacy = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
-        if (crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(checkLegacy, "hex"))) {
+        const checkLegacy15k = crypto.pbkdf2Sync(password, salt, 15000, 64, "sha512").toString("hex");
+        if (crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(checkLegacy15k, "hex"))) {
+            return true;
+        }
+    } catch (e) {
+        // Ignore errors, proceed to next fallback
+    }
+
+    // 3. Try PBKDF2 with 1000 iterations (very old legacy passwords)
+    try {
+        const checkLegacy1k = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
+        if (crypto.timingSafeEqual(Buffer.from(digest, "hex"), Buffer.from(checkLegacy1k, "hex"))) {
             return true;
         }
     } catch (e) {

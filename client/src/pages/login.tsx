@@ -34,7 +34,28 @@ export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [blockCountdown, setBlockCountdown] = useState<number | null>(null);
 
+    // Countdown timer effect
+    useEffect(() => {
+        if (blockCountdown && blockCountdown > 0) {
+            const timer = setInterval(() => {
+                setBlockCountdown(prev => {
+                    if (prev && prev > 1) return prev - 1;
+                    setError(""); // Clear error when countdown ends
+                    return null;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [blockCountdown]);
+
+    // Format seconds to MM:SS
+    const formatCountdown = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,6 +72,10 @@ export default function Login() {
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "فشل تسجيل الدخول. يرجى التحقق من البيانات.";
             setError(message);
+            // Check for IP blocking countdown
+            if (err && typeof err === 'object' && 'retryAfter' in err) {
+                setBlockCountdown((err as any).retryAfter);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -97,7 +122,14 @@ export default function Login() {
                             {error && (
                                 <Alert variant="destructive">
                                     <AlertCircle className="h-4 w-4" />
-                                    <AlertDescription>{error}</AlertDescription>
+                                    <AlertDescription>
+                                        {error}
+                                        {blockCountdown && blockCountdown > 0 && (
+                                            <div className="mt-2 font-bold text-lg">
+                                                ⏳ يمكنك المحاولة مرة أخرى خلال {formatCountdown(blockCountdown)}
+                                            </div>
+                                        )}
+                                    </AlertDescription>
                                 </Alert>
                             )}
 
@@ -161,7 +193,7 @@ export default function Login() {
                                     </Label>
                                 </div>
 
-                                <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
+                                <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading || (blockCountdown !== null && blockCountdown > 0)}>
                                     {isLoading ? (
                                         <span className="flex items-center gap-2">
                                             <Loader2 className="w-5 h-5 animate-spin" />

@@ -439,7 +439,7 @@ export default function ProductDetails() {
                         </div>
                         <div>
                           <p className="text-sm font-medium">إرجاع سهل</p>
-                          <p className="text-xs text-muted-foreground">خلال 10 أيام</p>
+                          <p className="text-xs text-muted-foreground">خلال 7 أيام</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -649,7 +649,7 @@ export default function ProductDetails() {
                     <div>
                       <h4 className="font-semibold mb-2">سياسة الإرجاع</h4>
                       <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                        <li>يمكن إرجاع المنتج خلال 14 يوم من تاريخ الاستلام</li>
+                        <li>يمكن إرجاع المنتج خلال 7 أيام من تاريخ الاستلام</li>
                         <li>يجب أن يكون المنتج في حالته الأصلية مع العبوة</li>
                         <li>يتم استرداد المبلغ كاملاً في حالة عيب المنتج</li>
                         <li>رسوم الشحن غير قابلة للاسترداد في حالة تغيير الرأي</li>

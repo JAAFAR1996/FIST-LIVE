@@ -76,7 +76,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "فشل تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.");
+        // Create enhanced error with retry info for IP blocking
+        const enhancedError = new Error(error.message || "فشل تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.");
+        if (response.status === 429 && error.retryAfter) {
+          (enhancedError as any).retryAfter = error.retryAfter;
+          (enhancedError as any).expiresAt = error.expiresAt;
+        }
+        throw enhancedError;
       }
 
       const userData = await response.json();

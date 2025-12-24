@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,8 +13,30 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [blockCountdown, setBlockCountdown] = useState<number | null>(null);
   const { login } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (blockCountdown && blockCountdown > 0) {
+      const timer = setInterval(() => {
+        setBlockCountdown(prev => {
+          if (prev && prev > 1) return prev - 1;
+          setError("");
+          return null;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [blockCountdown]);
+
+  // Format seconds to MM:SS
+  const formatCountdown = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +49,10 @@ export default function AdminLogin() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "فشل تسجيل الدخول. تحقق من البريد الإلكتروني وكلمة المرور.";
       setError(message);
+      // Check for IP blocking countdown
+      if (err && typeof err === 'object' && 'retryAfter' in err) {
+        setBlockCountdown((err as any).retryAfter);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +81,14 @@ export default function AdminLogin() {
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription>
+                    {error}
+                    {blockCountdown && blockCountdown > 0 && (
+                      <div className="mt-2 font-bold text-lg">
+                        ⏳ يمكنك المحاولة مرة أخرى خلال {formatCountdown(blockCountdown)}
+                      </div>
+                    )}
+                  </AlertDescription>
                 </Alert>
               )}
 
@@ -92,7 +125,7 @@ export default function AdminLogin() {
               <Button
                 type="submit"
                 className="w-full text-lg h-12"
-                disabled={isLoading}
+                disabled={isLoading || (blockCountdown !== null && blockCountdown > 0)}
               >
                 {isLoading ? "جاري التحقق..." : "تسجيل الدخول"}
               </Button>

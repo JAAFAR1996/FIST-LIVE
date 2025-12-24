@@ -99,11 +99,15 @@ export function createUserRouter(): RouterType {
 
             const user = await storage.getUserByEmail(email);
 
-            // Check if IP is blocked
+            // Check if IP is blocked - return countdown info if blocked
             try {
-                const isBlocked = await securityStorage.isIPBlocked(ipAddress);
-                if (isBlocked) {
-                    res.status(429).json({ message: "تم حظر عنوان IP الخاص بك مؤقتاً بسبب محاولات دخول متعددة فاشلة" });
+                const blockInfo = await securityStorage.getBlockInfo(ipAddress);
+                if (blockInfo?.isBlocked) {
+                    res.status(429).json({
+                        message: "تم حظر عنوان IP الخاص بك مؤقتاً بسبب محاولات دخول متعددة فاشلة",
+                        retryAfter: blockInfo.remainingSeconds,
+                        expiresAt: blockInfo.expiresAt?.toISOString()
+                    });
                     return;
                 }
             } catch (blockErr) {

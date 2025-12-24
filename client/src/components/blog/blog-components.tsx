@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+// Using default English locale for dates
 import {
     Calendar,
     Clock,
@@ -106,9 +106,7 @@ export function BlogCard({ article, featured = false }: BlogCardProps) {
                         <div className="flex items-center gap-3">
                             <span className="flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
-                                {format(new Date(article.publishedAt), "d MMM yyyy", {
-                                    locale: ar,
-                                })}
+                                {format(new Date(article.publishedAt), "d MMM yyyy")}
                             </span>
                             <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />

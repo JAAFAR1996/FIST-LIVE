@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+// Using default English locale for dates
 import { FileText, Loader2, User, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -203,7 +203,7 @@ export function AuditLogsTab() {
                                         <ChangesDisplay changes={log.changes} />
                                     </TableCell>
                                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                                        {format(new Date(log.createdAt), "dd MMM yyyy, HH:mm", { locale: ar })}
+                                        {format(new Date(log.createdAt), "dd MMM yyyy, HH:mm")}
                                     </TableCell>
                                 </TableRow>
                             ))}
