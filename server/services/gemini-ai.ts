@@ -1,10 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Validate API Key
+if (!process.env.GEMINI_API_KEY) {
+    console.warn("⚠️ GEMINI_API_KEY is not set in environment variables");
+}
+
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// Get the model
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// Get the model - Using Gemini 2.5 Flash (stable release June 2025)
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Advanced System Prompt - E-commerce Chatbot Best Practices 2025
 const createSystemPrompt = (userName?: string, context?: ChatContext) => {
@@ -115,19 +120,28 @@ export async function sendMessage(
 
         return text;
     } catch (error) {
-        console.error("Gemini AI Error:", error);
+        console.error("Gemini AI Error Details:", {
+            message: error instanceof Error ? error.message : "Unknown error",
+            stack: error instanceof Error ? error.stack : undefined,
+            fullError: error,
+        });
 
         // Handle specific errors
         if (error instanceof Error) {
-            if (error.message.includes("API_KEY")) {
+            if (error.message.includes("API_KEY") || error.message.includes("API key")) {
                 throw new Error("مفتاح API غير صالح");
             }
-            if (error.message.includes("RATE_LIMIT")) {
+            if (error.message.includes("RATE_LIMIT") || error.message.includes("quota")) {
                 throw new Error("تم تجاوز حد الطلبات، حاول لاحقاً");
             }
+            if (error.message.includes("SAFETY")) {
+                throw new Error("تم حظر الرسالة لأسباب أمنية");
+            }
+            // Return the actual error message for debugging
+            throw new Error(`خطأ في الذكاء الاصطناعي: ${error.message}`);
         }
 
-        throw new Error("حدث خطأ في الذكاء الاصطناعي");
+        throw new Error("حدث خطأ غير متوقع في الذكاء الاصطناعي");
     }
 }
 
