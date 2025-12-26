@@ -1,0 +1,57 @@
+/**
+ * Navbar Component Tests
+ */
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
+
+vi.mock('wouter', () => ({
+    useLocation: () => ['/', vi.fn()],
+    Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+        <a href={href}>{children}</a>
+    ),
+}));
+
+vi.mock('@/contexts/cart-context', () => ({
+    useCart: () => ({ items: [{ id: '1', quantity: 2 }], itemCount: 2 })
+}));
+
+vi.mock('@/contexts/auth-context', () => ({
+    useAuth: () => ({ user: null, isAuthenticated: false, isLoading: false })
+}));
+
+vi.mock('@/contexts/wishlist-context', () => ({
+    useWishlist: () => ({ items: [], itemCount: 0 })
+}));
+
+import Navbar from '@/components/navbar';
+
+const createWrapper = () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return ({ children }: { children: React.ReactNode }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+};
+
+describe('Navbar Component', () => {
+    beforeEach(() => vi.clearAllMocks());
+    afterEach(() => vi.restoreAllMocks());
+
+    it('should render navbar', () => {
+        render(<Navbar />, { wrapper: createWrapper() });
+        expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+
+    it('should have navigation links', () => {
+        render(<Navbar />, { wrapper: createWrapper() });
+        const links = screen.queryAllByRole('link');
+        expect(links.length).toBeGreaterThan(0);
+    });
+
+    it('should have interactive buttons', () => {
+        render(<Navbar />, { wrapper: createWrapper() });
+        const buttons = screen.queryAllByRole('button');
+        expect(buttons.length).toBeGreaterThan(0);
+    });
+});

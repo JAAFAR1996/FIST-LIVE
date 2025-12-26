@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراجعة ميزات AQUAVO - Features Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-box.keep .number {
+            color: #22c55e;
+        }
+
+        .stat-box.unused .number {
+            color: #f59e0b;
+        }
+
+        .stat-box.delete .number {
+            color: #ef4444;
+        }
+
+        .category {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-header:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .category-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .category-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .category.open .category-content {
+            display: block;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .feature-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .feature-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .feature-path {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+
+        .feature-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .option-btn.keep {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 2px solid transparent;
+        }
+
+        .option-btn.keep:hover,
+        .option-btn.keep.active {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .option-btn.unused {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 2px solid transparent;
+        }
+
+        .option-btn.unused:hover,
+        .option-btn.unused.active {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .option-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 2px solid transparent;
+        }
+
+        .option-btn.delete:hover,
+        .option-btn.delete.active {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .actions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn.export {
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            color: #fff;
+        }
+
+        .action-btn.export:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn.reset {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .category.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .quick-btn.all-keep {
+            background: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .quick-btn.all-unused {
+            background: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+
+        .quick-btn.expand {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .feature {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .feature-options {
+                justify-content: center;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .stat-box {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🦐 مراجعة ميزات AQUAVO</h1>
+        <p class="subtitle">راجع كل ميزة واختر: ✅ موجودة | ⚠️ غير مستعملة | 🗑️ حذف</p>
+
+        <div class="stats">
+            <div class="stat-box keep">
+                <div class="number" id="keepCount">0</div>
+                <div>✅ موجودة</div>
+            </div>
+            <div class="stat-box unused">
+                <div class="number" id="unusedCount">0</div>
+                <div>⚠️ غير مستعملة</div>
+            </div>
+            <div class="stat-box delete">
+                <div class="number" id="deleteCount">0</div>
+                <div>🗑️ للحذف</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-btn expand" onclick="toggleAllCategories()">📂 فتح/إغلاق الكل</button>
+            <button class="quick-btn all-keep" onclick="setAllInCategory('keep')">✅ تحديد الكل موجودة</button>
+            <button class="quick-btn all-unused" onclick="setAllInCategory('unused')">⚠️ تحديد الكل غير مستعملة</button>
+        </div>
+
+        <div id="features-container"></div>
+    </div>
+
+    <div class="actions">
+        <button class="action-btn reset" onclick="resetAll()">🔄 إعادة تعيين</button>
+        <button class="action-btn export" onclick="exportResults()">📤 تصدير النتائج</button>
+    </div>
+
+    <script>
+        const features = {
+            "📦 الصفحات - Pages": [
+                { name: "الصفحة الرئيسية", path: "pages/home.tsx", desc: "🏠 الصفحة الأولى التي يراها الزائر - تحتوي على البانر الرئيسي، المنتجات المميزة، آراء العملاء، وروابط للأقسام المختلفة" },
+                { name: "المنتجات", path: "pages/products.tsx", desc: "🛍️ صفحة عرض جميع المنتجات مع إمكانية الفلترة حسب الفئة والسعر والتقييم، والترتيب حسب الأحدث أو الأرخص" },
+                { name: "تفاصيل المنتج", path: "pages/product-details.tsx", desc: "📋 صفحة تفاصيل منتج واحد - الصور، الوصف، السعر، المراجعات، منتجات مشابهة، زر الإضافة للسلة" },
+                { name: "السلة", path: "pages/cart.tsx", desc: "🛒 صفحة عرض المنتجات المضافة للسلة مع إمكانية تعديل الكميات وإدخال كوبون الخصم" },
+                { name: "صفحة المقارنة", path: "pages/compare.tsx", desc: "⚖️ مقارنة بين منتجين أو أكثر جنباً إلى جنب لمساعدة العميل في الاختيار" },
+                { name: "المفضلة", path: "pages/wishlist.tsx", desc: "❤️ قائمة المنتجات التي حفظها المستخدم للشراء لاحقاً" },
+                { name: "نتائج البحث", path: "pages/search-results.tsx", desc: "🔍 صفحة نتائج البحث عن منتجات أو أسماك أو مقالات مع فلاتر متقدمة" },
+                { name: "تسجيل الدخول", path: "pages/login.tsx", desc: "🔐 صفحة تسجيل دخول المستخدم بالإيميل وكلمة المرور" },
+                { name: "التسجيل", path: "pages/register.tsx", desc: "📝 صفحة إنشاء حساب جديد للمستخدم مع التحقق من البيانات" },
+                { name: "نسيت كلمة المرور", path: "pages/forgot-password.tsx", desc: "🔑 صفحة طلب رابط إعادة تعيين كلمة المرور عبر الإيميل" },
+                { name: "إعادة تعيين كلمة المرور", path: "pages/reset-password.tsx", desc: "🔄 صفحة إدخال كلمة مرور جديدة بعد استلام رابط الإعادة" },
+                { name: "الملف الشخصي", path: "pages/profile.tsx", desc: "👤 صفحة بيانات المستخدم - الاسم، الإيميل، العنوان، سجل الطلبات، نقاط الولاء" },
+                { name: "تأكيد الطلب", path: "pages/order-confirmation.tsx", desc: "✅ صفحة شكراً بعد إتمام الطلب مع رقم الطلب وتفاصيله" },
+                { name: "تتبع الطلب", path: "pages/order-tracking.tsx", desc: "📦 صفحة تتبع حالة الطلب (قيد التجهيز، تم الشحن، تم التسليم)" },
+                { name: "المدونة", path: "pages/blog.tsx", desc: "📰 صفحة عرض جميع مقالات المدونة مع فلترة حسب الفئة" },
+                { name: "مقال المدونة", path: "pages/blog-post.tsx", desc: "📄 صفحة عرض مقال واحد كامل مع المقالات المرتبطة" },
+                { name: "العروض", path: "pages/deals.tsx", desc: "🏷️ صفحة العروض والتخفيضات الخاصة مع عداد تنازلي" },
+                { name: "الأسئلة الشائعة", path: "pages/faq.tsx", desc: "❓ صفحة الأسئلة المتكررة مع إجاباتها ونموذج تواصل" },
+                { name: "معرض المجتمع", path: "pages/community-gallery.tsx", desc: "🖼️ معرض صور أحواض العملاء مع إمكانية الإعجاب والمسابقات" },
+                { name: "الرحلة", path: "pages/journey.tsx", desc: "🚀 معالج تفاعلي من 13 خطوة لمساعدة المبتدئين في إنشاء حوض أسماك" },
+                { name: "الحاسبات", path: "pages/calculators.tsx", desc: "🧮 صفحة تجميع كل الحاسبات (حجم الحوض، الفلتر، السخان، الملح)" },
+                { name: "موسوعة الأسماك", path: "pages/fish-encyclopedia.tsx", desc: "🐟 موسوعة شاملة لأنواع الأسماك مع معلومات الرعاية والتوافق" },
+                { name: "حاسبة التربية", path: "pages/fish-breeding-calculator.tsx", desc: "🥚 حاسبة تربية الأسماك مع جدول زمني وتصدير PDF" },
+                { name: "تشخيص صحة الأسماك", path: "pages/fish-health-diagnosis.tsx", desc: "🩺 أداة ذكاء اصطناعي لتشخيص أمراض الأسماك من الصور" },
+                { name: "باحث الأسماك", path: "pages/fish-finder.tsx", desc: "🔎 أداة للبحث عن الأسماك المناسبة (قيد التطوير - Coming Soon)" },
+                { name: "دليل البيئة", path: "pages/guides-eco-friendly.tsx", desc: "🌿 دليل شامل للعناية بالحوض (دورة النيتروجين، الصيانة، حل المشاكل)" },
+                { name: "الاستدامة", path: "pages/sustainability.tsx", desc: "♻️ صفحة عن التزام الشركة بالبيئة والاستدامة" },
+                { name: "سياسة الخصوصية", path: "pages/privacy-policy.tsx", desc: "🔒 صفحة قانونية توضح كيفية جمع واستخدام بيانات المستخدمين" },
+                { name: "الشروط والأحكام", path: "pages/terms.tsx", desc: "📜 صفحة قانونية لشروط استخدام الموقع" },
+                { name: "سياسة الإرجاع", path: "pages/return-policy.tsx", desc: "↩️ صفحة توضح سياسة إرجاع المنتجات والاستبدال" },
+                { name: "الشحن", path: "pages/shipping.tsx", desc: "🚚 صفحة معلومات الشحن والتوصيل والمناطق المتاحة" },
+                { name: "صفحة 404", path: "pages/404.tsx", desc: "❌ صفحة الخطأ عند عدم وجود الصفحة المطلوبة" },
+                { name: "لوحة الأدمن", path: "pages/admin-dashboard.tsx", desc: "⚙️ لوحة تحكم المدير لإدارة المنتجات والطلبات والعملاء" },
+                { name: "تسجيل دخول الأدمن", path: "pages/admin-login.tsx", desc: "🔐 صفحة تسجيل دخول خاصة بالمدير" }
+            ],
+            "🎨 المكونات الأساسية - Core Components": [
+                { name: "شريط التنقل", path: "components/navbar.tsx", desc: "📌 شريط التنقل العلوي - يحتوي على الشعار، روابط الصفحات، أيقونة السلة والمفضلة، وزر تسجيل الدخول" },
+                { name: "الفوتر", path: "components/footer.tsx", desc: "🦶 الجزء السفلي من الموقع - روابط سريعة، معلومات التواصل، روابط السوشيال ميديا، حقوق النشر" },
+                { name: "حدود الأخطاء", path: "components/error-boundary.tsx", desc: "🛡️ مكون حماية يظهر رسالة خطأ ودية بدلاً من تعطل الصفحة عند حدوث خطأ برمجي" },
+                { name: "زر العودة للأعلى", path: "components/back-to-top.tsx", desc: "⬆️ زر يظهر عند التمرير للأسفل للعودة لأعلى الصفحة بنقرة واحدة" }
+            ],
+            "🦐 روبيان أكوافو - Aquavo Shrimp": [
+                { name: "هجوم الطحالب", path: "components/aquavo-shrimp/AlgaeAttack.tsx", desc: "🌿 تأثير ترفيهي - طحالب تظهر على الشاشة عند ترك الموقع بدون تفاعل لفترة، والروبيان ينظفها" },
+                { name: "شخصية السلة", path: "components/aquavo-shrimp/CartMascot.tsx", desc: "🦐 روبيان يتطور حسب قيمة السلة - يبدأ صغير ويكبر كلما أضفت منتجات أكثر (Gamification)" },
+                { name: "حدث الروبيان الذهبي", path: "components/aquavo-shrimp/GoldenShrimpEvent.tsx", desc: "🏆 فعالية عشوائية - روبيان ذهبي يظهر فجأة ويمكن الفوز بكوبون خصم عند النقر عليه" },
+                { name: "شخصية الروبيان", path: "components/aquavo-shrimp/ShrimpCharacter.tsx", desc: "🎭 إعدادات شخصيات الروبيان المختلفة (يرقة، مراهق، زعيم، حوت) ورسائلها" },
+                { name: "ماسكوت الروبيان", path: "components/gamification/shrimp-mascot.tsx", desc: "😊 روبيان بمزاجات مختلفة (سعيد، حزين، مفكر، متحمس) يظهر في صفحات مختلفة برسائل مضحكة" }
+            ],
+            "✨ المؤثرات البصرية - Visual Effects": [
+                { name: "أثر الفقاعات", path: "components/effects/bubble-trail.tsx", desc: "🫧 فقاعات تتبع حركة الماوس أثناء التنقل في الموقع - تأثير جمالي مائي" },
+                { name: "زر الإجراء العائم", path: "components/effects/floating-action-button.tsx", desc: "🔘 زر عائم في زاوية الشاشة (مثل زر واتساب أو الدردشة)" },
+                { name: "العنصر العائم", path: "components/effects/floating-element.tsx", desc: "🎈 تحريك عناصر بشكل عائم (مثل أيقونات أو صور تتحرك ببطء)" },
+                { name: "سحر الصور الحية", path: "components/effects/live-photo-magic.tsx", desc: "✨ تأثيرات على صور المنتجات عند مرور الماوس - فقاعات وتموجات وعناصر عائمة" },
+                { name: "نص البارالاكس", path: "components/effects/parallax-text.tsx", desc: "📜 نص يتحرك بسرعة مختلفة عند التمرير لإعطاء تأثير عمق ثلاثي الأبعاد" },
+                { name: "شريط التقدم", path: "components/effects/scroll-progress.tsx", desc: "📊 شريط في أعلى الصفحة يوضح نسبة التمرير في الصفحة" },
+                { name: "تأثير السبوتلايت", path: "components/effects/spotlight-effect.tsx", desc: "💡 تأثير إضاءة يتبع الماوس لتسليط الضوء على المنتجات المميزة" },
+                { name: "زر تموج الماء", path: "components/effects/water-ripple-button.tsx", desc: "🌊 تأثير تموج مائي عند النقر على الأزرار - يبدأ من نقطة النقر" },
+                { name: "تأثير موجة التمرير", path: "components/effects/wave-scroll-effect.tsx", desc: "🌊 موجات متحركة تفصل بين أقسام الصفحة أثناء التمرير" }
+            ],
+            "🐟 مكونات الأسماك - Fish Components": [
+                { name: "تصدير PDF التربية", path: "components/fish/breeding-pdf.tsx", desc: "📄 توليد ملف PDF يحتوي خطة تربية الأسماك المحسوبة مع الجدول الزمني" },
+                { name: "بطاقة السمكة", path: "components/fish/fish-card.tsx", desc: "🎴 بطاقة عرض معلومات سمكة واحدة (الصورة، الاسم، مستوى الصعوبة، درجة الحرارة)" },
+                { name: "أداة مقارنة الأسماك", path: "components/fish/fish-comparison-tool.tsx", desc: "⚖️ جدول مقارنة بين عدة أسماك لمعرفة التوافق وظروف الرعاية" },
+                { name: "شارة التوافق", path: "components/fish/fish-compatibility-badge.tsx", desc: "✅ شارة ملونة توضح هل السمكتين متوافقتين للعيش معاً أم لا" },
+                { name: "نافذة تفاصيل السمكة", path: "components/fish/fish-detail-modal.tsx", desc: "📋 نافذة منبثقة تعرض كل معلومات السمكة (الغذاء، الحجم، السلوك، التربية)" }
+            ],
+            "🧮 الحاسبات - Calculators": [
+                { name: "حاسبة الفلتر", path: "components/calculators/filter-calculator.tsx", desc: "🔧 حساب قوة الفلتر المطلوبة حسب حجم الحوض وعدد الأسماك" },
+                { name: "حاسبة السخان", path: "components/calculators/heater-calculator.tsx", desc: "🌡️ حساب قوة السخان المطلوبة (واط) حسب حجم الحوض ودرجة الحرارة المطلوبة" },
+                { name: "حاسبة الصيانة", path: "components/calculators/maintenance-calculator.tsx", desc: "📅 جدول مهام الصيانة (تغيير الماء، تنظيف الفلتر، فحص المعايير) يومي/أسبوعي/شهري" },
+                { name: "حاسبة الملح", path: "components/calculators/salt-calculator.tsx", desc: "🧂 حساب كمية الملح المطلوبة لأحواض المياه المالحة حسب الحجم والملوحة" },
+                { name: "حاسبة حجم الحوض", path: "components/calculators/tank-size-calculator.tsx", desc: "📏 حساب السعة اللترية للحوض وعدد الأسماك المناسب حسب الأبعاد" }
+            ],
+            "🛒 السلة والدفع - Cart & Checkout": [
+                { name: "نافذة الدفع", path: "components/cart/checkout-dialog.tsx", desc: "💳 نافذة إتمام الطلب - إدخال العنوان، اختيار طريقة الدفع، ملخص الطلب" },
+                { name: "نافذة الفاتورة", path: "components/cart/invoice-dialog.tsx", desc: "🧾 عرض وطباعة الفاتورة بتفاصيل الطلب والمنتجات والأسعار" }
+            ],
+            "💬 الدردشة والتواصل - Chat": [
+                { name: "ويدجت الدردشة الحية", path: "components/chat/live-chat-widget.tsx", desc: "💬 نافذة دردشة مباشرة مع الدعم الفني - إرسال رسائل والحصول على ردود" }
+            ],
+            "🖼️ المعرض - Gallery": [
+                { name: "تأثير الاحتفال", path: "components/gallery/celebration-overlay.tsx", desc: "🎉 تأثير احتفالي (كونفيتي وألعاب نارية) عند فوز المستخدم بجائزة المعرض" },
+                { name: "شبكة المعرض", path: "components/gallery/masonry-gallery-grid.tsx", desc: "🖼️ عرض صور المعرض بتنسيق Masonry (صور بأحجام مختلفة متراصة بشكل جميل)" }
+            ],
+            "🏠 الصفحة الرئيسية - Home Components": [
+                { name: "أنماط الأكواسكيب", path: "components/home/aquascape-styles.tsx", desc: "🌿 قسم يعرض أنماط تصميم الأحواض (طبيعي، هولندي، إيواغومي، البركة) مع صور" },
+                { name: "قسم الفئات", path: "components/home/category-section.tsx", desc: "📂 عرض فئات المنتجات الرئيسية بأيقونات وصور جذابة للتنقل السريع" },
+                { name: "الهيرو المصغر", path: "components/home/minimal-hero.tsx", desc: "🎬 البانر الرئيسي في أعلى الصفحة - صورة كبيرة مع عنوان وزر الشراء" },
+                { name: "منتج الأسبوع", path: "components/home/product-of-week.tsx", desc: "⭐ قسم يبرز منتج مميز كل أسبوع مع خصم خاص" },
+                { name: "الشهادات", path: "components/home/testimonials.tsx", desc: "💬 آراء وتقييمات العملاء السابقين مع صورهم وتجاربهم" }
+            ],
+            "🚀 الرحلة - Journey Components": [
+                { name: "إعداد الديكور", path: "components/journey/decoration-setup.tsx", desc: "🪨 خطوة اختيار الديكور للحوض (صخور، نباتات، خشب، رمل)" },
+                { name: "اختيار المعدات", path: "components/journey/equipment-selection.tsx", desc: "🔧 خطوة اختيار المعدات (فلتر، سخان، إضاءة، مضخة هواء)" },
+                { name: "اختيار الأسماك", path: "components/journey/fish-selection.tsx", desc: "🐠 خطوة اختيار الأسماك المناسبة مع فحص التوافق" },
+                { name: "شريط التقدم", path: "components/journey/journey-progress.tsx", desc: "📊 شريط يوضح الخطوة الحالية من أصل 13 خطوة في الرحلة" },
+                { name: "ملخص الرحلة", path: "components/journey/journey-summary.tsx", desc: "📋 الخطوة الأخيرة - ملخص كل الاختيارات مع التكلفة الإجمالية وخيار الحفظ" },
+                { name: "إعداد الموقع", path: "components/journey/location-setup.tsx", desc: "📍 خطوة تحديد موقع الحوض في المنزل (غرفة المعيشة، المكتب، إلخ)" },
+                { name: "جدول الصيانة", path: "components/journey/maintenance-schedule.tsx", desc: "📅 خطوة إنشاء جدول صيانة مخصص للحوض" },
+                { name: "دورة النيتروجين", path: "components/journey/nitrogen-cycle.tsx", desc: "🔬 شرح تفاعلي لدورة النيتروجين قبل إضافة الأسماك (أمونيا > نيتريت > نيترات)" },
+                { name: "عرض الخطة المحفوظة", path: "components/journey/saved-plan-view.tsx", desc: "💾 عرض وتحميل ومشاركة خطط الأحواض المحفوظة سابقاً" },
+                { name: "اختيار الحوض", path: "components/journey/tank-selection.tsx", desc: "🏠 خطوة اختيار حجم وشكل الحوض (مستطيل، مكعب، زاوية)" },
+                { name: "معايير المياه", path: "components/journey/water-parameters.tsx", desc: "💧 خطوة إدخال معايير المياه المطلوبة (درجة الحرارة، pH، عسورة)" }
+            ],
+            "📦 مكونات المنتجات - Product Components": [
+                { name: "شريط التصنيفات", path: "components/products/category-scroll-bar.tsx", desc: "📂 شريط أفقي قابل للتمرير يعرض فئات المنتجات مع أيقونات" },
+                { name: "شريط الفلاتر", path: "components/products/filter-bar.tsx", desc: "🔍 شريط فلترة المنتجات (الترتيب، السعر، الفئة) على الديسكتوب" },
+                { name: "نافذة الفلاتر", path: "components/products/filter-modal.tsx", desc: "📱 نافذة فلترة المنتجات على الموبايل - تفتح بزر منفصل" },
+                { name: "معاً بشكل متكرر", path: "components/products/frequently-bought-together.tsx", desc: "🛒 قسم 'يُشترى معاً كثيراً' - منتجات مكملة مع خصم عند شراء الكل" },
+                { name: "بطاقة المنتج", path: "components/products/product-card.tsx", desc: "🎴 بطاقة منتج واحد (الصورة، الاسم، السعر، التقييم، أزرار السلة والمفضلة)" },
+                { name: "زر الشراء", path: "components/products/product-cta.tsx", desc: "🛒 قسم السعر والكمية وزر 'أضف للسلة' في صفحة تفاصيل المنتج" },
+                { name: "معرض الصور", path: "components/products/product-gallery.tsx", desc: "🖼️ معرض صور المنتج مع إمكانية التكبير والتنقل بين الصور" },
+                { name: "جدول المواصفات", path: "components/products/product-specifications.tsx", desc: "📋 جدول مواصفات المنتج (الأبعاد، المادة، اللون، البراند)" },
+                { name: "نافذة العرض السريع", path: "components/products/quick-view-modal.tsx", desc: "👁️ نافذة منبثقة لعرض تفاصيل المنتج بدون الانتقال لصفحة أخرى" }
+            ],
+            "👤 الملف الشخصي - Profile Components": [
+                { name: "برنامج الولاء", path: "components/profile/profile-loyalty.tsx", desc: "🏆 قسم نقاط الولاء - المستوى الحالي (برونز/فضي/ذهبي)، النقاط، الفوائد" },
+                { name: "برنامج الإحالة", path: "components/profile/profile-referral.tsx", desc: "👥 قسم الإحالة - كود الإحالة، رابط المشاركة، عدد المحالين، النقاط المكتسبة" }
+            ],
+            "⭐ المراجعات - Reviews Components": [
+                { name: "النجوم التفاعلية", path: "components/reviews/interactive-rating-stars.tsx", desc: "⭐ نجوم تفاعلية لإدخال التقييم عند كتابة مراجعة (1-5 نجوم)" },
+                { name: "توزيع التقييم", path: "components/reviews/rating-breakdown.tsx", desc: "📊 رسم بياني يوضح توزيع التقييمات (كم 5 نجوم، كم 4، إلخ)" },
+                { name: "بطاقة المراجعة", path: "components/reviews/review-card.tsx", desc: "💬 عرض مراجعة واحدة (اسم المراجع، التاريخ، النص، الصور، زر مفيد)" },
+                { name: "قائمة المراجعات", path: "components/reviews/review-list.tsx", desc: "📃 عرض كل المراجعات مع ترقيم الصفحات وخيارات الترتيب" },
+                { name: "رفع الوسائط", path: "components/reviews/review-media-upload.tsx", desc: "📷 رفع صور أو فيديو مع المراجعة لإثبات التجربة" }
+            ],
+            "🔍 البحث - Search Components": [
+                { name: "الإكمال التلقائي", path: "components/search/autocomplete-suggestions.tsx", desc: "💡 اقتراحات البحث التلقائية أثناء الكتابة (منتجات، أسماك، مقالات)" },
+                { name: "البحث العالمي", path: "components/search/global-search.tsx", desc: "🔍 مكون البحث الرئيسي الذي يبحث في كل أقسام الموقع" },
+                { name: "الفلاتر المتقدمة", path: "components/search/product-filters-advanced.tsx", desc: "⚙️ فلاتر متقدمة للبحث (نطاق السعر، البراند، التقييم، في المخزن)" },
+                { name: "نافذة البحث", path: "components/search/search-dialog.tsx", desc: "🔎 نافذة بحث تفتح بـ Ctrl+K مع بحث سريع ونتائج فورية" }
+            ],
+            "📱 PWA - Progressive Web App": [
+                { name: "مكونات PWA", path: "components/pwa/pwa-components.tsx", desc: "📲 مكونات التطبيق التقدمي: زر التثبيت، مؤشر الأوفلاين، بانر التحديث" }
+            ],
+            "🎯 التوصيات - Recommendations": [
+                { name: "توصيات المنتجات", path: "components/recommendations/product-recommendations.tsx", desc: "💡 أقسام التوصيات: شاهدته مؤخراً، منتجات مشابهة، موصى لك بناءً على سجلك" }
+            ],
+            "🔔 الإشعارات - Notifications": [
+                { name: "بانر الفائز", path: "components/notifications/winner-notification-banner.tsx", desc: "🏆 بانر يظهر للفائز في مسابقة المعرض مع زر لاستلام الجائزة" }
+            ],
+            "♿ إمكانية الوصول - Accessibility": [
+                { name: "مكونات A11y", path: "components/accessibility/a11y-components.tsx", desc: "♿ مكونات إمكانية الوصول: رابط تخطي للمحتوى، تكبير الخط، وضع التباين العالي" }
+            ],
+            "🔐 المصادقة - Auth Components": [
+                { name: "قوة كلمة المرور", path: "components/auth/password-strength.tsx", desc: "🔒 مؤشر قوة كلمة المرور (ضعيفة/متوسطة/قوية) مع نصائح التحسين" },
+                { name: "حماية الأدمن", path: "components/auth/require-admin.tsx", desc: "🛡️ مكون يحمي صفحات الأدمن ويحول غير المصرح لهم لصفحة تسجيل الدخول" }
+            ],
+            "📝 المدونة - Blog Components": [
+                { name: "مكونات المدونة", path: "components/blog/blog-components.tsx", desc: "📰 مكونات المدونة: بطاقة المقال، فلتر الفئات، جدول المحتويات، المقالات المرتبطة" }
+            ],
+            "🏷️ SEO": [
+                { name: "Meta Tags", path: "components/seo/meta-tags.tsx", desc: "🔍 إدارة تاجات الميتا لكل صفحة (العنوان، الوصف، صورة OG، Canonical URL)" }
+            ],
+            "⚙️ Admin Components": [
+                { name: "تحليلات الأدمن", path: "components/admin/analytics-dashboard.tsx", desc: "📊 لوحة تحليلات الأدمن: إجمالي المبيعات، عدد الطلبات، العملاء الجدد، رسوم بيانية" },
+                { name: "الخصومات المتقدمة", path: "components/admin/advanced-discounts-tab.tsx", desc: "🏷️ إدارة الخصومات المتقدمة: خصم على فئة، خصم اشتري X واحصل على Y، خصم الكمية" },
+                { name: "سجل المراجعة", path: "components/admin/audit-logs-tab.tsx", desc: "📋 سجل كل العمليات (من عدّل ماذا ومتى) للمراجعة والأمان" },
+                { name: "إدارة الكوبونات", path: "components/admin/coupons-management.tsx", desc: "🎟️ إنشاء وتعديل وحذف كوبونات الخصم مع تحديد تاريخ الانتهاء والحد" },
+                { name: "إدارة العملاء", path: "components/admin/customers-management.tsx", desc: "👥 عرض قائمة العملاء، تفاصيلهم، طلباتهم، وإمكانية حظر المخالفين" },
+                { name: "إدارة المعرض", path: "components/admin/gallery-management.tsx", desc: "🖼️ الموافقة/الرفض على صور المعرض المرسلة من العملاء" },
+                { name: "رفع الصور", path: "components/admin/image-upload.tsx", desc: "📤 مكون رفع الصور مع معاينة ومعالجة وضغط قبل الرفع" },
+                { name: "إدارة الطلبات", path: "components/admin/orders-management.tsx", desc: "📦 عرض كل الطلبات، تغيير الحالة (معلق/قيد التجهيز/تم الشحن/تم التسليم)" },
+                { name: "إدارة المراجعات", path: "components/admin/reviews-management.tsx", desc: "⭐ الموافقة/الرفض/الرد على مراجعات المنتجات" },
+                { name: "إدارة الأمان", path: "components/admin/security-management.tsx", desc: "🔐 إعدادات الأمان: تغيير كلمة المرور، جلسات تسجيل الدخول، سجل المحاولات الفاشلة" },
+                { name: "إدارة الإعدادات", path: "components/admin/settings-management.tsx", desc: "⚙️ إعدادات الموقع: وضع الصيانة، تفعيل الطلبات، رسوم الشحن، العملة" }
+            ],
+            "🔌 Server Routes - API": [
+                { name: "API الأدمن", path: "server/routes/admin.ts", desc: "⚙️ واجهات برمجة الأدمن: إحصائيات، إدارة المنتجات والطلبات والعملاء" },
+                { name: "API التحليلات", path: "server/routes/analytics.ts", desc: "📊 واجهة بيانات التحليلات: المبيعات، العملاء، مصادر الزيارات" },
+                { name: "API السلة", path: "server/routes/cart.ts", desc: "🛒 واجهة السلة: إضافة/حذف/تحديث منتجات السلة" },
+                { name: "API الكوبونات", path: "server/routes/coupons.ts", desc: "🎟️ واجهة التحقق من صلاحية الكوبون وتطبيقه" },
+                { name: "API المفضلة", path: "server/routes/favorites.ts", desc: "❤️ واجهة المفضلة: إضافة/حذف/عرض المنتجات المفضلة" },
+                { name: "API الأسماك", path: "server/routes/fish.ts", desc: "🐟 واجهة بيانات الأسماك: الأنواع، المعلومات، التوافق" },
+                { name: "API المعرض", path: "server/routes/gallery.ts", desc: "🖼️ واجهة المعرض: رفع الصور، الإعجاب، قائمة الفائزين" },
+                { name: "API الرحلة", path: "server/routes/journey.ts", desc: "🚀 واجهة الرحلة: حفظ/تحميل خطط الأحواض" },
+                { name: "API النشرة البريدية", path: "server/routes/newsletter.ts", desc: "📧 واجهة الاشتراك في النشرة البريدية" },
+                { name: "API الإشعارات", path: "server/routes/notifications.ts", desc: "🔔 واجهة الإشعارات: إرسال وقراءة الإشعارات" },
+                { name: "API الطلبات", path: "server/routes/orders.ts", desc: "📦 واجهة الطلبات: إنشاء طلب جديد، تتبع، تحديث الحالة" },
+                { name: "API المنتجات", path: "server/routes/products.ts", desc: "📦 واجهة المنتجات: جلب قائمة المنتجات مع الفلترة والترتيب" },
+                { name: "API الإحالة", path: "server/routes/referral.ts", desc: "👥 واجهة الإحالة: توليد الكود، تتبع المحالين، حساب النقاط" },
+                { name: "API المراجعات", path: "server/routes/reviews.ts", desc: "⭐ واجهة المراجعات: إضافة/عرض/تعديل المراجعات" },
+                { name: "API الأمان", path: "server/routes/security.ts", desc: "🔐 واجهة الأمان: تغيير كلمة المرور، الجلسات، السجل" },
+                { name: "API النظام", path: "server/routes/system.ts", desc: "🖥️ واجهة فحص صحة النظام: حالة الخادم والقاعدة" },
+                { name: "API الرفع", path: "server/routes/upload.ts", desc: "📤 واجهة رفع الملفات والصور إلى Cloudflare R2" },
+                { name: "API المستخدمين", path: "server/routes/users.ts", desc: "👤 واجهة المستخدمين: تسجيل، دخول، خروج، تحديث البيانات" }
+            ],
+            "🧠 Contexts - State Management": [
+                { name: "سياق المصادقة", path: "contexts/auth-context.tsx", desc: "🔐 إدارة حالة المصادقة: هل المستخدم مسجل؟ بياناته، تسجيل الدخول/الخروج" },
+                { name: "سياق السلة", path: "contexts/cart-context.tsx", desc: "🛒 إدارة حالة السلة: المنتجات، الكميات، المجموع، إضافة/حذف" },
+                { name: "سياق المقارنة", path: "contexts/comparison-context.tsx", desc: "⚖️ إدارة قائمة المقارنة: إضافة/إزالة منتجات للمقارنة (حد أقصى 4)" },
+                { name: "سياق الروبيان", path: "contexts/shrimp-context.tsx", desc: "🦐 إدارة حالة تطور الروبيان حسب قيمة السلة" },
+                { name: "سياق المفضلة", path: "contexts/wishlist-context.tsx", desc: "❤️ إدارة حالة المفضلة: إضافة/إزالة/مزامنة مع السيرفر" }
+            ],
+            "🪝 Hooks": [
+                { name: "عدد السلة", path: "hooks/use-cart-count.ts", desc: "🔢 Hook لجلب عدد منتجات السلة (يستخدم في أيقونة السلة)" },
+                { name: "بيانات الأسماك", path: "hooks/use-fish-data.ts", desc: "🐟 Hook لجلب بيانات الأسماك من الموسوعة" },
+                { name: "مؤقت الخمول", path: "hooks/use-idle-timer.ts", desc: "⏱️ Hook يكتشف عدم نشاط المستخدم (لتفعيل هجوم الطحالب)" },
+                { name: "الرحلة", path: "hooks/use-journey.ts", desc: "🚀 Hook لإدارة حالة الرحلة (الخطوة الحالية، الاختيارات)" },
+                { name: "كشف الموبايل", path: "hooks/use-mobile.tsx", desc: "📱 Hook للتحقق هل المستخدم على موبايل أم ديسكتوب" },
+                { name: "PWA", path: "hooks/use-pwa.ts", desc: "📲 Hook لميزات PWA: التثبيت، الأوفلاين، التحديث" },
+                { name: "Toast", path: "hooks/use-toast.ts", desc: "💬 Hook لعرض رسائل Toast (نجاح، خطأ، تحذير)" }
+            ],
+            "📚 Lib Utilities": [
+                { name: "A/B Testing", path: "lib/ab-testing.ts", desc: "🧪 أداة اختبار A/B لتجربة نسختين مختلفتين من الميزة" },
+                { name: "التحليلات", path: "lib/analytics.ts", desc: "📊 تتبع سلوك المستخدم: الصفحات المزارة، النقرات، الأحداث" },
+                { name: "API Client", path: "lib/api.ts", desc: "🔌 عميل API مركزي للتواصل مع الخادم مع معالجة الأخطاء" },
+                { name: "بيانات الأكواسكيب", path: "lib/aquascape-data.ts", desc: "🌿 بيانات أنماط الأكواسكيب (الأسماء، الأوصاف، الصور)" },
+                { name: "بيانات المدونة", path: "lib/blog-data.ts", desc: "📰 بيانات مقالات المدونة (العناوين، المحتوى، الفئات)" },
+                { name: "CSRF", path: "lib/csrf.ts", desc: "🛡️ حماية من هجمات CSRF عبر إضافة token للطلبات" },
+                { name: "أدوات الصور", path: "lib/image-utils.ts", desc: "🖼️ ضغط ومعالجة الصور قبل الرفع (WebP, resize)" },
+                { name: "Logger", path: "lib/logger.ts", desc: "📝 أداة تسجيل موحدة للـ console logs مع مستويات مختلفة" },
+                { name: "Mock Data", path: "lib/mock-data.ts", desc: "🎭 بيانات وهمية للتطوير والاختبار" },
+                { name: "مولد PDF", path: "lib/pdf-generator.ts", desc: "📄 توليد ملفات PDF (الفاتورة، خطة التربية)" },
+                { name: "Push Notifications", path: "lib/push-notifications.ts", desc: "🔔 طلب إذن وإرسال إشعارات Push" },
+                { name: "Query Client", path: "lib/queryClient.ts", desc: "⚡ إعداد React Query للتخزين المؤقت وإعادة المحاولة" },
+                { name: "Rate Limit", path: "lib/rate-limit.ts", desc: "⏱️ حد الطلبات على الجانب العميل لمنع الإسبام" },
+                { name: "التوصيات", path: "lib/recommendations.ts", desc: "🎯 خوارزمية توليد توصيات المنتجات بناءً على السلوك" },
+                { name: "التخزين الآمن", path: "lib/secure-storage.ts", desc: "🔒 localStorage آمن مع تشفير البيانات الحساسة" },
+                { name: "Sentry", path: "lib/sentry.ts", desc: "🐛 تتبع الأخطاء وإرسالها لـ Sentry للمراقبة" },
+                { name: "المؤثرات الصوتية", path: "lib/sound-effects.ts", desc: "🔊 تشغيل أصوات (نقرة، نجاح، إضافة للسلة)" },
+                { name: "التحقق", path: "lib/validations.ts", desc: "✅ مخططات Zod للتحقق من البيانات (إيميل، هاتف، كلمة مرور)" },
+                { name: "Web Vitals", path: "lib/web-vitals.ts", desc: "📊 قياس أداء الصفحة (LCP, FID, CLS)" }
+            ]
+        };
+
+        let selections = {};
+
+        function init() {
+            const container = document.getElementById('features-container');
+            let html = '';
+
+            for (const [category, items] of Object.entries(features)) {
+                html += `
+                    <div class="category" data-category="${category}">
+                        <div class="category-header" onclick="toggleCategory(this.parentElement)">
+                            <h2>${category}</h2>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="category-count">${items.length} ميزة</span>
+                                <span class="toggle-icon">▼</span>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            ${items.map((item, idx) => `
+                                <div class="feature" data-id="${category}-${idx}">
+                                    <div class="feature-info">
+                                        <div class="feature-name">${item.name}</div>
+                                        <div class="feature-path">${item.path}</div>
+                                        <div style="color: #64748b; font-size: 0.85rem; margin-top: 5px;">${item.desc}</div>
+                                    </div>
+                                    <div class="feature-options">
+                                        <button class="option-btn keep" onclick="setSelection('${category}-${idx}', 'keep', this)">✅ موجودة</button>
+                                        <button class="option-btn unused" onclick="setSelection('${category}-${idx}', 'unused', this)">⚠️ غير مستعملة</button>
+                                        <button class="option-btn delete" onclick="setSelection('${category}-${idx}', 'delete', this)">🗑️ حذف</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            loadFromStorage();
+        }
+
+        function toggleCategory(el) {
+            el.classList.toggle('open');
+        }
+
+        function toggleAllCategories() {
+            const categories = document.querySelectorAll('.category');
+            const allOpen = Array.from(categories).every(c => c.classList.contains('open'));
+            categories.forEach(c => {
+                if (allOpen) {
+                    c.classList.remove('open');
+                } else {
+                    c.classList.add('open');
+                }
+            });
+        }
+
+        function setSelection(id, status, btn) {
+            selections[id] = status;
+
+            // Update button states
+            const feature = btn.closest('.feature');
+            feature.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            updateStats();
+            saveToStorage();
+        }
+
+        function setAllInCategory(status) {
+            document.querySelectorAll('.feature').forEach(feature => {
+                const id = feature.dataset.id;
+                selections[id] = status;
+
+                feature.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                feature.querySelector(`.option-btn.${status}`).classList.add('active');
+            });
+
+            updateStats();
+            saveToStorage();
+        }
+
+        function updateStats() {
+            let keep = 0, unused = 0, del = 0;
+
+            for (const status of Object.values(selections)) {
+                if (status === 'keep') keep++;
+                else if (status === 'unused') unused++;
+                else if (status === 'delete') del++;
+            }
+
+            document.getElementById('keepCount').textContent = keep;
+            document.getElementById('unusedCount').textContent = unused;
+            document.getElementById('deleteCount').textContent = del;
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('aquavo-features-review', JSON.stringify(selections));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('aquavo-features-review');
+            if (saved) {
+                selections = JSON.parse(saved);
+
+                for (const [id, status] of Object.entries(selections)) {
+                    const feature = document.querySelector(`[data-id="${id}"]`);
+                    if (feature) {
+                        feature.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                        feature.querySelector(`.option-btn.${status}`)?.classList.add('active');
+                    }
+                }
+
+                updateStats();
+            }
+        }
+
+        function resetAll() {
+            if (confirm('هل أنت متأكد من إعادة تعيين كل الاختيارات؟')) {
+                selections = {};
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                updateStats();
+                saveToStorage();
+            }
+        }
+
+        function exportResults() {
+            const results = {
+                keep: [],
+                unused: [],
+                delete: []
+            };
+
+            for (const [category, items] of Object.entries(features)) {
+                items.forEach((item, idx) => {
+                    const id = `${category}-${idx}`;
+                    const status = selections[id] || 'unreviewed';
+
+                    if (status !== 'unreviewed') {
+                        results[status].push({
+                            name: item.name,
+                            path: item.path,
+                            category: category
+                        });
+                    }
+                });
+            }
+
+            const json = JSON.stringify(results, null, 2);
+
+            // Create download
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'aquavo-features-review.json';
+            a.click();
+
+            alert(`تم تصدير النتائج!\n\n✅ موجودة: ${results.keep.length}\n⚠️ غير مستعملة: ${results.unused.length}\n🗑️ للحذف: ${results.delete.length}`);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

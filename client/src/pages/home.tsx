@@ -4,13 +4,13 @@ import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Truck, ShieldCheck, Phone, Leaf, Droplets, Thermometer, Package, Trophy, Crown, Camera, ShoppingCart } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { BubbleTrail } from "@/components/effects/bubble-trail";
+
 import { ProductOfTheWeek } from "@/components/home/product-of-the-week";
 import { MasonryGalleryGrid } from "@/components/gallery/masonry-gallery-grid";
 import { AquascapeStyles } from "@/components/home/aquascape-styles";
-import { WaterRippleButton } from "@/components/effects/water-ripple-button";
+
 import { ProductCard } from "@/components/products/product-card";
-import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
+
 import { Testimonials } from "@/components/home/testimonials";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, fetchTopSellingProducts } from "@/lib/api";
@@ -22,7 +22,7 @@ import { WaveDivider } from "@/components/ui/wave-divider";
 import { QuickViewModal } from "@/components/products/quick-view-modal";
 import { Product } from "@/types";
 import { SpotlightEffect } from "@/components/effects/spotlight-effect";
-import { ParallaxText } from "@/components/effects/parallax-text";
+
 
 // Hero images for rotation on page refresh
 const HERO_IMAGES = [
@@ -70,7 +70,7 @@ export default function Home() {
         description="AQUAVO - وجهتك الأولى لمستلزمات أحواض الأسماك، نباتات الزينة، والعناية بالحياة المائية في العراق."
       />
       <OrganizationSchema />
-      <BubbleTrail />
+
       <Navbar />
 
       <SpotlightEffect />
@@ -105,12 +105,10 @@ export default function Home() {
                 <span className="uppercase tracking-widest">جديد 2025</span>
                 <Crown className="w-4 h-4" />
               </div>
-              <ParallaxText offset={-30} className="mb-4">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-none drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                  حول <span className="text-primary text-stroke-sm">حوضك</span> <br />
-                  إلى <span className="text-accent">تحفة فنية</span>.
-                </h1>
-              </ParallaxText>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-none drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] mb-4">
+                حول <span className="text-primary text-stroke-sm">حوضك</span> <br />
+                إلى <span className="text-accent">تحفة فنية</span>.
+              </h1>
 
               <div className="flex flex-wrap gap-4 justify-end mt-6">
                 <Button

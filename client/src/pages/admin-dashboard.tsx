@@ -41,7 +41,7 @@ import SettingsManagement from "@/components/admin/settings-management";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CouponsManagement } from "@/components/admin/coupons-management";
 import { AuditLogsTab } from "@/components/admin/audit-logs-tab";
-import { AdvancedDiscountsTab } from "@/components/admin/advanced-discounts-tab";
+
 import SecurityManagement from "@/components/admin/security-management";
 import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
 import {
@@ -779,7 +779,12 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="discounts" className="space-y-4">
-          <AdvancedDiscountsTab />
+          <Card>
+            <CardHeader>
+              <CardTitle>إدارة الخصومات</CardTitle>
+              <CardDescription>ميزة الخصومات المتقدمة قيد التطوير</CardDescription>
+            </CardHeader>
+          </Card>
         </TabsContent>
 
         <TabsContent value="orders">

@@ -4,12 +4,13 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle2, Package, Truck, Home, ArrowRight, Copy, Check } from "lucide-react";
+import { CheckCircle2, Package, Truck, Home, ArrowRight, Copy, Check, Printer } from "lucide-react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { InvoiceDialog } from "@/components/cart/invoice-dialog";
 
 // Proper interface for order data - replacing 'any' type
 interface OrderItem {
@@ -127,11 +128,26 @@ export default function OrderConfirmation() {
 
 function ConfirmationContent({ orderId, total, itemsCount, address }: { orderId: string, total: number, itemsCount?: number, address?: string }) {
     const [copied, setCopied] = useState(false);
+    const [invoiceOpen, setInvoiceOpen] = useState(false);
 
     const copyOrderNumber = () => {
         navigator.clipboard.writeText(orderId);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    // Prepare invoice data
+    const invoiceData = {
+        customerInfo: {
+            name: "عميل AQUAVO",
+            phone: "",
+            address: address || "",
+            notes: ""
+        },
+        items: [],
+        total: total,
+        orderNumber: orderId,
+        orderDate: new Date()
     };
 
     return (
@@ -215,11 +231,26 @@ function ConfirmationContent({ orderId, total, itemsCount, address }: { orderId:
                                         العودة للرئيسية
                                     </Button>
                                 </Link>
+
+                                <Button
+                                    className="w-full h-12 text-lg"
+                                    variant="secondary"
+                                    onClick={() => setInvoiceOpen(true)}
+                                >
+                                    <Printer className="w-5 h-5 ml-2" />
+                                    طباعة الفاتورة
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
                 </motion.div>
             </main>
+
+            <InvoiceDialog
+                open={invoiceOpen}
+                onOpenChange={setInvoiceOpen}
+                orderData={invoiceData}
+            />
 
             <Footer />
         </div>

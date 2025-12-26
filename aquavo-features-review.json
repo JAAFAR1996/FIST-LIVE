@@ -1,0 +1,863 @@
+{
+  "keep": [
+    {
+      "name": "الصفحة الرئيسية",
+      "path": "pages/home.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "المنتجات",
+      "path": "pages/products.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تفاصيل المنتج",
+      "path": "pages/product-details.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "السلة",
+      "path": "pages/cart.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "المفضلة",
+      "path": "pages/wishlist.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "نتائج البحث",
+      "path": "pages/search-results.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تسجيل الدخول",
+      "path": "pages/login.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "التسجيل",
+      "path": "pages/register.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "نسيت كلمة المرور",
+      "path": "pages/forgot-password.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الملف الشخصي",
+      "path": "pages/profile.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تأكيد الطلب",
+      "path": "pages/order-confirmation.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تتبع الطلب",
+      "path": "pages/order-tracking.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "المدونة",
+      "path": "pages/blog.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "مقال المدونة",
+      "path": "pages/blog-post.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "العروض",
+      "path": "pages/deals.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الأسئلة الشائعة",
+      "path": "pages/faq.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "معرض المجتمع",
+      "path": "pages/community-gallery.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الرحلة",
+      "path": "pages/journey.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الحاسبات",
+      "path": "pages/calculators.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "موسوعة الأسماك",
+      "path": "pages/fish-encyclopedia.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "حاسبة التربية",
+      "path": "pages/fish-breeding-calculator.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تشخيص صحة الأسماك",
+      "path": "pages/fish-health-diagnosis.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "دليل البيئة",
+      "path": "pages/guides-eco-friendly.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الاستدامة",
+      "path": "pages/sustainability.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "سياسة الخصوصية",
+      "path": "pages/privacy-policy.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الشروط والأحكام",
+      "path": "pages/terms.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "سياسة الإرجاع",
+      "path": "pages/return-policy.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "الشحن",
+      "path": "pages/shipping.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "صفحة 404",
+      "path": "pages/404.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "لوحة الأدمن",
+      "path": "pages/admin-dashboard.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "تسجيل دخول الأدمن",
+      "path": "pages/admin-login.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "شريط التنقل",
+      "path": "components/navbar.tsx",
+      "category": "🎨 المكونات الأساسية - Core Components"
+    },
+    {
+      "name": "الفوتر",
+      "path": "components/footer.tsx",
+      "category": "🎨 المكونات الأساسية - Core Components"
+    },
+    {
+      "name": "حدود الأخطاء",
+      "path": "components/error-boundary.tsx",
+      "category": "🎨 المكونات الأساسية - Core Components"
+    },
+    {
+      "name": "زر العودة للأعلى",
+      "path": "components/back-to-top.tsx",
+      "category": "🎨 المكونات الأساسية - Core Components"
+    },
+    {
+      "name": "ماسكوت الروبيان",
+      "path": "components/gamification/shrimp-mascot.tsx",
+      "category": "🦐 روبيان أكوافو - Aquavo Shrimp"
+    },
+    {
+      "name": "زر الإجراء العائم",
+      "path": "components/effects/floating-action-button.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "شريط التقدم",
+      "path": "components/effects/scroll-progress.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "تأثير السبوتلايت",
+      "path": "components/effects/spotlight-effect.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "بطاقة السمكة",
+      "path": "components/fish/fish-card.tsx",
+      "category": "🐟 مكونات الأسماك - Fish Components"
+    },
+    {
+      "name": "أداة مقارنة الأسماك",
+      "path": "components/fish/fish-comparison-tool.tsx",
+      "category": "🐟 مكونات الأسماك - Fish Components"
+    },
+    {
+      "name": "حاسبة الفلتر",
+      "path": "components/calculators/filter-calculator.tsx",
+      "category": "🧮 الحاسبات - Calculators"
+    },
+    {
+      "name": "حاسبة السخان",
+      "path": "components/calculators/heater-calculator.tsx",
+      "category": "🧮 الحاسبات - Calculators"
+    },
+    {
+      "name": "حاسبة الصيانة",
+      "path": "components/calculators/maintenance-calculator.tsx",
+      "category": "🧮 الحاسبات - Calculators"
+    },
+    {
+      "name": "حاسبة الملح",
+      "path": "components/calculators/salt-calculator.tsx",
+      "category": "🧮 الحاسبات - Calculators"
+    },
+    {
+      "name": "حاسبة حجم الحوض",
+      "path": "components/calculators/tank-size-calculator.tsx",
+      "category": "🧮 الحاسبات - Calculators"
+    },
+    {
+      "name": "نافذة الدفع",
+      "path": "components/cart/checkout-dialog.tsx",
+      "category": "🛒 السلة والدفع - Cart & Checkout"
+    },
+    {
+      "name": "ويدجت الدردشة الحية",
+      "path": "components/chat/live-chat-widget.tsx",
+      "category": "💬 الدردشة والتواصل - Chat"
+    },
+    {
+      "name": "أنماط الأكواسكيب",
+      "path": "components/home/aquascape-styles.tsx",
+      "category": "🏠 الصفحة الرئيسية - Home Components"
+    },
+    {
+      "name": "قسم الفئات",
+      "path": "components/home/category-section.tsx",
+      "category": "🏠 الصفحة الرئيسية - Home Components"
+    },
+    {
+      "name": "الهيرو المصغر",
+      "path": "components/home/minimal-hero.tsx",
+      "category": "🏠 الصفحة الرئيسية - Home Components"
+    },
+    {
+      "name": "منتج الأسبوع",
+      "path": "components/home/product-of-week.tsx",
+      "category": "🏠 الصفحة الرئيسية - Home Components"
+    },
+    {
+      "name": "الشهادات",
+      "path": "components/home/testimonials.tsx",
+      "category": "🏠 الصفحة الرئيسية - Home Components"
+    },
+    {
+      "name": "إعداد الديكور",
+      "path": "components/journey/decoration-setup.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "اختيار المعدات",
+      "path": "components/journey/equipment-selection.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "اختيار الأسماك",
+      "path": "components/journey/fish-selection.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "شريط التقدم",
+      "path": "components/journey/journey-progress.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "ملخص الرحلة",
+      "path": "components/journey/journey-summary.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "إعداد الموقع",
+      "path": "components/journey/location-setup.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "جدول الصيانة",
+      "path": "components/journey/maintenance-schedule.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "دورة النيتروجين",
+      "path": "components/journey/nitrogen-cycle.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "عرض الخطة المحفوظة",
+      "path": "components/journey/saved-plan-view.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "اختيار الحوض",
+      "path": "components/journey/tank-selection.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "معايير المياه",
+      "path": "components/journey/water-parameters.tsx",
+      "category": "🚀 الرحلة - Journey Components"
+    },
+    {
+      "name": "شريط التصنيفات",
+      "path": "components/products/category-scroll-bar.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "شريط الفلاتر",
+      "path": "components/products/filter-bar.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "نافذة الفلاتر",
+      "path": "components/products/filter-modal.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "بطاقة المنتج",
+      "path": "components/products/product-card.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "زر الشراء",
+      "path": "components/products/product-cta.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "جدول المواصفات",
+      "path": "components/products/product-specifications.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "نافذة العرض السريع",
+      "path": "components/products/quick-view-modal.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "برنامج الولاء",
+      "path": "components/profile/profile-loyalty.tsx",
+      "category": "👤 الملف الشخصي - Profile Components"
+    },
+    {
+      "name": "برنامج الإحالة",
+      "path": "components/profile/profile-referral.tsx",
+      "category": "👤 الملف الشخصي - Profile Components"
+    },
+    {
+      "name": "النجوم التفاعلية",
+      "path": "components/reviews/interactive-rating-stars.tsx",
+      "category": "⭐ المراجعات - Reviews Components"
+    },
+    {
+      "name": "توزيع التقييم",
+      "path": "components/reviews/rating-breakdown.tsx",
+      "category": "⭐ المراجعات - Reviews Components"
+    },
+    {
+      "name": "قائمة المراجعات",
+      "path": "components/reviews/review-list.tsx",
+      "category": "⭐ المراجعات - Reviews Components"
+    },
+    {
+      "name": "الإكمال التلقائي",
+      "path": "components/search/autocomplete-suggestions.tsx",
+      "category": "🔍 البحث - Search Components"
+    },
+    {
+      "name": "البحث العالمي",
+      "path": "components/search/global-search.tsx",
+      "category": "🔍 البحث - Search Components"
+    },
+    {
+      "name": "الفلاتر المتقدمة",
+      "path": "components/search/product-filters-advanced.tsx",
+      "category": "🔍 البحث - Search Components"
+    },
+    {
+      "name": "نافذة البحث",
+      "path": "components/search/search-dialog.tsx",
+      "category": "🔍 البحث - Search Components"
+    },
+    {
+      "name": "مكونات PWA",
+      "path": "components/pwa/pwa-components.tsx",
+      "category": "📱 PWA - Progressive Web App"
+    },
+    {
+      "name": "بانر الفائز",
+      "path": "components/notifications/winner-notification-banner.tsx",
+      "category": "🔔 الإشعارات - Notifications"
+    },
+    {
+      "name": "مكونات A11y",
+      "path": "components/accessibility/a11y-components.tsx",
+      "category": "♿ إمكانية الوصول - Accessibility"
+    },
+    {
+      "name": "قوة كلمة المرور",
+      "path": "components/auth/password-strength.tsx",
+      "category": "🔐 المصادقة - Auth Components"
+    },
+    {
+      "name": "حماية الأدمن",
+      "path": "components/auth/require-admin.tsx",
+      "category": "🔐 المصادقة - Auth Components"
+    },
+    {
+      "name": "مكونات المدونة",
+      "path": "components/blog/blog-components.tsx",
+      "category": "📝 المدونة - Blog Components"
+    },
+    {
+      "name": "تحليلات الأدمن",
+      "path": "components/admin/analytics-dashboard.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "سجل المراجعة",
+      "path": "components/admin/audit-logs-tab.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة الكوبونات",
+      "path": "components/admin/coupons-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة المعرض",
+      "path": "components/admin/gallery-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "رفع الصور",
+      "path": "components/admin/image-upload.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة الطلبات",
+      "path": "components/admin/orders-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة الأمان",
+      "path": "components/admin/security-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة الإعدادات",
+      "path": "components/admin/settings-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "API الأدمن",
+      "path": "server/routes/admin.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API التحليلات",
+      "path": "server/routes/analytics.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API السلة",
+      "path": "server/routes/cart.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الكوبونات",
+      "path": "server/routes/coupons.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API المفضلة",
+      "path": "server/routes/favorites.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الأسماك",
+      "path": "server/routes/fish.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API المعرض",
+      "path": "server/routes/gallery.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الرحلة",
+      "path": "server/routes/journey.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API النشرة البريدية",
+      "path": "server/routes/newsletter.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الطلبات",
+      "path": "server/routes/orders.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API المنتجات",
+      "path": "server/routes/products.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API المراجعات",
+      "path": "server/routes/reviews.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الأمان",
+      "path": "server/routes/security.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الرفع",
+      "path": "server/routes/upload.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API المستخدمين",
+      "path": "server/routes/users.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "سياق المصادقة",
+      "path": "contexts/auth-context.tsx",
+      "category": "🧠 Contexts - State Management"
+    },
+    {
+      "name": "سياق السلة",
+      "path": "contexts/cart-context.tsx",
+      "category": "🧠 Contexts - State Management"
+    },
+    {
+      "name": "سياق المقارنة",
+      "path": "contexts/comparison-context.tsx",
+      "category": "🧠 Contexts - State Management"
+    },
+    {
+      "name": "عدد السلة",
+      "path": "hooks/use-cart-count.ts",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "بيانات الأسماك",
+      "path": "hooks/use-fish-data.ts",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "الرحلة",
+      "path": "hooks/use-journey.ts",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "كشف الموبايل",
+      "path": "hooks/use-mobile.tsx",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "PWA",
+      "path": "hooks/use-pwa.ts",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "Toast",
+      "path": "hooks/use-toast.ts",
+      "category": "🪝 Hooks"
+    },
+    {
+      "name": "API Client",
+      "path": "lib/api.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "بيانات الأكواسكيب",
+      "path": "lib/aquascape-data.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "بيانات المدونة",
+      "path": "lib/blog-data.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "أدوات الصور",
+      "path": "lib/image-utils.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Logger",
+      "path": "lib/logger.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Mock Data",
+      "path": "lib/mock-data.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Rate Limit",
+      "path": "lib/rate-limit.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "التحقق",
+      "path": "lib/validations.ts",
+      "category": "📚 Lib Utilities"
+    }
+  ],
+  "unused": [
+    {
+      "name": "صفحة المقارنة",
+      "path": "pages/compare.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "أثر الفقاعات",
+      "path": "components/effects/bubble-trail.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "العنصر العائم",
+      "path": "components/effects/floating-element.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "سحر الصور الحية",
+      "path": "components/effects/live-photo-magic.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "نص البارالاكس",
+      "path": "components/effects/parallax-text.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "زر تموج الماء",
+      "path": "components/effects/water-ripple-button.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "تأثير موجة التمرير",
+      "path": "components/effects/wave-scroll-effect.tsx",
+      "category": "✨ المؤثرات البصرية - Visual Effects"
+    },
+    {
+      "name": "تصدير PDF التربية",
+      "path": "components/fish/breeding-pdf.tsx",
+      "category": "🐟 مكونات الأسماك - Fish Components"
+    },
+    {
+      "name": "شارة التوافق",
+      "path": "components/fish/fish-compatibility-badge.tsx",
+      "category": "🐟 مكونات الأسماك - Fish Components"
+    },
+    {
+      "name": "نافذة تفاصيل السمكة",
+      "path": "components/fish/fish-detail-modal.tsx",
+      "category": "🐟 مكونات الأسماك - Fish Components"
+    },
+    {
+      "name": "نافذة الفاتورة",
+      "path": "components/cart/invoice-dialog.tsx",
+      "category": "🛒 السلة والدفع - Cart & Checkout"
+    },
+    {
+      "name": "تأثير الاحتفال",
+      "path": "components/gallery/celebration-overlay.tsx",
+      "category": "🖼️ المعرض - Gallery"
+    },
+    {
+      "name": "شبكة المعرض",
+      "path": "components/gallery/masonry-gallery-grid.tsx",
+      "category": "🖼️ المعرض - Gallery"
+    },
+    {
+      "name": "معاً بشكل متكرر",
+      "path": "components/products/frequently-bought-together.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "معرض الصور",
+      "path": "components/products/product-gallery.tsx",
+      "category": "📦 مكونات المنتجات - Product Components"
+    },
+    {
+      "name": "بطاقة المراجعة",
+      "path": "components/reviews/review-card.tsx",
+      "category": "⭐ المراجعات - Reviews Components"
+    },
+    {
+      "name": "رفع الوسائط",
+      "path": "components/reviews/review-media-upload.tsx",
+      "category": "⭐ المراجعات - Reviews Components"
+    },
+    {
+      "name": "توصيات المنتجات",
+      "path": "components/recommendations/product-recommendations.tsx",
+      "category": "🎯 التوصيات - Recommendations"
+    },
+    {
+      "name": "Meta Tags",
+      "path": "components/seo/meta-tags.tsx",
+      "category": "🏷️ SEO"
+    },
+    {
+      "name": "الخصومات المتقدمة",
+      "path": "components/admin/advanced-discounts-tab.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة العملاء",
+      "path": "components/admin/customers-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "إدارة المراجعات",
+      "path": "components/admin/reviews-management.tsx",
+      "category": "⚙️ Admin Components"
+    },
+    {
+      "name": "API الإشعارات",
+      "path": "server/routes/notifications.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API الإحالة",
+      "path": "server/routes/referral.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "API النظام",
+      "path": "server/routes/system.ts",
+      "category": "🔌 Server Routes - API"
+    },
+    {
+      "name": "سياق المفضلة",
+      "path": "contexts/wishlist-context.tsx",
+      "category": "🧠 Contexts - State Management"
+    },
+    {
+      "name": "A/B Testing",
+      "path": "lib/ab-testing.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "التحليلات",
+      "path": "lib/analytics.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "CSRF",
+      "path": "lib/csrf.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "مولد PDF",
+      "path": "lib/pdf-generator.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Push Notifications",
+      "path": "lib/push-notifications.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Query Client",
+      "path": "lib/queryClient.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "التوصيات",
+      "path": "lib/recommendations.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "التخزين الآمن",
+      "path": "lib/secure-storage.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Sentry",
+      "path": "lib/sentry.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "المؤثرات الصوتية",
+      "path": "lib/sound-effects.ts",
+      "category": "📚 Lib Utilities"
+    },
+    {
+      "name": "Web Vitals",
+      "path": "lib/web-vitals.ts",
+      "category": "📚 Lib Utilities"
+    }
+  ],
+  "delete": [
+    {
+      "name": "إعادة تعيين كلمة المرور",
+      "path": "pages/reset-password.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "باحث الأسماك",
+      "path": "pages/fish-finder.tsx",
+      "category": "📦 الصفحات - Pages"
+    },
+    {
+      "name": "هجوم الطحالب",
+      "path": "components/aquavo-shrimp/AlgaeAttack.tsx",
+      "category": "🦐 روبيان أكوافو - Aquavo Shrimp"
+    },
+    {
+      "name": "شخصية السلة",
+      "path": "components/aquavo-shrimp/CartMascot.tsx",
+      "category": "🦐 روبيان أكوافو - Aquavo Shrimp"
+    },
+    {
+      "name": "حدث الروبيان الذهبي",
+      "path": "components/aquavo-shrimp/GoldenShrimpEvent.tsx",
+      "category": "🦐 روبيان أكوافو - Aquavo Shrimp"
+    },
+    {
+      "name": "شخصية الروبيان",
+      "path": "components/aquavo-shrimp/ShrimpCharacter.tsx",
+      "category": "🦐 روبيان أكوافو - Aquavo Shrimp"
+    },
+    {
+      "name": "سياق الروبيان",
+      "path": "contexts/shrimp-context.tsx",
+      "category": "🧠 Contexts - State Management"
+    },
+    {
+      "name": "مؤقت الخمول",
+      "path": "hooks/use-idle-timer.ts",
+      "category": "🪝 Hooks"
+    }
+  ]
+}

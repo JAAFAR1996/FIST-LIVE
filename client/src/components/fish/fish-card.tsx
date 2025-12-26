@@ -1,5 +1,6 @@
 import { FishSpecies } from "@/data/freshwater-fish";
 import { Badge } from "@/components/ui/badge";
+import { FishCompatibilityBadge } from "@/components/fish/fish-compatibility-badge";
 import { Droplets, Thermometer, Heart, Fish, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,19 +72,13 @@ export function FishCard({
             </Badge>
           )}
           {showCompatibility && compatibilityStatus && (
-            <Badge
-              className={cn(
-                "backdrop-blur-sm border-0 shadow-lg",
-                compatibilityStatus === "compatible" && "bg-green-500/90 text-white",
-                compatibilityStatus === "warning" && "bg-yellow-500/90 text-white",
-                compatibilityStatus === "incompatible" && "bg-red-500/90 text-white"
-              )}
-            >
-              <AlertCircle className="w-3 h-3 ml-1" />
-              {compatibilityStatus === "compatible" && "متوافق"}
-              {compatibilityStatus === "warning" && "تحذير"}
-              {compatibilityStatus === "incompatible" && "غير متوافق"}
-            </Badge>
+            <FishCompatibilityBadge
+              status={
+                compatibilityStatus === "compatible" ? "compatible" :
+                  compatibilityStatus === "warning" ? "caution" : "incompatible"
+              }
+              size="sm"
+            />
           )}
         </div>
 

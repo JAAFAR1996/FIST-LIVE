@@ -10,12 +10,12 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { RequireAdmin } from "@/components/auth/require-admin";
 import { ScrollProgress } from "@/components/effects/scroll-progress";
 import { FloatingActionButton } from "@/components/effects/floating-action-button";
-import { BubbleTrail } from "@/components/effects/bubble-trail";
+
 import { initGA, trackPageView } from "@/lib/analytics";
 import "@/lib/sentry"; // Auto-initializes on import
-import { CelebrationOverlay } from "@/components/gallery/celebration-overlay";
+
 import { WinnerNotificationBanner } from "@/components/notifications/winner-notification-banner";
-import { ShrimpProvider } from "@/contexts/shrimp-context";
+
 import { ComparisonProvider } from "@/contexts/comparison-context";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LiveChatWidget } from "@/components/chat/live-chat-widget";
@@ -37,7 +37,7 @@ const Profile = lazy(() => import("@/pages/profile"));
 const FAQ = lazy(() => import("@/pages/faq"));
 const Calculators = lazy(() => import("@/pages/calculators"));
 const FishHealthDiagnosis = lazy(() => import("@/pages/fish-health-diagnosis"));
-const FishFinder = lazy(() => import("@/pages/fish-finder"));
+
 const Blog = lazy(() => import("@/pages/blog"));
 const BlogPost = lazy(() => import("@/pages/blog-post"));
 const OrderConfirmation = lazy(() => import("@/pages/order-confirmation"));
@@ -63,7 +63,7 @@ import AdminLogin from "@/pages/admin-login";
 import Shipping from "@/pages/shipping";
 import Login from "@/pages/login";
 import ForgotPassword from "@/pages/forgot-password";
-import ResetPassword from "@/pages/reset-password";
+
 
 
 
@@ -187,16 +187,7 @@ function Router() {
         )}
       </Route>
 
-      {/* Lazy loaded fish finder */}
-      <Route path="/fish-finder">
-        {() => (
-          <ErrorBoundary>
-            <Suspense fallback={<PageLoader />}>
-              <FishFinder />
-            </Suspense>
-          </ErrorBoundary>
-        )}
-      </Route>
+
 
       {/* Lazy loaded fish breeding calculator */}
       <Route path="/fish-breeding-calculator">
@@ -287,7 +278,7 @@ function Router() {
       </Route>
 
       <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/reset-password" component={ResetPassword} />
+
       <Route path="/admin/login" component={AdminLogin} />
 
       {/* Lazy loaded admin dashboard */}
@@ -319,25 +310,25 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
-            <ShrimpProvider>
-              <ComparisonProvider>
-                <TooltipProvider>
-                  <PageViewTracker />
-                  {/* Skip to main content for keyboard navigation */}
-                  <a href="#main-content" className="skip-to-main">
-                    الانتقال إلى المحتوى الرئيسي
-                  </a>
-                  <ScrollProgress />
-                  <FloatingActionButton />
-                  <BubbleTrail />
-                  <WinnerNotificationBanner />
-                  <CelebrationOverlay />
-                  <Toaster />
-                  <LiveChatWidget />
-                  <Router />
-                </TooltipProvider>
-              </ComparisonProvider>
-            </ShrimpProvider>
+
+            <ComparisonProvider>
+              <TooltipProvider>
+                <PageViewTracker />
+                {/* Skip to main content for keyboard navigation */}
+                <a href="#main-content" className="skip-to-main">
+                  الانتقال إلى المحتوى الرئيسي
+                </a>
+                <ScrollProgress />
+                <FloatingActionButton />
+
+                <WinnerNotificationBanner />
+
+                <Toaster />
+                <LiveChatWidget />
+                <Router />
+              </TooltipProvider>
+            </ComparisonProvider>
+
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>

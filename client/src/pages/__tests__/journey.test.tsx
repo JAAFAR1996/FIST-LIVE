@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import JourneyPage from '../journey';
 import * as useJourneyHook from '@/hooks/use-journey';
+import React from 'react';
 
 // Mock wouter
 vi.mock('wouter', () => ({
     useLocation: () => ['/journey', vi.fn()],
+    Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
+        <a href={href}>{children}</a>
+    ),
 }));
 
 // Mock window.scrollTo
@@ -32,12 +37,49 @@ vi.mock('@/contexts/cart-context', () => ({
     }),
 }));
 
+// Mock WishlistContext
+vi.mock('@/contexts/wishlist-context', () => ({
+    useWishlist: () => ({
+        items: [],
+        itemCount: 0,
+        addItem: vi.fn(),
+        removeItem: vi.fn(),
+        isInWishlist: vi.fn(() => false),
+        clearWishlist: vi.fn(),
+        totalItems: 0,
+    }),
+}));
+
+// Mock AuthContext
+vi.mock('@/contexts/auth-context', () => ({
+    useAuth: () => ({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: vi.fn(),
+        logout: vi.fn(),
+        register: vi.fn(),
+    }),
+}));
+
 // Mock useToast
 vi.mock('@/hooks/use-toast', () => ({
     useToast: () => ({
         toast: vi.fn(),
     }),
 }));
+
+// Mock api
+vi.mock('@/lib/api', () => ({
+    fetchProducts: vi.fn(() => Promise.resolve({ products: [] })),
+}));
+
+const createWrapper = () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return ({ children }: { children: React.ReactNode }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+};
 
 describe('JourneyPage', () => {
     const mockUpdateData = vi.fn();
@@ -87,19 +129,19 @@ describe('JourneyPage', () => {
             isLoadingSavedPlan: true
         });
 
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
         expect(screen.getByText(/جاري تحميل رحلتك/i)).toBeInTheDocument();
     });
 
     it('renders Step 1 initially', () => {
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
         expect(screen.getByText(/اختيار الحوض المناسب/i)).toBeInTheDocument();
         // Use getAllByText for text that appears multiple times
         expect(screen.getAllByText(/حجم الحوض/i).length).toBeGreaterThan(0);
     });
 
     it('calls updateData when selecting an option in Step 1', () => {
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
 
         const mediumOption = screen.getByText(/متوسط \(60-150 لتر\)/i);
         fireEvent.click(mediumOption);
@@ -113,12 +155,12 @@ describe('JourneyPage', () => {
             currentStep: 1
         });
 
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
         expect(screen.getByText(/موقع ومكان الحوض/i)).toBeInTheDocument();
     });
 
     it('calls nextStep when Next button is clicked', () => {
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
 
         const nextButton = screen.getByText(/التالي/i);
         fireEvent.click(nextButton);
@@ -133,7 +175,7 @@ describe('JourneyPage', () => {
             wizardData: { ...defaultHookValues.wizardData, tankSize: 'medium' }
         });
 
-        render(<JourneyPage />);
+        render(<JourneyPage />, { wrapper: createWrapper() });
 
         expect(screen.getByText(/مبروك! خطتك جاهزة/i)).toBeInTheDocument();
         expect(screen.getAllByText(/المنتجات الموصى بها/i).length).toBeGreaterThan(0);

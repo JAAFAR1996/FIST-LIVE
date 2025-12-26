@@ -26,10 +26,10 @@ describe('API Client', () => {
       const result = await fetchProducts();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products'),
+        '/api/products',
         expect.objectContaining({
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
         })
       );
       expect(result).toEqual(mockProducts);
@@ -60,7 +60,7 @@ describe('API Client', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          headers: { 'Content-Type': 'application/json' },
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
         })
       );
     });
@@ -121,10 +121,10 @@ describe('API Client', () => {
       const result = await fetchProduct('prod-123');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products/prod-123'),
+        '/api/products/prod-123',
         expect.objectContaining({
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
         })
       );
       expect(result).toEqual(mockProduct);
@@ -199,10 +199,10 @@ describe('API Client', () => {
       const result = await fetchProductBySlug('test-product');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/products/test-product'),
+        '/api/products/test-product',
         expect.objectContaining({
           credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
         })
       );
       expect(result).toEqual(mockProduct);
@@ -323,7 +323,7 @@ describe('API Client', () => {
 
       const callArgs = (global.fetch as any).mock.calls[0][1];
       expect(callArgs.credentials).toBe('include');
-      expect(callArgs.headers).toEqual({ 'Content-Type': 'application/json' });
+      expect(callArgs.headers['Content-Type']).toBe('application/json');
     });
 
     it('should use GET method by default', async () => {

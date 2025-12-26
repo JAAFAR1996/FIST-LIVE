@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DifficultyBadge } from "@/components/ui/difficulty-badge";
 import { Heart, ShoppingCart, Leaf, Eye } from "lucide-react";
-import { LivePhotoMagic } from "@/components/effects/live-photo-magic";
-import { FloatingElement } from "@/components/effects/floating-element";
+
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/cart-context";
 import { WishlistButton } from "@/components/wishlist/wishlist-button";
@@ -67,11 +66,11 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
           {/* Image */}
           <div className="relative pt-[100%] overflow-hidden">
             <div className="absolute inset-0 p-6 flex items-center justify-center bg-transparent">
-              <FloatingElement delay={Math.random() * 2} intensity={10} duration={6}>
+              <div className="transition-transform duration-500 group-hover:scale-105">
                 <img
                   src={`${product.thumbnail || product.image || "/placeholder-product.svg"}?v=1`}
                   alt={`صورة منتج ${product.name} من ${product.brand}`}
-                  className="w-full h-full object-contain filter drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-contain filter drop-shadow-2xl"
                   loading="lazy"
                   width={300}
                   height={300}
@@ -83,7 +82,7 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
                     }
                   }}
                 />
-              </FloatingElement>
+              </div>
             </div>
 
             {/* Quick Actions Overlay */}

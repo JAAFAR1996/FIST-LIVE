@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Search, SlidersHorizontal, X, Fish, BookOpen } from "lucide-react";
-import { WaveScrollEffect } from "@/components/effects/wave-scroll-effect";
+
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { BackToTop } from "@/components/back-to-top";
 
@@ -161,7 +161,7 @@ export default function FishEncyclopedia() {
       </section>
 
       {/* Search and Filters */}
-      <WaveScrollEffect>
+      <div>
         <section className="py-8 bg-card border-b">
           <div className="container mx-auto px-4">
             {/* Search Bar */}
@@ -331,7 +331,7 @@ export default function FishEncyclopedia() {
             </div>
           </div>
         </section>
-      </WaveScrollEffect>
+      </div>
 
       {/* Fish Comparison Tool Section */}
       <section className="py-8 bg-muted/20">

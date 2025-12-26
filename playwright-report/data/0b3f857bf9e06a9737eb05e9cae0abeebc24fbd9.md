@@ -1,0 +1,319 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - link "الانتقال إلى المحتوى الرئيسي" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - button "Scroll to top":
+      - img
+  - region "Notifications (F8)":
+    - list
+  - button [ref=e5]:
+    - img
+  - generic [ref=e6]:
+    - navigation "التنقل الرئيسي" [ref=e7]:
+      - generic [ref=e8]:
+        - link "الصفحة الرئيسية - AQUAVO" [ref=e9] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e10]:
+            - img "AQUAVO Logo" [ref=e12]
+            - generic [ref=e13]: AQUAVO
+        - generic [ref=e14]:
+          - link "الرئيسية" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e16]:
+              - img [ref=e17]
+              - text: الرئيسية
+          - link "المنتجات" [ref=e20] [cursor=pointer]:
+            - /url: /products
+            - generic [ref=e21]:
+              - img [ref=e22]
+              - text: المنتجات
+          - link "العروض" [ref=e26] [cursor=pointer]:
+            - /url: /deals
+            - generic [ref=e27]:
+              - img [ref=e28]
+              - text: العروض
+          - link "المفضلة" [ref=e31] [cursor=pointer]:
+            - /url: /wishlist
+            - generic [ref=e32]:
+              - img [ref=e33]
+              - text: المفضلة
+          - link "موسوعة الأسماك" [ref=e35] [cursor=pointer]:
+            - /url: /fish-encyclopedia
+            - generic [ref=e36]:
+              - img [ref=e37]
+              - text: موسوعة الأسماك
+          - link "الحاسبات" [ref=e39] [cursor=pointer]:
+            - /url: /calculators
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - text: الحاسبات
+          - link "طبيب الأسماك" [ref=e43] [cursor=pointer]:
+            - /url: /fish-health-diagnosis
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - text: طبيب الأسماك
+          - link "ألبوم العائلة" [ref=e49] [cursor=pointer]:
+            - /url: /community-gallery
+            - generic [ref=e50]:
+              - img [ref=e51]
+              - text: ألبوم العائلة
+          - link "رحلتك" [ref=e54] [cursor=pointer]:
+            - /url: /journey
+            - generic [ref=e55]:
+              - img [ref=e56]
+              - text: رحلتك
+        - generic [ref=e62]:
+          - button "تغيير السمة" [ref=e63]:
+            - img
+            - generic [ref=e64]: تغيير السمة
+          - button "التحكم بحجم الخط" [ref=e65]:
+            - img
+          - link "تسجيل الدخول" [ref=e66] [cursor=pointer]:
+            - /url: /login
+            - button "تسجيل الدخول" [ref=e67]
+          - button "البحث (Ctrl+K)" [ref=e68]:
+            - img
+            - generic: Ctrl+K
+          - link "المفضلة - فارغة" [ref=e69] [cursor=pointer]:
+            - /url: /wishlist
+            - button "المفضلة - فارغة" [ref=e70]:
+              - img
+          - button "سلة المشتريات - فارغة" [ref=e71]:
+            - img
+    - main [ref=e72]:
+      - generic [ref=e74]:
+        - generic [ref=e75]:
+          - img [ref=e77]
+          - generic [ref=e83]: نسيت كلمة المرور؟
+          - generic [ref=e84]: أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - text: البريد الإلكتروني
+              - generic [ref=e88]:
+                - img [ref=e89]
+                - textbox "البريد الإلكتروني" [ref=e92]:
+                  - /placeholder: example@email.com
+            - button "إرسال رابط إعادة التعيين" [ref=e93]
+          - link "العودة لتسجيل الدخول" [ref=e95] [cursor=pointer]:
+            - /url: /login
+            - generic [ref=e96]:
+              - img [ref=e97]
+              - text: العودة لتسجيل الدخول
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - img
+            - generic:
+              - heading "AQUAVO" [level=3]
+              - paragraph: متصل الآن • نرد خلال دقائق
+          - button:
+            - img
+      - generic:
+        - generic:
+          - paragraph: مرحباً! 👋
+          - paragraph: كيف يمكننا مساعدتك اليوم؟
+          - generic: 02:19
+      - generic:
+        - generic:
+          - textbox "اكتب رسالتك...": مرحباً! أريد الاستفسار عن المنتجات
+          - button:
+            - img
+    - button "تواصل معنا عبر واتساب" [ref=e99]:
+      - img [ref=e100]
+      - generic [ref=e103]: "1"
+    - paragraph [ref=e105]: هل تحتاج مساعدة؟ 💬
+    - contentinfo [ref=e107]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - img [ref=e115]
+            - generic [ref=e120]:
+              - paragraph [ref=e121]: توصيل سريع
+              - paragraph [ref=e122]: لجميع أنحاء العراق
+          - generic [ref=e123]:
+            - img [ref=e125]
+            - generic [ref=e127]:
+              - paragraph [ref=e128]: ضمان الجودة
+              - paragraph [ref=e129]: منتجات أصلية 100%
+          - generic [ref=e130]:
+            - img [ref=e132]
+            - generic [ref=e134]:
+              - paragraph [ref=e135]: الدفع عند الاستلام
+              - paragraph [ref=e136]: أو التحويل البنكي
+          - generic [ref=e137]:
+            - img [ref=e139]
+            - generic [ref=e142]:
+              - paragraph [ref=e143]: دعم على مدار الساعة
+              - paragraph [ref=e144]: نحن هنا لمساعدتك
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - img [ref=e148]
+            - paragraph [ref=e151]: SSL Certified
+            - paragraph [ref=e152]: موقع آمن
+          - generic [ref=e153]:
+            - img [ref=e155]
+            - paragraph [ref=e158]: Money-back Guarantee
+            - paragraph [ref=e159]: ضمان استرجاع المال
+          - generic [ref=e160]:
+            - img [ref=e162]
+            - paragraph [ref=e164]: Authentic Products
+            - paragraph [ref=e165]: منتجات أصلية
+        - generic [ref=e166]:
+          - generic [ref=e167]:
+            - link "AQUAVO AQUAVO" [ref=e168] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e169]:
+                - img "AQUAVO" [ref=e171]
+                - generic [ref=e172]: AQUAVO
+            - paragraph [ref=e173]: وجهتك الأولى لمستلزمات أحواض الأسماك في العراق. نوفر أفضل المنتجات العالمية لضمان بيئة صحية وسعيدة لأسماكك.
+            - generic [ref=e174]:
+              - link [ref=e175] [cursor=pointer]:
+                - /url: https://facebook.com
+                - img [ref=e176]
+              - link [ref=e178] [cursor=pointer]:
+                - /url: https://instagram.com
+                - img [ref=e179]
+              - link [ref=e182] [cursor=pointer]:
+                - /url: https://youtube.com
+                - img [ref=e183]
+              - link [ref=e186] [cursor=pointer]:
+                - /url: https://wa.me/9647700000000
+                - img [ref=e187]
+          - generic [ref=e189]:
+            - heading "قصتنا" [level=4] [ref=e190]:
+              - img [ref=e191]
+              - text: قصتنا
+            - generic [ref=e193]:
+              - paragraph [ref=e194]: 💔 سمكة صغيرة... غيّرت كل شي
+              - paragraph [ref=e195]: "\"في يوم ميلادي، أهداني أبي سمكة ذهبية صغيرة. كانت أول صديق حقيقي لي. سميتها 'نور' لأنها كانت تضيء غرفتي بحركتها...\""
+              - paragraph [ref=e196]: بعد أسبوع واحد فقط، ماتت نور. 😢
+              - paragraph [ref=e197]: السبب؟ منتجات رديئة من بائع لم يهتم. فلتر لا يعمل، طعام منتهي الصلاحية، ونصائح خاطئة.
+              - paragraph [ref=e198]: لم أنسَ ذلك الألم أبداً. 🔥
+              - generic [ref=e199]:
+                - paragraph [ref=e200]: "لهذا أسسنا AQUAVO:"
+                - paragraph [ref=e201]: لنتأكد أن لا طفل آخر يفقد صديقه... ولا عائلة تخسر سمكتها المحبوبة بسبب منتج رديء أو نصيحة خاطئة.
+              - generic [ref=e202]:
+                - paragraph [ref=e203]:
+                  - generic [ref=e204]: 🎯
+                  - text: "وعدنا لكم:"
+                - list [ref=e205]:
+                  - listitem [ref=e206]:
+                    - generic [ref=e207]: ✓
+                    - generic [ref=e208]:
+                      - strong [ref=e209]: منتجات نختبرها بأيدينا
+                      - text: "- لا نبيع شيئاً لم نستخدمه"
+                  - listitem [ref=e210]:
+                    - generic [ref=e211]: ✓
+                    - generic [ref=e212]:
+                      - strong [ref=e213]: أسعار عادلة وشفافة
+                      - text: "- لا استغلال أبداً"
+                  - listitem [ref=e214]:
+                    - generic [ref=e215]: ✓
+                    - generic [ref=e216]:
+                      - strong [ref=e217]: دعم حقيقي على مدار الساعة
+                      - text: "- نجيب حتى في 3 صباحاً"
+                  - listitem [ref=e218]:
+                    - generic [ref=e219]: ✓
+                    - generic [ref=e220]:
+                      - strong [ref=e221]: نصائح صادقة
+                      - text: "- حتى لو لم تشترِ شيئاً"
+              - paragraph [ref=e222]:
+                - img [ref=e223]
+                - text: لسنا مجرد متجر - نحن عائلة تحب الأسماك مثلك
+              - paragraph [ref=e229]
+          - generic [ref=e230]:
+            - heading "الدعم والمساعدة" [level=4] [ref=e231]:
+              - img [ref=e232]
+              - text: الدعم والمساعدة
+            - list [ref=e234]:
+              - listitem [ref=e235]:
+                - link "معلومات التوصيل" [ref=e236] [cursor=pointer]:
+                  - /url: /shipping
+                  - generic [ref=e237]: معلومات التوصيل
+              - listitem [ref=e238]:
+                - link "الاستدامة البيئية" [ref=e239] [cursor=pointer]:
+                  - /url: /sustainability
+                  - generic [ref=e240]: الاستدامة البيئية
+              - listitem [ref=e241]:
+                - link "دليل العناية" [ref=e242] [cursor=pointer]:
+                  - /url: /guides/eco-friendly
+                  - generic [ref=e243]: دليل العناية
+              - listitem [ref=e244]:
+                - link "سياسة الإرجاع" [ref=e245] [cursor=pointer]:
+                  - /url: /return-policy
+                  - generic [ref=e246]: سياسة الإرجاع
+              - listitem [ref=e247]:
+                - link "الأسئلة الشائعة" [ref=e248] [cursor=pointer]:
+                  - /url: /faq
+                  - generic [ref=e249]: الأسئلة الشائعة
+              - listitem [ref=e250]:
+                - link "تتبع الطلب" [ref=e251] [cursor=pointer]:
+                  - /url: /order-tracking
+                  - generic [ref=e252]: تتبع الطلب
+              - listitem [ref=e253]:
+                - link "المدونة" [ref=e254] [cursor=pointer]:
+                  - /url: /blog
+                  - generic [ref=e255]: المدونة
+          - generic [ref=e256]:
+            - heading "تواصل معنا" [level=4] [ref=e257]:
+              - img [ref=e258]
+              - text: تواصل معنا
+            - list [ref=e260]:
+              - listitem [ref=e261]:
+                - link "+964 770 000 0000" [ref=e262] [cursor=pointer]:
+                  - /url: tel:+9647700000000
+                  - img [ref=e264]
+                  - generic [ref=e266]: +964 770 000 0000
+              - listitem [ref=e267]:
+                - link "info@aquavo.iq" [ref=e268] [cursor=pointer]:
+                  - /url: mailto:info@aquavo.iq
+                  - img [ref=e270]
+                  - generic [ref=e273]: info@aquavo.iq
+              - listitem [ref=e274]:
+                - link "واتس آب" [ref=e275] [cursor=pointer]:
+                  - /url: https://wa.me/9647700000000
+                  - img [ref=e277]
+                  - generic [ref=e279]: واتس آب
+              - listitem [ref=e280]:
+                - img [ref=e282]
+                - generic [ref=e285]:
+                  - text: بغداد – العراق
+                  - text: شارع الكرادة الرئيسي
+            - generic [ref=e286]:
+              - paragraph [ref=e287]: "ساعات العمل:"
+              - paragraph [ref=e288]:
+                - generic [ref=e289]: "السبت - الخميس: 9:00 ص - 10:00 م"
+                - generic [ref=e290]: "الجمعة: 10:00 ص - 10:00 م"
+            - generic [ref=e291]:
+              - paragraph [ref=e292]: "اشترك للحصول على آخر العروض:"
+              - generic [ref=e293]:
+                - textbox "البريد الإلكتروني" [ref=e294]
+                - button "اشتراك" [ref=e295]
+        - generic [ref=e297]:
+          - paragraph [ref=e298]: © 2025 AQUAVO. جميع الحقوق محفوظة.
+          - generic [ref=e299]:
+            - link "سياسة الخصوصية" [ref=e300] [cursor=pointer]:
+              - /url: /privacy-policy
+            - link "الشروط والأحكام" [ref=e301] [cursor=pointer]:
+              - /url: /terms
+            - link "سياسة الإرجاع" [ref=e302] [cursor=pointer]:
+              - /url: /return-policy
+          - generic [ref=e303]:
+            - generic [ref=e304]: "طرق الدفع:"
+            - generic [ref=e305]:
+              - generic [ref=e306]:
+                - text: كي كارد
+                - generic [ref=e307]: (قريباً)
+              - generic [ref=e308]:
+                - text: زين كاش
+                - generic [ref=e309]: (قريباً)
+              - generic [ref=e310]:
+                - text: نقدي
+                - generic [ref=e311]: (قريباً)
+```
