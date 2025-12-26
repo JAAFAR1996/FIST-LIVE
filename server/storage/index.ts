@@ -216,14 +216,26 @@ class CombinedStorage implements IStorage {
 
     getTrendingProducts = async (): Promise<Product[]> => {
         try {
-            // Strategy: Get best-selling and highly-rated products with stock
+            // Use AI analytics tracker for real trending products
+            const { analyticsTracker } = await import("./services/analytics-tracker.js");
+            const trending = await analyticsTracker.getTrendingProducts(7, 8);
+
+            if (trending.length > 0) {
+                // Get product details
+                const productIds = trending.map(t => t.productId);
+                const products = await Promise.all(
+                    productIds.map(id => this.productStorage.getProduct(id))
+                );
+                return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
+            }
+
+            // Fallback: Get highly-rated products with stock
             const products = await this.productStorage.getProducts({
                 limit: 10,
                 sortBy: 'rating',
                 sortOrder: 'desc'
             });
 
-            // Filter products with stock and good ratings
             return products
                 .filter(p => (p.stock ?? 0) > 0 && parseFloat(String(p.rating)) >= 4.0)
                 .slice(0, 8);
@@ -235,8 +247,19 @@ class CombinedStorage implements IStorage {
 
     getFrequentlyBoughtTogether = async (productId: string): Promise<Product[]> => {
         try {
-            // Strategy: Get products from the same category
-            // In future: analyze order data for co-purchased items
+            // Use AI recommendation engine for co-purchase analysis
+            const { recommendationEngine } = await import("./services/recommendation-engine.js");
+            const coProductIds = await recommendationEngine.getFrequentlyBoughtTogether(productId, 4);
+
+            if (coProductIds.length > 0) {
+                // Get product details
+                const products = await Promise.all(
+                    coProductIds.map(id => this.productStorage.getProduct(id))
+                );
+                return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
+            }
+
+            // Fallback: Get products from the same category
             const product = await this.productStorage.getProduct(productId);
             if (!product) return [];
 
@@ -245,7 +268,6 @@ class CombinedStorage implements IStorage {
                 limit: 6
             });
 
-            // Return similar products excluding the current one
             return categoryProducts
                 .filter(p => p.id !== productId && (p.stock ?? 0) > 0)
                 .slice(0, 4);
@@ -260,7 +282,24 @@ class CombinedStorage implements IStorage {
             const product = await this.productStorage.getProduct(productId);
             if (!product) return [];
 
-            // Get products from same category and subcategory if possible
+            // Try AI embedding similarity first
+            try {
+                const { embeddingGenerator } = await import("./services/embedding-generator.js");
+                const similarByEmbedding = await embeddingGenerator.findSimilarByEmbedding(productId, 5);
+
+                if (similarByEmbedding.length > 0) {
+                    // Get product details
+                    const productIds = similarByEmbedding.map(s => s.productId);
+                    const products = await Promise.all(
+                        productIds.map(id => this.productStorage.getProduct(id))
+                    );
+                    return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
+                }
+            } catch (embeddingError) {
+                console.log('[Storage] Embedding similarity not available, using fallback');
+            }
+
+            // Fallback: Get products from same category and subcategory
             const categoryProducts = await this.productStorage.getProducts({
                 category: product.category,
                 limit: 8

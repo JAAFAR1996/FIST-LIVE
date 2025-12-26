@@ -824,3 +824,185 @@ export type SalesStats = typeof salesStats.$inferSelect;
 export type EmailCampaign = typeof emailCampaigns.$inferSelect;
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 
+// ==================== AI & ML Enhancement Tables ====================
+
+// Chat Messages - سجل المحادثات للذكاء الاصطناعي
+export const chatMessages = pgTable("chat_messages", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: text("conversation_id").notNull(), // Group messages by conversation
+  userId: text("user_id").references(() => users.id),
+  sessionId: text("session_id"), // For anonymous users
+  role: text("role").notNull(), // "user" | "assistant" | "admin" | "system"
+  content: text("content").notNull(),
+  metadata: jsonb("metadata").$type<{
+    confidence?: number;
+    escalationScore?: number;
+    productsMentioned?: string[];
+  }>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  conversationIdx: index("chat_messages_conversation_idx").on(table.conversationId),
+  userIdIdx: index("chat_messages_user_id_idx").on(table.userId),
+  createdAtIdx: index("chat_messages_created_at_idx").on(table.createdAt),
+}));
+
+// Support Tickets - تذاكر الدعم البشري
+export const supportTickets = pgTable("support_tickets", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: text("conversation_id").notNull(),
+  userId: text("user_id").references(() => users.id),
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  status: text("status").notNull().default("open"), // open, assigned, in_progress, resolved, closed
+  priority: text("priority").default("medium"), // low, medium, high, urgent
+  assignedToUserId: text("assigned_to_user_id").references(() => users.id),
+  category: text("category"), // product_question, complaint, technical, other
+  escalationReason: text("escalation_reason"), // frustrated, requested_human, low_confidence, complex_query
+  aiConfidence: numeric("ai_confidence"), // AI's confidence before escalation
+  sentiment: text("sentiment"), // positive, neutral, negative, very_negative
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  statusIdx: index("support_tickets_status_idx").on(table.status),
+  assignedToIdx: index("support_tickets_assigned_to_idx").on(table.assignedToUserId),
+  createdAtIdx: index("support_tickets_created_at_idx").on(table.createdAt),
+}));
+
+// Product Interactions - تتبع تفاعلات المستخدم للتعلم الآلي
+export const productInteractions = pgTable("product_interactions", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id),
+  sessionId: text("session_id"), // For anonymous users
+  productId: text("product_id").references(() => products.id).notNull(),
+  interactionType: text("interaction_type").notNull(), // view, cart_add, cart_remove, favorite, purchase, review
+  duration: integer("duration"), // Time spent viewing (seconds)
+  scrollDepth: integer("scroll_depth"), // Percentage scrolled
+  metadata: jsonb("metadata").$type<{ from?: string; searchQuery?: string }>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  userProductIdx: index("product_interactions_user_product_idx").on(table.userId, table.productId),
+  productIdx: index("product_interactions_product_idx").on(table.productId),
+  typeIdx: index("product_interactions_type_idx").on(table.interactionType),
+  createdAtIdx: index("product_interactions_created_at_idx").on(table.createdAt),
+}));
+
+// Product Embeddings - للبحث الدلالي بالذكاء الاصطناعي
+export const productEmbeddings = pgTable("product_embeddings", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: text("product_id").references(() => products.id).unique().notNull(),
+  embedding: jsonb("embedding").notNull().$type<number[]>(), // Vector embedding from Gemini
+  model: text("model").notNull().default("gemini-1.5-flash"), // Track model version
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  productIdIdx: index("product_embeddings_product_id_idx").on(table.productId),
+}));
+
+// Price History - تاريخ الأسعار للتحليل الزمني
+export const priceHistory = pgTable("price_history", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: text("product_id").references(() => products.id).notNull(),
+  price: numeric("price").notNull(),
+  stock: integer("stock"),
+  salesVelocity: numeric("sales_velocity"), // Units sold per day
+  demandScore: numeric("demand_score"), // Calculated demand metric
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  productCreatedIdx: index("price_history_product_created_idx").on(table.productId, table.createdAt),
+}));
+
+// Search Queries - ذكاء البحث وتتبع الاستعلامات
+export const searchQueries = pgTable("search_queries", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").references(() => users.id),
+  sessionId: text("session_id"),
+  query: text("query").notNull(),
+  resultsCount: integer("results_count"),
+  clickedProductId: text("clicked_product_id").references(() => products.id),
+  clickPosition: integer("click_position"), // Which result was clicked (1-based)
+  noResultsFound: boolean("no_results_found").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  queryIdx: index("search_queries_query_idx").on(table.query),
+  createdAtIdx: index("search_queries_created_at_idx").on(table.createdAt),
+}));
+
+// Zod Schemas for new tables
+export const insertChatMessageSchema = z.object({
+  conversationId: z.string().min(1),
+  userId: z.string().optional(),
+  sessionId: z.string().optional(),
+  role: z.enum(["user", "assistant", "admin", "system"]),
+  content: z.string().min(1),
+  metadata: z.object({
+    confidence: z.number().optional(),
+    escalationScore: z.number().optional(),
+    productsMentioned: z.array(z.string()).optional(),
+  }).optional(),
+});
+
+export const insertSupportTicketSchema = z.object({
+  conversationId: z.string().min(1),
+  userId: z.string().optional(),
+  customerName: z.string().optional(),
+  customerEmail: z.string().email().optional(),
+  status: z.enum(["open", "assigned", "in_progress", "resolved", "closed"]).optional(),
+  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+  assignedToUserId: z.string().optional(),
+  category: z.string().optional(),
+  escalationReason: z.enum(["frustrated", "requested_human", "low_confidence", "complex_query"]).optional(),
+  sentiment: z.enum(["positive", "neutral", "negative", "very_negative"]).optional(),
+});
+
+export const insertProductInteractionSchema = z.object({
+  userId: z.string().optional(),
+  sessionId: z.string().optional(),
+  productId: z.string().min(1),
+  interactionType: z.enum(["view", "cart_add", "cart_remove", "favorite", "purchase", "review"]),
+  duration: z.number().optional(),
+  scrollDepth: z.number().optional(),
+  metadata: z.object({
+    from: z.string().optional(),
+    searchQuery: z.string().optional(),
+  }).optional(),
+});
+
+export const insertProductEmbeddingSchema = z.object({
+  productId: z.string().min(1),
+  embedding: z.array(z.number()),
+  model: z.string().optional(),
+});
+
+export const insertPriceHistorySchema = z.object({
+  productId: z.string().min(1),
+  price: z.string(),
+  stock: z.number().optional(),
+  salesVelocity: z.string().optional(),
+  demandScore: z.string().optional(),
+});
+
+export const insertSearchQuerySchema = z.object({
+  userId: z.string().optional(),
+  sessionId: z.string().optional(),
+  query: z.string().min(1),
+  resultsCount: z.number().optional(),
+  clickedProductId: z.string().optional(),
+  clickPosition: z.number().optional(),
+  noResultsFound: z.boolean().optional(),
+});
+
+// Types for AI/ML enhancement tables
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type SupportTicket = typeof supportTickets.$inferSelect;
+export type InsertSupportTicket = z.infer<typeof insertSupportTicketSchema>;
+export type ProductInteraction = typeof productInteractions.$inferSelect;
+export type InsertProductInteraction = z.infer<typeof insertProductInteractionSchema>;
+export type ProductEmbedding = typeof productEmbeddings.$inferSelect;
+export type InsertProductEmbedding = z.infer<typeof insertProductEmbeddingSchema>;
+export type PriceHistory = typeof priceHistory.$inferSelect;
+export type InsertPriceHistory = z.infer<typeof insertPriceHistorySchema>;
+export type SearchQuery = typeof searchQueries.$inferSelect;
+export type InsertSearchQuery = z.infer<typeof insertSearchQuerySchema>;
+

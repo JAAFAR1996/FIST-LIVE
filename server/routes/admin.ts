@@ -591,5 +591,230 @@ export function createAdminRouter(): RouterType {
         } catch (err) { next(err); }
     });
 
+    // ============ AI SYSTEMS MANAGEMENT ============
+
+    // Seed demo data for AI/ML development
+    router.post("/ai/seed-demo-data", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { DataSeeder } = await import("../services/data-seeder.js");
+            const seeder = new DataSeeder();
+
+            console.log("[Admin API] 🌱 Starting demo data seeding...");
+            await seeder.seedAll();
+
+            // Audit Log
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "create",
+                entityType: "ai_data",
+                entityId: "demo_seed",
+                changes: { action: "seed_demo_data" }
+            });
+
+            res.json({
+                success: true,
+                message: "تم توليد البيانات التجريبية بنجاح"
+            });
+        } catch (err) {
+            console.error("[Admin API] ❌ Error seeding demo data:", err);
+            next(err);
+        }
+    });
+
+    // Clear demo data
+    router.delete("/ai/demo-data", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { DataSeeder } = await import("../services/data-seeder.js");
+            const seeder = new DataSeeder();
+
+            await seeder.clearDemoData();
+
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "delete",
+                entityType: "ai_data",
+                entityId: "demo_clear",
+                changes: { action: "clear_demo_data" }
+            });
+
+            res.json({
+                success: true,
+                message: "تم حذف البيانات التجريبية"
+            });
+        } catch (err) { next(err); }
+    });
+
+    // Generate embeddings for all products
+    router.post("/ai/generate-embeddings", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { embeddingGenerator } = await import("../services/embedding-generator.js");
+
+            console.log("[Admin API] 🚀 Starting embedding generation for all products...");
+            const result = await embeddingGenerator.generateAllEmbeddings();
+
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "create",
+                entityType: "ai_embeddings",
+                entityId: "bulk_generate",
+                changes: result
+            });
+
+            res.json({
+                success: true,
+                message: `تم توليد embeddings بنجاح: ${result.success} نجح، ${result.failed} فشل`,
+                data: result
+            });
+        } catch (err) {
+            console.error("[Admin API] ❌ Error generating embeddings:", err);
+            next(err);
+        }
+    });
+
+    // Generate embeddings for missing products only
+    router.post("/ai/generate-missing-embeddings", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { embeddingGenerator } = await import("../services/embedding-generator.js");
+
+            console.log("[Admin API] 🔍 Generating embeddings for missing products...");
+            const result = await embeddingGenerator.generateMissingEmbeddings();
+
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "create",
+                entityType: "ai_embeddings",
+                entityId: "missing_generate",
+                changes: result
+            });
+
+            res.json({
+                success: true,
+                message: `تم توليد embeddings للمنتجات الناقصة: ${result.success} نجح، ${result.failed} فشل`,
+                data: result
+            });
+        } catch (err) {
+            console.error("[Admin API] ❌ Error generating missing embeddings:", err);
+            next(err);
+        }
+    });
+
+    // Get AI systems statistics
+    router.get("/ai/stats", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { embeddingGenerator } = await import("../services/embedding-generator.js");
+            const { analyticsTracker } = await import("../services/analytics-tracker.js");
+            const { getDb } = await import("../db.js");
+            const { productInteractions, searchQueries, priceHistory, chatMessages, supportTickets } = await import("../../shared/schema.js");
+
+            const db = getDb();
+
+            // Embedding stats
+            const embeddingStats = await embeddingGenerator.getEmbeddingStats();
+
+            // Interaction stats
+            const interactionCount = await db.select({ count: productInteractions.id.count() })
+                .from(productInteractions);
+
+            // Search stats
+            const searchCount = await db.select({ count: searchQueries.id.count() })
+                .from(searchQueries);
+
+            // Price history stats
+            const priceHistoryCount = await db.select({ count: priceHistory.id.count() })
+                .from(priceHistory);
+
+            // Chat stats
+            const chatCount = await db.select({ count: chatMessages.id.count() })
+                .from(chatMessages);
+
+            // Support ticket stats
+            const ticketCount = await db.select({ count: supportTickets.id.count() })
+                .from(supportTickets);
+
+            // Cart abandonment rate
+            const abandonmentRate = await analyticsTracker.getCartAbandonmentRate(30);
+
+            res.json({
+                embeddings: embeddingStats,
+                interactions: {
+                    total: interactionCount[0]?.count || 0
+                },
+                searches: {
+                    total: searchCount[0]?.count || 0
+                },
+                priceHistory: {
+                    total: priceHistoryCount[0]?.count || 0
+                },
+                chat: {
+                    total: chatCount[0]?.count || 0
+                },
+                support: {
+                    total: ticketCount[0]?.count || 0
+                },
+                analytics: {
+                    cartAbandonmentRate: Math.round(abandonmentRate * 10) / 10
+                }
+            });
+        } catch (err) {
+            console.error("[Admin API] ❌ Error getting AI stats:", err);
+            next(err);
+        }
+    });
+
+    // Get trending products (from analytics)
+    router.get("/ai/trending", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { analyticsTracker } = await import("../services/analytics-tracker.js");
+            const days = parseInt(req.query.days as string) || 7;
+            const limit = parseInt(req.query.limit as string) || 10;
+
+            const trending = await analyticsTracker.getTrendingProducts(days, limit);
+
+            // Enrich with product details
+            const enriched = await Promise.all(trending.map(async (item) => {
+                const product = await storage.getProduct(item.productId);
+                return {
+                    ...item,
+                    product
+                };
+            }));
+
+            res.json(enriched);
+        } catch (err) {
+            console.error("[Admin API] ❌ Error getting trending products:", err);
+            next(err);
+        }
+    });
+
+    // Get top search keywords
+    router.get("/ai/top-searches", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { analyticsTracker } = await import("../services/analytics-tracker.js");
+            const days = parseInt(req.query.days as string) || 30;
+            const limit = parseInt(req.query.limit as string) || 10;
+
+            const topSearches = await analyticsTracker.getTopSearchKeywords(days, limit);
+            res.json(topSearches);
+        } catch (err) {
+            console.error("[Admin API] ❌ Error getting top searches:", err);
+            next(err);
+        }
+    });
+
+    // Get searches with no results
+    router.get("/ai/no-result-searches", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { analyticsTracker } = await import("../services/analytics-tracker.js");
+            const days = parseInt(req.query.days as string) || 30;
+            const limit = parseInt(req.query.limit as string) || 20;
+
+            const noResults = await analyticsTracker.getNoResultSearches(days, limit);
+            res.json(noResults);
+        } catch (err) {
+            console.error("[Admin API] ❌ Error getting no-result searches:", err);
+            next(err);
+        }
+    });
+
     return router;
 }
