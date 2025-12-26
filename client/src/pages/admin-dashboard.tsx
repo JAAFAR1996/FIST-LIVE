@@ -44,6 +44,9 @@ import { AuditLogsTab } from "@/components/admin/audit-logs-tab";
 
 import SecurityManagement from "@/components/admin/security-management";
 import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
+import { PriceSuggestionsPanel } from "@/components/admin/price-suggestions-panel";
+import { AIInsightsPanel } from "@/components/admin/ai-insights-panel";
+import { AIChatPanel } from "@/components/admin/ai-chat-panel";
 import {
   Plus,
   Pencil,
@@ -616,9 +619,9 @@ export default function AdminDashboard() {
 
       <Tabs defaultValue="products" className="w-full">
 
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 h-auto p-1">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-11 h-auto p-1">
           <TabsTrigger value="products">المنتجات</TabsTrigger>
-          <TabsTrigger value="discounts">الخصومات</TabsTrigger>
+          <TabsTrigger value="ai-insights">🤖 AI</TabsTrigger>
           <TabsTrigger value="coupons">الكوبونات</TabsTrigger>
           <TabsTrigger value="orders">الطلبات</TabsTrigger>
           <TabsTrigger value="customers">العملاء</TabsTrigger>
@@ -629,6 +632,17 @@ export default function AdminDashboard() {
           <TabsTrigger value="security">الأمان</TabsTrigger>
           <TabsTrigger value="settings">الإعدادات</TabsTrigger>
         </TabsList>
+
+        {/* AI Insights Tab */}
+        <TabsContent value="ai-insights" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <AIChatPanel />
+            <div className="space-y-6">
+              <PriceSuggestionsPanel />
+            </div>
+          </div>
+          <AIInsightsPanel />
+        </TabsContent>
 
         <TabsContent value="coupons" className="space-y-4">
           <CouponsManagement />
@@ -778,14 +792,7 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="discounts" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>إدارة الخصومات</CardTitle>
-              <CardDescription>ميزة الخصومات المتقدمة قيد التطوير</CardDescription>
-            </CardHeader>
-          </Card>
-        </TabsContent>
+
 
         <TabsContent value="orders">
           <Card>

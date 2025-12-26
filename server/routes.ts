@@ -18,6 +18,7 @@ import { createUploadRouter } from "./routes/upload.js";
 import { createAnalyticsRouter } from "./routes/analytics.js";
 import { createNotificationsRouter } from "./routes/notifications.js";
 import journeyRoutes from "./routes/journey.js";
+import aiRoutes from "./routes/ai.js";
 import { storage } from "./storage/index.js";
 
 // Helper for session type extension if needed
@@ -62,6 +63,9 @@ export async function registerRoutes(
 
   // Journey wizard routes
   app.use(journeyRoutes);
+
+  // AI routes (Gemini)
+  app.use("/api/ai", aiRoutes);
 
   // Error handling middleware
   app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

@@ -19,6 +19,7 @@ import { WinnerNotificationBanner } from "@/components/notifications/winner-noti
 import { ComparisonProvider } from "@/contexts/comparison-context";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LiveChatWidget } from "@/components/chat/live-chat-widget";
+import { AIChatBot } from "@/components/chat/ai-chat-bot";
 
 // Direct imports for critical pages (needed for fast first paint)
 import Home from "@/pages/home";
@@ -43,6 +44,8 @@ const BlogPost = lazy(() => import("@/pages/blog-post"));
 const OrderConfirmation = lazy(() => import("@/pages/order-confirmation"));
 const Register = lazy(() => import("@/pages/register"));
 const Compare = lazy(() => import("@/pages/compare"));
+const AquariumWizard = lazy(() => import("@/pages/aquarium-wizard"));
+const FishCompatibility = lazy(() => import("@/pages/fish-compatibility"));
 
 
 
@@ -88,6 +91,15 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/ar" component={Home} />
       <Route path="/products" component={Products} />
+
+      {/* Aquarium Setup Wizard */}
+      <Route path="/aquarium-wizard">
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <AquariumWizard />
+          </Suspense>
+        </ErrorBoundary>
+      </Route>
 
 
       {/* Lazy loaded product details */}
@@ -138,6 +150,15 @@ function Router() {
             </Suspense>
           </ErrorBoundary>
         )}
+      </Route>
+
+      {/* Fish Compatibility Calculator */}
+      <Route path="/fish-compatibility">
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <FishCompatibility />
+          </Suspense>
+        </ErrorBoundary>
       </Route>
       {/* Alias for /encyclopedia */}
       <Route path="/encyclopedia">
@@ -325,6 +346,7 @@ function App() {
 
                 <Toaster />
                 <LiveChatWidget />
+                <AIChatBot />
                 <Router />
               </TooltipProvider>
             </ComparisonProvider>

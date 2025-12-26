@@ -18,7 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, SlidersHorizontal, X, Fish, BookOpen } from "lucide-react";
+import { Search, SlidersHorizontal, X, Fish, BookOpen, CheckCircle2 } from "lucide-react";
+import { Link } from "wouter";
 
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
 import { BackToTop } from "@/components/back-to-top";
@@ -156,6 +157,12 @@ export default function FishEncyclopedia() {
               موسوعة متكاملة لأكثر من {freshwaterFish.length} نوع من أسماك المياه العذبة
               بمعلومات تفصيلية ونصائح خبراء
             </p>
+            <Link href="/fish-compatibility">
+              <Button size="lg" variant="secondary" className="gap-2 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
+                <CheckCircle2 className="w-5 h-5" />
+                كاشف توافقية الأسماك
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
