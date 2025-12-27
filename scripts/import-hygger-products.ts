@@ -30,7 +30,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg978-18w",
         slug: "hygger-led-aquarium-light-18w",
-        name: "إضاءة هيغر LED بالطيف الكامل 18 واط",
+        name: "إضاءة HYGGER LED بالطيف الكامل 18 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -59,7 +59,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg978-22w",
         slug: "hygger-led-aquarium-light-22w",
-        name: "إضاءة هيغر LED بالطيف الكامل 22 واط",
+        name: "إضاءة HYGGER LED بالطيف الكامل 22 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -82,7 +82,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg978-26w",
         slug: "hygger-led-aquarium-light-26w",
-        name: "إضاءة هيغر LED بالطيف الكامل 26 واط",
+        name: "إضاءة HYGGER LED بالطيف الكامل 26 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -105,7 +105,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg978-36w",
         slug: "hygger-led-aquarium-light-36w",
-        name: "إضاءة هيغر LED بالطيف الكامل 36 واط",
+        name: "إضاءة HYGGER LED بالطيف الكامل 36 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -128,7 +128,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg085-200w",
         slug: "hygger-titanium-heater-200w",
-        name: "سخان هيغر تيتانيوم 200 واط مع متحكم خارجي",
+        name: "سخان HYGGER تيتانيوم 200 واط مع متحكم خارجي",
         brand: "HYGGER",
         category: "heaters",
         subcategory: "titanium-heaters",
@@ -155,7 +155,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg153-10w",
         slug: "hygger-4in1-filter-10w",
-        name: "فلتر هيغر غاطس 4 في 1 - 10 واط",
+        name: "فلتر HYGGER غاطس 4 في 1 - 10 واط",
         brand: "HYGGER",
         category: "filters",
         subcategory: "internal-filters",
@@ -179,7 +179,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg153-18w",
         slug: "hygger-4in1-filter-18w",
-        name: "فلتر هيغر غاطس 4 في 1 - 18 واط",
+        name: "فلتر HYGGER غاطس 4 في 1 - 18 واط",
         brand: "HYGGER",
         category: "filters",
         subcategory: "internal-filters",
@@ -201,7 +201,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg101-1200l-uv",
         slug: "hygger-canister-filter-uv-1200l",
-        name: "فلتر هيغر كانيستر مع معقم UV - 1200 لتر/ساعة",
+        name: "فلتر HYGGER كانيستر مع معقم UV - 1200 لتر/ساعة",
         brand: "HYGGER",
         category: "filters",
         subcategory: "canister-filters",
@@ -225,7 +225,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg101-1800l-uv",
         slug: "hygger-canister-filter-uv-1800l",
-        name: "فلتر هيغر كانيستر مع معقم UV - 1800 لتر/ساعة",
+        name: "فلتر HYGGER كانيستر مع معقم UV - 1800 لتر/ساعة",
         brand: "HYGGER",
         category: "filters",
         subcategory: "canister-filters",
@@ -247,7 +247,7 @@ const hyggerProducts = [
     {
         id: "hygger-hg150-6w",
         slug: "hygger-hob-filter-surface-skimmer",
-        name: "فلتر هيغر خلفي هادئ مع كاشط سطح الماء",
+        name: "فلتر HYGGER خلفي هادئ مع كاشط سطح الماء",
         brand: "HYGGER",
         category: "filters",
         subcategory: "hang-on-back-filters",
@@ -274,7 +274,7 @@ const moreProducts = [
     {
         id: "hygger-hg037-3w",
         slug: "hygger-quiet-air-pump-3w",
-        name: "مضخة هواء هيغر هادئة 3 واط",
+        name: "مضخة هواء HYGGER هادئة 3 واط",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "air-pumps",
@@ -297,7 +297,7 @@ const moreProducts = [
     {
         id: "hygger-hg087-1-5w",
         slug: "hygger-rechargeable-oxygen-pump",
-        name: "مضخة أكسجين هيغر محمولة قابلة للشحن",
+        name: "مضخة أكسجين HYGGER محمولة قابلة للشحن",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "air-pumps",
@@ -320,7 +320,7 @@ const moreProducts = [
     {
         id: "hygger-hg958-5w",
         slug: "hygger-ultra-quiet-air-pump-5w",
-        name: "مضخة هواء هيغر فائقة الهدوء 5 واط",
+        name: "مضخة هواء HYGGER فائقة الهدوء 5 واط",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "air-pumps",
@@ -343,7 +343,7 @@ const moreProducts = [
     {
         id: "hygger-hgy0001-m",
         slug: "hygger-black-knight-cleaning-kit",
-        name: "طقم تنظيف هيغر الفارس الأسود 6 في 1",
+        name: "طقم تنظيف HYGGER الفارس الأسود 6 في 1",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "cleaning-tools",
@@ -365,7 +365,7 @@ const moreProducts = [
     {
         id: "hygger-hg124-s",
         slug: "hygger-magnetic-glass-cleaner-small",
-        name: "منظف زجاج هيغر مغناطيسي - صغير",
+        name: "منظف زجاج HYGGER مغناطيسي - صغير",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "cleaning-tools",
@@ -383,7 +383,7 @@ const moreProducts = [
     {
         id: "hygger-hg124-m",
         slug: "hygger-magnetic-glass-cleaner-medium",
-        name: "منظف زجاج هيغر مغناطيسي - متوسط",
+        name: "منظف زجاج HYGGER مغناطيسي - متوسط",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "cleaning-tools",
@@ -398,7 +398,7 @@ const moreProducts = [
     {
         id: "hygger-hg124-l",
         slug: "hygger-magnetic-glass-cleaner-large",
-        name: "منظف زجاج هيغر مغناطيسي - كبير",
+        name: "منظف زجاج HYGGER مغناطيسي - كبير",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "cleaning-tools",
@@ -414,7 +414,7 @@ const moreProducts = [
     {
         id: "hygger-hg953-m",
         slug: "hygger-magnetic-algae-scraper",
-        name: "كاشطة طحالب هيغر مغناطيسية",
+        name: "كاشطة طحالب HYGGER مغناطيسية",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "cleaning-tools",
@@ -434,7 +434,7 @@ const moreProducts = [
     {
         id: "hygger-hg073-l",
         slug: "hygger-digital-thermometer",
-        name: "ميزان حرارة هيغر رقمي خارجي",
+        name: "ميزان حرارة HYGGER رقمي خارجي",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "thermometers",
@@ -455,7 +455,7 @@ const moreProducts = [
     {
         id: "hygger-hg030-color",
         slug: "hygger-aquascaping-tools-kit",
-        name: "طقم أدوات هيغر للأكواسكيب 6 في 1 ملون",
+        name: "طقم أدوات HYGGER للأكواسكيب 6 في 1 ملون",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "aquascaping-tools",
@@ -475,7 +475,7 @@ const moreProducts = [
     {
         id: "hygger-hg957-36w",
         slug: "hygger-rgb-led-light-controller-36w",
-        name: "إضاءة هيغر LED RGB مع متحكم خارجي 36 واط",
+        name: "إضاءة HYGGER LED RGB مع متحكم خارجي 36 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -495,7 +495,7 @@ const moreProducts = [
     {
         id: "hygger-hg957-48w",
         slug: "hygger-rgb-led-light-controller-48w",
-        name: "إضاءة هيغر LED RGB مع متحكم خارجي 48 واط",
+        name: "إضاءة HYGGER LED RGB مع متحكم خارجي 48 واط",
         brand: "HYGGER",
         category: "lighting",
         subcategory: "led-lights",
@@ -515,7 +515,7 @@ const moreProducts = [
     {
         id: "hygger-hg239",
         slug: "hygger-5in1-water-tester",
-        name: "جهاز فحص الماء هيغر 5 في 1 رقمي",
+        name: "جهاز فحص الماء HYGGER 5 في 1 رقمي",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "water-testing",
@@ -535,7 +535,7 @@ const moreProducts = [
     {
         id: "hygger-hc004-s",
         slug: "hygger-aquarium-background-small",
-        name: "خلفية حوض هيغر كهروستاتيكية - صغير",
+        name: "خلفية حوض HYGGER كهروستاتيكية - صغير",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "decorations",
@@ -550,7 +550,7 @@ const moreProducts = [
     {
         id: "hygger-hc004-m",
         slug: "hygger-aquarium-background-medium",
-        name: "خلفية حوض هيغر كهروستاتيكية - متوسط",
+        name: "خلفية حوض HYGGER كهروستاتيكية - متوسط",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "decorations",
@@ -565,7 +565,7 @@ const moreProducts = [
     {
         id: "hygger-hc004-l",
         slug: "hygger-aquarium-background-large",
-        name: "خلفية حوض هيغر كهروستاتيكية - كبير",
+        name: "خلفية حوض HYGGER كهروستاتيكية - كبير",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "decorations",
@@ -580,7 +580,7 @@ const moreProducts = [
     {
         id: "hygger-hc004-xl",
         slug: "hygger-aquarium-background-xlarge",
-        name: "خلفية حوض هيغر كهروستاتيكية - كبير جداً",
+        name: "خلفية حوض HYGGER كهروستاتيكية - كبير جداً",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "decorations",
@@ -596,7 +596,7 @@ const moreProducts = [
     {
         id: "hygger-hg006-50",
         slug: "hygger-8in1-test-strips",
-        name: "أشرطة فحص الماء هيغر 8 في 1 - 50 شريط",
+        name: "أشرطة فحص الماء HYGGER 8 في 1 - 50 شريط",
         brand: "HYGGER",
         category: "accessories",
         subcategory: "water-testing",

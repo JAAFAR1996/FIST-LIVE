@@ -25,27 +25,27 @@ interface ProductVariant {
 // Define variant groups - products that should be consolidated
 const variantGroups = [
     {
-        baseName: "إضاءة هيغر LED بالطيف الكامل",
+        baseName: "إضاءة HYGGER LED بالطيف الكامل",
         variantType: "watt", // Extract wattage
     },
     {
-        baseName: "فلتر هيغر غاطس 4 في 1",
+        baseName: "فلتر HYGGER غاطس 4 في 1",
         variantType: "watt",
     },
     {
-        baseName: "فلتر هيغر كانيستر مع معقم UV",
+        baseName: "فلتر HYGGER كانيستر مع معقم UV",
         variantType: "flow", // Extract flow rate
     },
     {
-        baseName: "إضاءة هيغر LED RGB مع متحكم خارجي",
+        baseName: "إضاءة HYGGER LED RGB مع متحكم خارجي",
         variantType: "watt",
     },
     {
-        baseName: "منظف زجاج هيغر مغناطيسي",
+        baseName: "منظف زجاج HYGGER مغناطيسي",
         variantType: "size", // Extract size name
     },
     {
-        baseName: "خلفية حوض هيغر كهروستاتيكية",
+        baseName: "خلفية حوض HYGGER كهروستاتيكية",
         variantType: "size",
     },
 ];
