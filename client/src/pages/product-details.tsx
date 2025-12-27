@@ -29,55 +29,6 @@ import { MetaTags, ProductSchema, BreadcrumbSchema } from "@/components/seo/meta
 import { fetchFrequentlyBoughtTogether, fetchSimilarProducts, fetchTrendingProducts } from "@/lib/recommendations";
 import { ProductCard } from "@/components/products/product-card";
 
-// Get category-specific benefits
-function getCategoryBenefits(category: string): string[] {
-  const benefitsMap: Record<string, string[]> = {
-    "معالجة المياه": [
-      "يزيل الكلور والكلورامين بفعالية فورية",
-      "يحمي الأسماك من المعادن الثقيلة الضارة",
-      "يحسن جودة المياه ويقلل التوتر على الأسماك",
-      "مناسب لجميع أنواع أحواض المياه العذبة والمالحة"
-    ],
-    "أطعمة": [
-      "تركيبة غذائية متوازنة تدعم النمو الصحي",
-      "يعزز الألوان الطبيعية الزاهية للأسماك",
-      "سهل الهضم ولا يلوث المياه",
-      "غني بالفيتامينات والمعادن الأساسية"
-    ],
-    "فلاتر": [
-      "فلترة ميكانيكية وبيولوجية وكيميائية ثلاثية المراحل",
-      "يحافظ على صفاء المياه ونقائها",
-      "يقلل من الحاجة لتغيير المياه المتكرر",
-      "تشغيل هادئ وموفر للطاقة"
-    ],
-    "سخانات": [
-      "تحكم دقيق في درجة الحرارة ±0.5°س",
-      "حماية تلقائية من الحرارة الزائدة",
-      "مقاوم للماء بالكامل وآمن للاستخدام",
-      "موفر للطاقة مع أداء موثوق"
-    ],
-    "إضاءة": [
-      "طيف ضوئي كامل يحاكي ضوء الشمس الطبيعي",
-      "يعزز نمو النباتات المائية الصحي",
-      "يبرز الألوان الطبيعية للأسماك والديكور",
-      "عمر افتراضي طويل وكفاءة طاقة عالية"
-    ],
-    "ديكور": [
-      "آمن 100% للأسماك ولا يؤثر على جودة المياه",
-      "يوفر أماكن للاختباء وتقليل التوتر",
-      "سهل التنظيف والصيانة",
-      "تصميم طبيعي وجذاب يحسن مظهر الحوض"
-    ]
-  };
-
-  return benefitsMap[category] || [
-    "منتج عالي الجودة من علامة تجارية موثوقة",
-    "سهل الاستخدام ومناسب للمبتدئين والخبراء",
-    "يحسن بيئة الحوض ويعزز صحة الأسماك",
-    "قيمة ممتازة مقابل السعر"
-  ];
-}
-
 export default function ProductDetails() {
   const params = useParams();
   const slug = params.slug;
@@ -506,17 +457,20 @@ export default function ProductDetails() {
                           </div>
                         </div>
                       </div>
-                      <div className="space-y-4">
-                        <h4 className="font-bold">الفوائد الرئيسية:</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          {getCategoryBenefits(product.category).map((benefit, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-                              <span>{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      {/* Only show benefits if they exist in database */}
+                      {Array.isArray(product.specifications?.benefits) && product.specifications.benefits.length > 0 && (
+                        <div className="space-y-4">
+                          <h4 className="font-bold">الفوائد الرئيسية:</h4>
+                          <ul className="space-y-2 text-sm text-muted-foreground">
+                            {product.specifications.benefits.map((benefit: string, index: number) => (
+                              <li key={index} className="flex items-start gap-2">
+                                <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
+                                <span>{benefit}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
