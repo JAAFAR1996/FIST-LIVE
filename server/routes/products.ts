@@ -112,19 +112,26 @@ export function createProductRouter(): RouterType {
             }
 
             // Extract base model name (remove wattage/size suffix)
-            // e.g., "HYGGER HG978-18W" -> "HYGGER HG978"
-            const nameWithoutSize = product.name
-                .replace(/-?\d+\s*W$/i, '')  // Remove "-18W" or "18W"
-                .replace(/-?\d+\s*cm$/i, '') // Remove "-60cm" or "60cm"
-                .trim();
+            // Supports both English (18W) and Arabic (18 واط) patterns
+            const removeVariantSuffix = (name: string): string => {
+                return name
+                    // English patterns
+                    .replace(/-?\d+\s*W$/i, '')           // "-18W" or "18W"
+                    .replace(/-?\d+\s*cm$/i, '')          // "-60cm"
+                    // Arabic patterns
+                    .replace(/\s*\d+\s*واط$/i, '')        // "18 واط"
+                    .replace(/-?\s*\d+\s*لتر\/ساعة$/i, '') // "- 1200 لتر/ساعة"
+                    // Size variants (Arabic)
+                    .replace(/-?\s*(صغير|متوسط|كبير|كبير جداً|S|M|L|XL)$/i, '')
+                    .trim();
+            };
+
+            const nameWithoutSize = removeVariantSuffix(product.name);
 
             // Get all products with similar base name
             const allProducts = await storage.getProducts({});
             const variants = allProducts.filter((p: typeof product) => {
-                const pNameBase = p.name
-                    .replace(/-?\d+\s*W$/i, '')
-                    .replace(/-?\d+\s*cm$/i, '')
-                    .trim();
+                const pNameBase = removeVariantSuffix(p.name);
                 return pNameBase === nameWithoutSize &&
                     p.brand === product.brand &&
                     p.category === product.category;

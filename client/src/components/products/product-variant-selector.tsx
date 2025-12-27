@@ -37,12 +37,30 @@ export function ProductVariantSelector({
 
     const Icon = isHeater ? Thermometer : Zap;
 
-    // استخراج التسمية من الاسم (مثل: 18W, 22W, 26W)
+    // استخراج التسمية من الاسم (مثل: 18W, 22W, 26W أو 18 واط)
     const getVariantLabel = (product: Product): string => {
-        // محاولة استخراج الواط من الاسم
-        const wattMatch = product.name?.match(/(\d+)\s*W/i);
-        if (wattMatch) {
-            return `${wattMatch[1]}W`;
+        // English wattage (18W)
+        const wattMatchEn = product.name?.match(/(\d+)\s*W/i);
+        if (wattMatchEn) {
+            return `${wattMatchEn[1]}W`;
+        }
+
+        // Arabic wattage (18 واط)
+        const wattMatchAr = product.name?.match(/(\d+)\s*واط/);
+        if (wattMatchAr) {
+            return `${wattMatchAr[1]} واط`;
+        }
+
+        // Flow rate (1200 لتر/ساعة)
+        const flowMatch = product.name?.match(/(\d+)\s*لتر\/ساعة/);
+        if (flowMatch) {
+            return `${flowMatch[1]} ل/س`;
+        }
+
+        // Arabic size names
+        const sizeMatch = product.name?.match(/-\s*(صغير|متوسط|كبير|كبير جداً)$/);
+        if (sizeMatch) {
+            return sizeMatch[1];
         }
 
         // محاولة استخراج من المواصفات
@@ -51,7 +69,7 @@ export function ProductVariantSelector({
         }
 
         // استخدام اسم المنتج كاحتياطي
-        return product.name?.split("-").pop() || product.name || "";
+        return product.name?.split("-").pop()?.trim() || product.name || "";
     };
 
     // الحصول على قياس الحوض المناسب
@@ -174,8 +192,19 @@ export function ProductVariantSelectorCompact({
     }
 
     const getVariantLabel = (product: Product): string => {
-        const wattMatch = product.name?.match(/(\d+)\s*W/i);
-        return wattMatch ? `${wattMatch[1]}W` : product.name?.split("-").pop() || "";
+        // English wattage
+        const wattMatchEn = product.name?.match(/(\d+)\s*W/i);
+        if (wattMatchEn) return `${wattMatchEn[1]}W`;
+        // Arabic wattage
+        const wattMatchAr = product.name?.match(/(\d+)\s*واط/);
+        if (wattMatchAr) return `${wattMatchAr[1]} واط`;
+        // Flow rate
+        const flowMatch = product.name?.match(/(\d+)\s*لتر\/ساعة/);
+        if (flowMatch) return `${flowMatch[1]} ل/س`;
+        // Size names
+        const sizeMatch = product.name?.match(/-\s*(صغير|متوسط|كبير|كبير جداً)$/);
+        if (sizeMatch) return sizeMatch[1];
+        return product.name?.split("-").pop()?.trim() || "";
     };
 
     return (
