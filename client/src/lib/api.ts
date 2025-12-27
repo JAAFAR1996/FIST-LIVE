@@ -102,6 +102,20 @@ export async function fetchProductBySlug(slug: string): Promise<Product> {
   return await fetchProductBySlugCore(slug);
 }
 
+/**
+ * Fetch product variants (related sizes/power options)
+ * e.g., for HYGGER HG978-18W, returns all HG978 variants (18W, 22W, 26W)
+ */
+export async function fetchProductVariants(slug: string): Promise<Product[]> {
+  try {
+    const response = await getJson<{ variants: Product[] }>(`/api/products/${slug}/variants`);
+    return response.variants || [];
+  } catch (err) {
+    console.warn("Failed to fetch product variants:", err);
+    return [];
+  }
+}
+
 
 export async function fetchTopSellingProducts(): Promise<{
   productOfWeek: Product | null;

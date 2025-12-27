@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { type Product } from "@/types";
-import { fetchProductBySlug, fetchProducts } from "@/lib/api";
+import { fetchProductBySlug, fetchProducts, fetchProductVariants } from "@/lib/api";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +20,7 @@ import { ProductReviews } from "@/components/products/product-reviews";
 import { ProductImageGallery } from "@/components/products/product-image-gallery";
 import { ExplodedProductView } from "@/components/products/exploded-product-view";
 import { FrequentlyBoughtTogether } from "@/components/products/frequently-bought-together";
+import { ProductVariantSelector } from "@/components/products/product-variant-selector";
 import { ProductSpecificationsTable } from "@/components/products/product-specifications-table";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "wouter";
@@ -52,6 +53,13 @@ export default function ProductDetails() {
   const relatedProducts = allProductsData?.products
     ?.filter((p: Product) => p.id !== product?.id && p.category === product?.category)
     ?.slice(0, 4) || [];
+
+  // Fetch product variants (related sizes)
+  const { data: variants = [] } = useQuery({
+    queryKey: ["product-variants", slug],
+    queryFn: () => fetchProductVariants(slug!),
+    enabled: !!slug && !!product,
+  });
 
   const handleAddToCart = () => {
     if (product) {
@@ -265,6 +273,16 @@ export default function ProductDetails() {
                     </p>
                   )}
                 </div>
+
+                {/* Product Variants (Size/Power Options) */}
+                {variants && variants.length > 1 && (
+                  <div className="mb-6">
+                    <ProductVariantSelector
+                      currentProduct={product}
+                      variants={variants}
+                    />
+                  </div>
+                )}
 
                 {/* Stock Status */}
                 <div className="flex items-center gap-2 mb-4">

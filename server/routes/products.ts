@@ -89,6 +89,53 @@ export function createProductRouter(): RouterType {
         }
     });
 
+    // ============ VARIANTS ============
+    // Get product variants (related sizes/power options)
+    router.get("/:idOrSlug/variants", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { idOrSlug } = req.params as { idOrSlug: string };
+
+            // First get the product to find its base model
+            let product;
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+            if (uuidRegex.test(idOrSlug)) {
+                product = await storage.getProduct(idOrSlug);
+            }
+            if (!product) {
+                product = await storage.getProductBySlug(idOrSlug);
+            }
+
+            if (!product) {
+                res.status(404).json({ message: "Product not found" });
+                return;
+            }
+
+            // Extract base model name (remove wattage/size suffix)
+            // e.g., "HYGGER HG978-18W" -> "HYGGER HG978"
+            const nameWithoutSize = product.name
+                .replace(/-?\d+\s*W$/i, '')  // Remove "-18W" or "18W"
+                .replace(/-?\d+\s*cm$/i, '') // Remove "-60cm" or "60cm"
+                .trim();
+
+            // Get all products with similar base name
+            const allProducts = await storage.getProducts({});
+            const variants = allProducts.filter((p: typeof product) => {
+                const pNameBase = p.name
+                    .replace(/-?\d+\s*W$/i, '')
+                    .replace(/-?\d+\s*cm$/i, '')
+                    .trim();
+                return pNameBase === nameWithoutSize &&
+                    p.brand === product.brand &&
+                    p.category === product.category;
+            });
+
+            res.json({ variants });
+        } catch (err) {
+            next(err);
+        }
+    });
+
     // ============ DISCOUNTS ============
     // Get Discounts
     router.get("/:productId/discounts", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
