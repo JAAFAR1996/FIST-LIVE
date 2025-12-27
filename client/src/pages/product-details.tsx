@@ -560,6 +560,16 @@ export default function ProductDetails() {
                         </p>
                       </div>
                     </div>
+
+                    {/* Custom Specifications Table */}
+                    {product.specifications && Object.keys(product.specifications).length > 0 && (
+                      <div className="mt-6">
+                        <ProductSpecificationsTable
+                          specifications={product.specifications}
+                          category={product.category}
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>

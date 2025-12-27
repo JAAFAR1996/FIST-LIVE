@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { sendMessage, ChatMessage, ChatContext } from "../services/gemini-ai.js";
 import { getDb } from "../db.js";
 import * as schema from "../../shared/schema.js";
-import { count, lt, and, gt, or, ilike, desc } from "drizzle-orm";
+import { count, lt, and, gt, or, ilike, desc, eq, inArray } from "drizzle-orm";
 
 const router = Router();
 
@@ -67,10 +67,11 @@ async function findRelevantProducts(message: string, limit: number = 5) {
 // POST /api/ai/chat - Chat with Gemini AI
 router.post("/chat", async (req: Request, res: Response) => {
     try {
-        const { message, history = [], userName } = req.body as {
+        const { message, history = [], userName, userId } = req.body as {
             message: string;
             history?: ChatMessage[];
             userName?: string;
+            userId?: string;
         };
 
         if (!message || typeof message !== "string") {
@@ -80,14 +81,30 @@ router.post("/chat", async (req: Request, res: Response) => {
             });
         }
 
+        // Check if user is admin
+        const db = getDb();
+        let isAdmin = false;
+        if (db && userId) {
+            try {
+                const [user] = await db
+                    .select()
+                    .from(schema.users)
+                    .where(eq(schema.users.id, userId))
+                    .limit(1);
+                isAdmin = user?.role === "admin";
+            } catch (error) {
+                console.error("Error checking user role:", error);
+            }
+        }
+
         // Find relevant products based on user message
         const relevantProducts = await findRelevantProducts(message, 5);
 
         // Get context from database
         let context: ChatContext = { userName };
-        const db = getDb();
         if (db) {
             try {
+                // Get product counts
                 const [productsResult] = await db
                     .select({ count: count() })
                     .from(schema.products);
@@ -97,12 +114,12 @@ router.post("/chat", async (req: Request, res: Response) => {
                     .from(schema.products)
                     .where(and(gt(schema.products.stock, 0), lt(schema.products.stock, 5)));
 
+                // Base context for all users
                 context = {
                     ...context,
                     productsCount: productsResult?.count ?? 0,
                     lowStockCount: lowStockResult?.count ?? 0,
                     topCategories: ["أحواض", "فلاتر", "طعام"],
-                    recentOrdersCount: 0,
                     availableProducts: relevantProducts.map(p => ({
                         id: p.id,
                         name: p.name,
@@ -111,6 +128,64 @@ router.post("/chat", async (req: Request, res: Response) => {
                         rating: p.rating,
                     })),
                 };
+
+                // Get sales data (last 30 days) - ONLY FOR ADMINS
+                if (isAdmin) {
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                    const recentOrders = await db
+                        .select()
+                        .from(schema.orders)
+                        .where(gt(schema.orders.createdAt, thirtyDaysAgo));
+
+                    // Calculate total revenue
+                    const totalRevenue = recentOrders.reduce((sum, order) => {
+                        return sum + parseFloat(order.total);
+                    }, 0);
+
+                    // Get order counts by status
+                    const completedOrders = recentOrders.filter(o => o.status === 'delivered').length;
+                    const pendingOrders = recentOrders.filter(o => o.status === 'pending').length;
+                    const processingOrders = recentOrders.filter(o => o.status === 'processing').length;
+
+                    // Get top selling products
+                    const orderItems = await db
+                        .select()
+                        .from(schema.orderItems)
+                        .limit(1000);
+
+                    const productSales = new Map<string, number>();
+                    for (const item of orderItems) {
+                        const current = productSales.get(item.productId) || 0;
+                        productSales.set(item.productId, current + item.quantity);
+                    }
+
+                    const topProductIds = Array.from(productSales.entries())
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5)
+                        .map(([id]) => id);
+
+                    let topProducts: any[] = [];
+                    if (topProductIds.length > 0) {
+                        topProducts = await db
+                            .select()
+                            .from(schema.products)
+                            .where(inArray(schema.products.id, topProductIds))
+                            .limit(5);
+                    }
+
+                    // Add sales data to context for admins only
+                    context.recentOrdersCount = recentOrders.length;
+                    context.salesData = {
+                        totalRevenue: Math.round(totalRevenue),
+                        totalOrders: recentOrders.length,
+                        completedOrders,
+                        pendingOrders,
+                        processingOrders,
+                        topProducts: topProducts.map(p => p.name),
+                    };
+                }
             } catch (dbError) {
                 console.error("Context fetch error:", dbError);
             }

@@ -50,6 +50,18 @@ ${greeting}
 - منتجات بمخزون منخفض: ${context?.lowStockCount ?? "غير متوفر"}
 - أفضل الفئات: ${context?.topCategories?.join("، ") ?? "أحواض، فلاتر، طعام"}
 
+${context?.salesData ? `
+## بيانات المبيعات (آخر 30 يوم):
+- إجمالي الإيرادات: ${context.salesData.totalRevenue.toLocaleString()} د.ع
+- عدد الطلبات: ${context.salesData.totalOrders}
+- طلبات مكتملة: ${context.salesData.completedOrders}
+- طلبات قيد المعالجة: ${context.salesData.processingOrders}
+- طلبات معلقة: ${context.salesData.pendingOrders}
+${context.salesData.topProducts.length > 0 ? `- أكثر المنتجات مبيعاً: ${context.salesData.topProducts.join("، ")}` : ''}
+
+**استخدم هذه البيانات الحقيقية عند الإجابة عن أسئلة المبيعات!**
+` : ''}
+
 ${context?.availableProducts && context.availableProducts.length > 0 ? `
 ## منتجات متاحة ذات صلة بالمحادثة:
 ${context.availableProducts.map((p, i) =>
@@ -83,6 +95,14 @@ export interface ChatContext {
     topCategories?: string[];
     recentOrdersCount?: number;
     userName?: string;
+    salesData?: {
+        totalRevenue: number;
+        totalOrders: number;
+        completedOrders: number;
+        pendingOrders: number;
+        processingOrders: number;
+        topProducts: string[];
+    };
     availableProducts?: Array<{
         id: string;
         name: string;

@@ -2,8 +2,8 @@ import type { Router as RouterType, Request, Response, NextFunction } from "expr
 import { Router } from "express";
 import { requireAdmin } from "../middleware/auth.js";
 import { getDb } from "../db.js";
-import { orders, users, products } from "../../shared/schema.js";
-import { sql, desc, gte, count, sum, eq, and } from "drizzle-orm";
+import { orders, users, products, carts, orderItems } from "../../shared/schema.js";
+import { sql, desc, gte, count, sum, eq, and, gt } from "drizzle-orm";
 
 const router = Router();
 
@@ -166,6 +166,160 @@ router.get("/", requireAdmin, async (req: Request<object, object, object, Analyt
         });
     } catch (error) {
         console.error("Analytics error:", error);
+        next(error);
+    }
+});
+
+// GET /api/analytics/insights - AI Insights with real data
+router.get("/insights", requireAdmin, async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const db = getDb();
+        if (!db) {
+            res.status(500).json({ message: "Database not connected" });
+            return;
+        }
+
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        // Get all orders from last 30 days
+        const recentOrders = await db
+            .select()
+            .from(orders)
+            .where(gte(orders.createdAt, thirtyDaysAgo));
+
+        // 1. Peak Shopping Hours
+        const hourCounts = new Map<number, number>();
+        for (const order of recentOrders) {
+            const hour = new Date(order.createdAt).getHours();
+            hourCounts.set(hour, (hourCounts.get(hour) || 0) + 1);
+        }
+
+        const sortedHours = Array.from(hourCounts.entries())
+            .sort((a, b) => b[1] - a[1]);
+
+        const peakHoursText = sortedHours.length > 0
+            ? `${sortedHours[0][0]}-${(sortedHours[0][0] + 3) % 24} ${sortedHours[0][0] >= 12 ? 'مساءً' : 'صباحاً'}`
+            : "لا توجد بيانات كافية";
+
+        // 2. Cart Abandonment Rate
+        const allCartsData = await db
+            .select({ count: count() })
+            .from(carts)
+            .where(gte(carts.createdAt, thirtyDaysAgo));
+
+        const totalCarts = allCartsData[0]?.count || 0;
+        const completedOrders = recentOrders.filter(o => o.status === 'delivered').length;
+
+        const abandonmentRate = totalCarts > 0
+            ? Math.round(((totalCarts - completedOrders) / totalCarts) * 100)
+            : 0;
+
+        // 3. Geographic Distribution
+        const cityCount = new Map<string, number>();
+        for (const order of recentOrders) {
+            try {
+                const address = JSON.parse(order.shippingAddress);
+                const city = address.governorate || address.city || "غير محدد";
+                cityCount.set(city, (cityCount.get(city) || 0) + 1);
+            } catch (e) {
+                // Skip invalid addresses
+            }
+        }
+
+        const totalOrdersForGeo = recentOrders.length;
+        const cityDistribution = Array.from(cityCount.entries())
+            .map(([city, count]) => ({
+                city,
+                count,
+                percentage: totalOrdersForGeo > 0 ? Math.round((count / totalOrdersForGeo) * 100) : 0
+            }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 3);
+
+        const geographyText = cityDistribution.length > 0
+            ? cityDistribution.map(c => `${c.percentage}% من ${c.city}`).join("، ")
+            : "لا توجد بيانات كافية";
+
+        // 4. Demand Forecasts (based on historical sales)
+        const allOrderItems = await db
+            .select()
+            .from(orderItems)
+            .limit(1000);
+
+        // Get product categories and their sales
+        const categorySales = new Map<string, number>();
+        for (const item of allOrderItems) {
+            const [product] = await db
+                .select()
+                .from(products)
+                .where(eq(products.id, item.productId))
+                .limit(1);
+
+            if (product) {
+                const category = product.category;
+                categorySales.set(category, (categorySales.get(category) || 0) + item.quantity);
+            }
+        }
+
+        // Calculate seasonal factors
+        const now = new Date();
+        const month = now.getMonth();
+        const isSummer = month >= 5 && month <= 8;
+        const isWinter = month >= 11 || month <= 2;
+
+        const forecasts = Array.from(categorySales.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([category, sales]) => {
+                let trend: "up" | "down" | "stable" = "stable";
+                let percentage = 5;
+                let reason = "طلب ثابت على مدار السنة";
+
+                // Apply seasonal logic
+                if (isSummer && category.includes("أحواض")) {
+                    trend = "up";
+                    percentage = 35;
+                    reason = "موسم العائلات - بداية الصيف";
+                } else if (isSummer && category.includes("فلتر")) {
+                    trend = "up";
+                    percentage = 25;
+                    reason = "طلب مرتفع مع الأحواض";
+                } else if (isWinter && category.includes("سخان")) {
+                    trend = "up";
+                    percentage = 45;
+                    reason = "الماء بارد - ضرورة";
+                } else if (isWinter && (category.includes("دواء") || category.includes("علاج"))) {
+                    trend = "up";
+                    percentage = 30;
+                    reason = "أمراض موسمية";
+                }
+
+                return { category, trend, percentage, reason };
+            });
+
+        // Fallback if no data
+        if (forecasts.length === 0) {
+            forecasts.push({
+                category: "طعام",
+                trend: "stable",
+                percentage: 5,
+                reason: "طلب ثابت - لا توجد بيانات كافية"
+            });
+        }
+
+        // Response
+        res.json({
+            success: true,
+            data: {
+                peakHours: peakHoursText,
+                cartAbandonment: abandonmentRate,
+                geography: geographyText,
+                forecasts
+            }
+        });
+    } catch (error) {
+        console.error("AI Insights error:", error);
         next(error);
     }
 });

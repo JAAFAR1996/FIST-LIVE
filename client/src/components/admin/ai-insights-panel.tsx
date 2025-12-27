@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import {
     TrendingUp,
     TrendingDown,
@@ -46,14 +46,46 @@ interface DemandForecast {
 
 export function AIInsightsPanel() {
     const { toast } = useToast();
+    const [, setLocation] = useLocation();
 
     // Fetch products
-    const { data: productsData, isLoading } = useQuery({
+    const { data: productsData, isLoading: productsLoading } = useQuery({
         queryKey: ["products"],
         queryFn: () => fetchProducts(),
     });
 
     const products = productsData?.products || [];
+
+    // Fetch real AI insights
+    const { data: insightsData, isLoading: insightsLoading, error: insightsError } = useQuery({
+        queryKey: ["ai-insights"],
+        queryFn: async () => {
+            const res = await fetch("/api/analytics/insights", {
+                credentials: "include",
+            });
+            if (!res.ok) {
+                console.error("Failed to fetch insights:", res.status, res.statusText);
+                throw new Error("Failed to fetch insights");
+            }
+            return res.json();
+        },
+    });
+
+    // Log any errors for debugging
+    if (insightsError) {
+        console.error("Insights error:", insightsError);
+    }
+
+    const isLoading = productsLoading || insightsLoading;
+    const realInsights = insightsData?.data;
+
+    // Debug logging
+    console.log("AI Insights Data:", {
+        isLoading,
+        insightsData,
+        realInsights,
+        error: insightsError
+    });
 
     // Generate insights based on product data
     const insights = useMemo((): Insight[] => {
@@ -109,71 +141,60 @@ export function AIInsightsPanel() {
             });
         }
 
-        // 4. Peak hours insight (simulated)
-        insights.push({
-            id: "peak-hours",
-            type: "info",
-            icon: <Clock className="w-5 h-5 text-blue-500" />,
-            title: "أفضل أوقات البيع",
-            description: "معظم الطلبات تأتي بين الساعة 7-10 مساءً",
-        });
-
-        // 5. Cart abandonment (simulated)
-        insights.push({
-            id: "cart-abandon",
-            type: "action",
-            icon: <ShoppingCart className="w-5 h-5 text-orange-500" />,
-            title: "سلات متروكة",
-            description: "23% من العملاء يتركون السلة عند الدفع. جرب خصم 5% لتشجيعهم!",
-            action: {
-                label: "إنشاء كوبون",
-                href: "/admin?tab=coupons"
-            }
-        });
-
-        // 6. Geographic insight (simulated)
-        insights.push({
-            id: "geography",
-            type: "info",
-            icon: <MapPin className="w-5 h-5 text-purple-500" />,
-            title: "توزيع العملاء",
-            description: "68% من طلباتك من بغداد، 15% من البصرة، 17% من محافظات أخرى",
-        });
-
-        return insights;
-    }, [products]);
-
-    // Generate demand forecasts
-    const forecasts = useMemo((): DemandForecast[] => {
-        const now = new Date();
-        const month = now.getMonth();
-        const isSummer = month >= 5 && month <= 8;
-        const isWinter = month >= 11 || month <= 2;
-
-        const forecasts: DemandForecast[] = [];
-
-        if (isSummer) {
-            forecasts.push(
-                { category: "أحواض", trend: "up", percentage: 35, reason: "موسم العائلات - بداية الصيف" },
-                { category: "فلاتر", trend: "up", percentage: 25, reason: "طلب مرتفع مع الأحواض" },
-                { category: "نباتات مائية", trend: "up", percentage: 20, reason: "تزيين الأحواض الجديدة" }
-            );
-        } else if (isWinter) {
-            forecasts.push(
-                { category: "سخانات", trend: "up", percentage: 45, reason: "الماء بارد - ضرورة" },
-                { category: "أدوية", trend: "up", percentage: 30, reason: "أمراض موسمية" },
-                { category: "طعام", trend: "stable", percentage: 5, reason: "طلب ثابت" }
-            );
-        } else {
-            forecasts.push(
-                { category: "إضاءة LED", trend: "up", percentage: 15, reason: "تحديث الأحواض" },
-                { category: "طعام", trend: "stable", percentage: 5, reason: "طلب ثابت على مدار السنة" },
-                { category: "ديكور", trend: "down", percentage: -10, reason: "انتظار الموسم" }
-            );
+        // 4. Peak hours insight (REAL DATA)
+        if (realInsights?.peakHours) {
+            insights.push({
+                id: "peak-hours",
+                type: "info",
+                icon: <Clock className="w-5 h-5 text-blue-500" />,
+                title: "أفضل أوقات البيع",
+                description: `معظم الطلبات تأتي بين الساعة ${realInsights.peakHours}`,
+            });
         }
 
-        return forecasts;
-    }, []);
+        // 5. Cart abandonment (REAL DATA)
+        if (realInsights?.cartAbandonment !== undefined) {
+            insights.push({
+                id: "cart-abandon",
+                type: realInsights.cartAbandonment > 20 ? "action" : "info",
+                icon: <ShoppingCart className="w-5 h-5 text-orange-500" />,
+                title: "سلات متروكة",
+                description: `${realInsights.cartAbandonment}% من العملاء يتركون السلة${realInsights.cartAbandonment > 20 ? '. جرب خصم 5% لتشجيعهم!' : ''}`,
+                action: realInsights.cartAbandonment > 20 ? {
+                    label: "إنشاء كوبون",
+                    href: "/admin?tab=coupons"
+                } : undefined
+            });
+        }
+
+        // 6. Geographic insight (REAL DATA)
+        if (realInsights?.geography) {
+            insights.push({
+                id: "geography",
+                type: "info",
+                icon: <MapPin className="w-5 h-5 text-purple-500" />,
+                title: "توزيع العملاء",
+                description: realInsights.geography,
+            });
+        }
+
+        return insights;
+    }, [products, realInsights]);
+
+    // Generate demand forecasts (REAL DATA from API)
+    const forecasts = useMemo((): DemandForecast[] => {
+        if (realInsights?.forecasts && realInsights.forecasts.length > 0) {
+            return realInsights.forecasts;
+        }
+
+        // Fallback to basic forecast if no real data
+        return [{
+            category: "طعام",
+            trend: "stable",
+            percentage: 5,
+            reason: "طلب ثابت - لا توجد بيانات كافية"
+        }];
+    }, [realInsights]);
 
     const getInsightBg = (type: Insight["type"]) => {
         switch (type) {
@@ -247,12 +268,22 @@ export function AIInsightsPanel() {
                                             {insight.description}
                                         </p>
                                         {insight.action && (
-                                            <Link href={insight.action.href || "#"}>
-                                                <Button variant="link" size="sm" className="p-0 h-auto mt-2 gap-1">
-                                                    {insight.action.label}
-                                                    <ArrowUpRight className="w-3 h-3" />
-                                                </Button>
-                                            </Link>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                className="p-0 h-auto mt-2 gap-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (insight.action?.href) {
+                                                        setLocation(insight.action.href);
+                                                    } else if (insight.action?.onClick) {
+                                                        insight.action.onClick();
+                                                    }
+                                                }}
+                                            >
+                                                {insight.action.label}
+                                                <ArrowUpRight className="w-3 h-3" />
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

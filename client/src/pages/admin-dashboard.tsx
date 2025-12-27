@@ -71,6 +71,7 @@ import {
   Heart,
   Tag,
   Shield,
+  Settings,
 } from "lucide-react";
 import { addCsrfHeader } from "@/lib/csrf";
 
@@ -148,6 +149,22 @@ const BRANDS = [
   "AquaClear",
 ];
 
+// Common specification keys for aquarium products
+const COMMON_SPECS = [
+  "الحجم",
+  "الوزن",
+  "المادة",
+  "السعة",
+  "الأبعاد",
+  "الطاقة",
+  "الضمان",
+  "التوافق",
+  "التدفق",
+  "الحرارة",
+  "العمر الافتراضي",
+  "بلد المنشأ",
+];
+
 // Slugify function with Arabic support
 function slugify(text: string): string {
   if (!text) return '';
@@ -198,6 +215,10 @@ export default function AdminDashboard() {
   const [customBrand, setCustomBrand] = useState<string>("");
   const [customCategory, setCustomCategory] = useState<string>("");
   const [customSubcategory, setCustomSubcategory] = useState<string>("");
+  // Specifications editor state
+  const [specKey, setSpecKey] = useState<string>("");
+  const [specValue, setSpecValue] = useState<string>("");
+  const [customSpecKey, setCustomSpecKey] = useState<string>("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
 
@@ -519,6 +540,9 @@ export default function AdminDashboard() {
     setCustomBrand("");
     setCustomCategory("");
     setCustomSubcategory("");
+    setSpecKey("");
+    setSpecValue("");
+    setCustomSpecKey("");
   };
 
   // Auto-generate slug when name changes
@@ -1105,6 +1129,112 @@ export default function AdminDashboard() {
                   placeholder="10"
                 />
               </div>
+            </div>
+
+            {/* Specifications Editor */}
+            <div className="space-y-3">
+              <Label className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                المواصفات التقنية
+              </Label>
+
+              {/* Add new specification */}
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <Select
+                    value={specKey}
+                    onValueChange={(value) => {
+                      if (value === "other") {
+                        setSpecKey("");
+                        setCustomSpecKey("");
+                      } else {
+                        setSpecKey(value);
+                        setCustomSpecKey("");
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر المواصفة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COMMON_SPECS.map((spec) => (
+                        <SelectItem key={spec} value={spec}>
+                          {spec}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="other">أخرى (إدخال مخصص)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {specKey === "" && (
+                    <Input
+                      placeholder="أدخل اسم المواصفة"
+                      value={customSpecKey}
+                      onChange={(e) => setCustomSpecKey(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <Input
+                    placeholder="أدخل القيمة"
+                    value={specValue}
+                    onChange={(e) => setSpecValue(e.target.value)}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const key = specKey || customSpecKey;
+                    if (key && specValue) {
+                      setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          [key]: specValue,
+                        },
+                      });
+                      setSpecKey("");
+                      setSpecValue("");
+                      setCustomSpecKey("");
+                    }
+                  }}
+                  disabled={!(specKey || customSpecKey) || !specValue}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* Current specifications list */}
+              {formData.specifications && Object.keys(formData.specifications).length > 0 && (
+                <div className="border rounded-lg divide-y">
+                  {Object.entries(formData.specifications).map(([key, value]) => (
+                    <div key={key} className="flex items-center justify-between p-3 hover:bg-muted/50">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-muted-foreground">{key}</span>
+                        <span className="text-sm font-semibold">{String(value)}</span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
+                        onClick={() => {
+                          const newSpecs = { ...formData.specifications };
+                          delete newSpecs[key];
+                          setFormData({
+                            ...formData,
+                            specifications: newSpecs,
+                          });
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Status Badges */}
