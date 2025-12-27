@@ -102,7 +102,7 @@ export function ProductSpecificationsTable({
     }
 
     return (
-        <Card className={cn("overflow-hidden", className)}>
+        <Card className={cn("overflow-hidden", className)} dir="rtl">
             <CardHeader className="bg-gradient-to-br from-primary/5 to-transparent pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Settings className="w-5 h-5 text-primary" />
@@ -135,7 +135,7 @@ export function ProductSpecificationsTable({
                                         {spec.label}
                                     </span>
                                 </div>
-                                <span className="font-semibold text-sm text-right max-w-[50%]">
+                                <span className="font-semibold text-sm text-left max-w-[50%]">
                                     {spec.value}
                                 </span>
                             </div>

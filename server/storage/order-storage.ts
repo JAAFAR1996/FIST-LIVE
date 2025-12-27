@@ -50,6 +50,38 @@ export class OrderStorage {
         return updatedOrder;
     }
 
+    /**
+     * Generate unique order number based on database sequence
+     * Format: FW-YYMMDD-XXXX where XXXX is sequential for the day
+     */
+    private async generateOrderNumber(tx: any): Promise<string> {
+        const now = new Date();
+        const year = now.getFullYear().toString().slice(-2);
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const datePrefix = `FW-${year}${month}${day}`;
+
+        // Get today's start and end timestamps
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+        // Count orders created today
+        const result = await tx
+            .select({ count: sql`COUNT(*)::int` })
+            .from(orders)
+            .where(
+                and(
+                    gte(orders.createdAt, todayStart),
+                    sql`${orders.createdAt} < ${todayEnd}`
+                )
+            );
+
+        const todayCount = result[0]?.count || 0;
+        const sequence = (todayCount + 1).toString().padStart(4, '0');
+
+        return `${datePrefix}-${sequence}`;
+    }
+
     async createOrderSecure(userId: string | null, items: any[], customerInfo: any, couponCode?: string): Promise<Order> {
         const db = this.ensureDb();
         return await db.transaction(async (tx) => {
@@ -120,8 +152,12 @@ export class OrderStorage {
             // 4. Calculate Final Total
             const finalTotal = Math.max(0, subtotal + deliveryFee - discount);
 
-            // 5. Create Order
+            // 5. Generate Order Number (sequential from database)
+            const orderNumber = await this.generateOrderNumber(tx);
+
+            // 6. Create Order
             const [newOrder] = await tx.insert(orders).values({
+                orderNumber: orderNumber,
                 userId: userId ? userId : undefined,
                 items: items, // Legacy JSON column
                 total: finalTotal.toString(),

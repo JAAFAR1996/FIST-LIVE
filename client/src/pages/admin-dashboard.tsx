@@ -112,57 +112,33 @@ interface Discount {
   updatedAt: string;
 }
 
-// Available categories
-const CATEGORIES = [
+// Metadata will be fetched from API
+// Fallback defaults in case API fails
+const DEFAULT_CATEGORIES = [
   "إضاءات",
   "طعام الأسماك",
   "الأدوية",
   "معالجة المياه",
-  "مجموعات الاختبار",
-  "الملح والمعادن",
-  "البكتيريا النافعة",
-  "مكافحة الطحالب",
-  "فيتامينات المياه العذبة",
-  "مكملات غذائية",
   "اكسسوارات",
-  "ادوات فلتر",
-  "أجهزة القياس والحرارة",
-  "سخانات",
   "فلاتر ماء",
-  "مضخات هواء",
   "ديكور",
-  "صخور",
-  "خلفيات أحواض",
-  "ترب نباتية",
 ];
 
-const BRANDS = [
+const DEFAULT_BRANDS = [
   "Aqua",
   "Tetra",
   "Fluval",
   "Marina",
   "API",
   "Seachem",
-  "JBL",
-  "Hikari",
-  "Eheim",
-  "AquaClear",
 ];
 
-// Common specification keys for aquarium products
-const COMMON_SPECS = [
+const DEFAULT_SPECS = [
   "الحجم",
   "الوزن",
   "المادة",
   "السعة",
   "الأبعاد",
-  "الطاقة",
-  "الضمان",
-  "التوافق",
-  "التدفق",
-  "الحرارة",
-  "العمر الافتراضي",
-  "بلد المنشأ",
 ];
 
 // Slugify function with Arabic support
@@ -219,6 +195,12 @@ export default function AdminDashboard() {
   const [specKey, setSpecKey] = useState<string>("");
   const [specValue, setSpecValue] = useState<string>("");
   const [customSpecKey, setCustomSpecKey] = useState<string>("");
+
+  // Metadata from database (categories, brands, specs)
+  const [CATEGORIES, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
+  const [BRANDS, setBrands] = useState<string[]>(DEFAULT_BRANDS);
+  const [COMMON_SPECS, setCommonSpecs] = useState<string[]>(DEFAULT_SPECS);
+
   const { toast } = useToast();
   const { user, logout } = useAuth();
 
@@ -245,7 +227,37 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchProducts();
+    fetchMetadata();
   }, []);
+
+  const fetchMetadata = async () => {
+    try {
+      const response = await fetch("/api/metadata/all", {
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.data) {
+          if (result.data.categories && result.data.categories.length > 0) {
+            setCategories(result.data.categories);
+          }
+          if (result.data.brands && result.data.brands.length > 0) {
+            setBrands(result.data.brands);
+          }
+          if (result.data.specifications && result.data.specifications.length > 0) {
+            setCommonSpecs(result.data.specifications);
+          }
+          console.log(`[Admin] Loaded metadata: ${result.data.categories.length} categories, ${result.data.brands.length} brands, ${result.data.specifications.length} specs`);
+        }
+      } else {
+        console.warn("[Admin] Failed to fetch metadata, using defaults");
+      }
+    } catch (error) {
+      console.error("[Admin] Error fetching metadata:", error);
+      // Continue with defaults
+    }
+  };
 
   const fetchProducts = async () => {
     try {

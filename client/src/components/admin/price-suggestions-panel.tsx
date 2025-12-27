@@ -43,73 +43,31 @@ export function PriceSuggestionsPanel() {
 
     const products = productsData?.products || [];
 
-    // Generate price suggestions based on simple rules
-    const suggestions = useMemo((): PriceSuggestion[] => {
-        if (!products.length) return [];
+    // Fetch AI-powered price suggestions from API
+    const { data: suggestionsData, isLoading: suggestionsLoading } = useQuery({
+        queryKey: ["price-suggestions", products.map(p => p.id)],
+        queryFn: async () => {
+            if (!products.length) return { suggestions: [] };
 
-        const suggestions: PriceSuggestion[] = [];
-        const now = new Date();
-        const month = now.getMonth();
-        const isSummer = month >= 5 && month <= 8; // June to September
-        const isWinter = month >= 11 || month <= 2; // December to March
+            const productIds = products.map((p: Product) => p.id);
 
-        products.forEach((product: Product) => {
-            const stock = product.stock ?? 0;
-            const salesVelocity = Math.random() * 10; // Simulated - would come from real data
+            const res = await fetch("/api/pricing/suggestions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ productIds }),
+            });
 
-            // Rule 1: Low stock + high demand = increase price
-            if (stock < 5 && stock > 0) {
-                const increase = Math.floor(Math.random() * 15) + 10; // 10-25%
-                suggestions.push({
-                    product,
-                    currentPrice: product.price,
-                    suggestedPrice: Math.round(product.price * (1 + increase / 100)),
-                    reason: `مخزون منخفض (${stock} قطعة) - زيادة السعر`,
-                    reasonType: "stock_low",
-                    percentChange: increase,
-                });
+            if (!res.ok) {
+                throw new Error("فشل جلب اقتراحات الأسعار");
             }
 
-            // Rule 2: High stock = decrease price
-            else if (stock > 50) {
-                const decrease = Math.floor(Math.random() * 10) + 5; // 5-15%
-                suggestions.push({
-                    product,
-                    currentPrice: product.price,
-                    suggestedPrice: Math.round(product.price * (1 - decrease / 100)),
-                    reason: `مخزون زائد (${stock} قطعة) - تخفيض للتسريع`,
-                    reasonType: "stock_high",
-                    percentChange: -decrease,
-                });
-            }
+            return res.json();
+        },
+        enabled: products.length > 0,
+    });
 
-            // Rule 3: Seasonal products
-            else if (isSummer && (product.category?.includes("حوض") || product.name?.includes("حوض"))) {
-                suggestions.push({
-                    product,
-                    currentPrice: product.price,
-                    suggestedPrice: Math.round(product.price * 1.1),
-                    reason: "موسم الصيف - طلب عالي على الأحواض",
-                    reasonType: "seasonal",
-                    percentChange: 10,
-                });
-            }
-
-            else if (isWinter && (product.category?.includes("سخان") || product.name?.includes("سخان"))) {
-                suggestions.push({
-                    product,
-                    currentPrice: product.price,
-                    suggestedPrice: Math.round(product.price * 1.15),
-                    reason: "موسم الشتاء - طلب عالي على السخانات",
-                    reasonType: "seasonal",
-                    percentChange: 15,
-                });
-            }
-        });
-
-        // Limit to 10 suggestions
-        return suggestions.slice(0, 10);
-    }, [products]);
+    const suggestions: PriceSuggestion[] = suggestionsData?.data?.suggestions || [];
 
     // Toggle selection
     const toggleSuggestion = (productId: string) => {
@@ -135,7 +93,6 @@ export function PriceSuggestionsPanel() {
     // Apply price changes mutation
     const applyPricesMutation = useMutation({
         mutationFn: async (selectedIds: string[]) => {
-            // In real implementation, this would call the API to update prices
             const updates = suggestions
                 .filter(s => selectedIds.includes(s.product.id))
                 .map(s => ({
@@ -143,8 +100,17 @@ export function PriceSuggestionsPanel() {
                     price: s.suggestedPrice,
                 }));
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Call real API to update prices
+            const res = await fetch("/api/pricing/apply", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ updates }),
+            });
+
+            if (!res.ok) {
+                throw new Error("فشل تطبيق الأسعار");
+            }
 
             return updates;
         },
@@ -154,6 +120,7 @@ export function PriceSuggestionsPanel() {
                 description: `تم تحديث ${updates.length} منتج بنجاح`,
             });
             queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["price-suggestions"] });
             setSelectedSuggestions(new Set());
         },
         onError: () => {
@@ -189,7 +156,7 @@ export function PriceSuggestionsPanel() {
         }
     };
 
-    if (isLoading) {
+    if (isLoading || suggestionsLoading) {
         return (
             <Card>
                 <CardContent className="flex items-center justify-center py-12">

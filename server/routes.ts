@@ -19,6 +19,8 @@ import { createAnalyticsRouter } from "./routes/analytics.js";
 import { createNotificationsRouter } from "./routes/notifications.js";
 import journeyRoutes from "./routes/journey.js";
 import aiRoutes from "./routes/ai.js";
+import pricingRoutes from "./routes/pricing.js";
+import metadataRoutes from "./routes/metadata.js";
 import { storage } from "./storage/index.js";
 
 // Helper for session type extension if needed
@@ -66,6 +68,12 @@ export async function registerRoutes(
 
   // AI routes (Gemini)
   app.use("/api/ai", aiRoutes);
+
+  // Pricing AI routes
+  app.use("/api/pricing", pricingRoutes);
+
+  // Metadata routes (categories, brands, specs)
+  app.use("/api/metadata", metadataRoutes);
 
   // Error handling middleware
   app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
