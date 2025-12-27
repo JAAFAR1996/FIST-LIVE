@@ -62,6 +62,18 @@ export interface GallerySubmission {
   updatedAt?: string;
 }
 
+// Product variant for size/power options within a single product
+export interface ProductVariant {
+  id: string;                         // Unique variant ID (e.g., "S", "M", "L", "18W")
+  label: string;                      // Display label (e.g., "30×100 سم", "18 واط")
+  price: number;                      // Price for this variant
+  originalPrice?: number;             // Original price for discounts
+  stock: number;                      // Stock for this variant
+  sku?: string;                       // Optional SKU code
+  isDefault?: boolean;                // Is this the default/popular variant
+  specifications?: Record<string, any>; // Variant-specific specs
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -84,6 +96,10 @@ export interface Product {
   isProductOfWeek?: boolean;
   stock?: number;
   lowStockThreshold?: number;
+
+  // Product variants (for products with multiple sizes like HYGGER)
+  variants?: ProductVariant[] | null;
+  hasVariants?: boolean;
 
   // Phase 0 Updates
   difficulty?: DifficultyLevel;

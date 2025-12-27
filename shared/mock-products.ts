@@ -37,6 +37,8 @@ export const mockProducts: Product[] = [
     updatedAt: new Date("2024-11-15"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
   {
     id: "aquaclear-70",
@@ -66,6 +68,8 @@ export const mockProducts: Product[] = [
     updatedAt: new Date("2024-11-20"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
   {
     id: "seachem-prime",
@@ -95,6 +99,8 @@ export const mockProducts: Product[] = [
     updatedAt: new Date("2024-11-10"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
   {
     id: "eheim-jager-200w",
@@ -124,5 +130,7 @@ export const mockProducts: Product[] = [
     updatedAt: new Date("2024-11-05"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
 ];

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { type Product } from "@/types";
+import { type Product, type ProductVariant } from "@/types";
 import { fetchProductBySlug, fetchProducts, fetchProductVariants } from "@/lib/api";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -21,6 +21,7 @@ import { ProductImageGallery } from "@/components/products/product-image-gallery
 import { ExplodedProductView } from "@/components/products/exploded-product-view";
 import { FrequentlyBoughtTogether } from "@/components/products/frequently-bought-together";
 import { ProductVariantSelector } from "@/components/products/product-variant-selector";
+import { EmbeddedVariantSelector } from "@/components/products/embedded-variant-selector";
 import { ProductSpecificationsTable } from "@/components/products/product-specifications-table";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "wouter";
@@ -38,6 +39,7 @@ export default function ProductDetails() {
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 
   const { data: product, isLoading, isError } = useQuery({
     queryKey: ["product", slug],
@@ -54,12 +56,28 @@ export default function ProductDetails() {
     ?.filter((p: Product) => p.id !== product?.id && p.category === product?.category)
     ?.slice(0, 4) || [];
 
-  // Fetch product variants (related sizes)
-  const { data: variants = [] } = useQuery({
+  // Fetch product variants (related sizes) - for legacy products without embedded variants
+  const { data: legacyVariants = [] } = useQuery({
     queryKey: ["product-variants", slug],
     queryFn: () => fetchProductVariants(slug!),
-    enabled: !!slug && !!product,
+    enabled: !!slug && !!product && !product.hasVariants,
   });
+
+  // Use embedded variants if available, otherwise use legacy
+  const hasEmbeddedVariants = product?.hasVariants && product?.variants && product.variants.length > 0;
+
+  // Set default variant on product load
+  useMemo(() => {
+    if (hasEmbeddedVariants && product?.variants && !selectedVariant) {
+      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
+      setSelectedVariant(defaultVariant);
+    }
+  }, [hasEmbeddedVariants, product?.variants, selectedVariant]);
+
+  // Current display values (from selected variant or product)
+  const displayPrice = selectedVariant?.price ?? product?.price ?? 0;
+  const displayOriginalPrice = selectedVariant?.originalPrice ?? product?.originalPrice;
+  const displayStock = selectedVariant?.stock ?? product?.stock ?? 0;
 
   const handleAddToCart = () => {
     if (product) {
@@ -144,7 +162,7 @@ export default function ProductDetails() {
   // Calculate rating
   const productRating = Number(product.rating || 0);
   const reviewCount = product.reviewCount || 0;
-  const inStock = (product.stock ?? 0) > 0;
+  const inStock = displayStock > 0;
 
   const breadcrumbItems = [
     { name: "الرئيسية", url: "https://aquavo.iq/" },
@@ -253,45 +271,57 @@ export default function ProductDetails() {
                 <div className="mb-4">
                   <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="text-4xl font-bold text-primary">
-                      {product.price.toLocaleString()}
+                      {displayPrice.toLocaleString()}
                     </span>
                     <span className="text-lg text-muted-foreground">د.ع</span>
-                    {product.originalPrice && product.originalPrice > product.price && (
+                    {displayOriginalPrice && displayOriginalPrice > displayPrice && (
                       <>
                         <span className="text-xl text-muted-foreground line-through">
-                          {product.originalPrice.toLocaleString()} د.ع
+                          {displayOriginalPrice.toLocaleString()} د.ع
                         </span>
                         <Badge variant="destructive" className="text-sm font-bold">
-                          خصم {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                          خصم {Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100)}%
                         </Badge>
                       </>
                     )}
                   </div>
-                  {product.originalPrice && product.originalPrice > product.price && (
+                  {displayOriginalPrice && displayOriginalPrice > displayPrice && (
                     <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-1">
-                      وفّر {(product.originalPrice - product.price).toLocaleString()} د.ع
+                      وفّر {(displayOriginalPrice - displayPrice).toLocaleString()} د.ع
                     </p>
                   )}
                 </div>
 
-                {/* Product Variants (Size/Power Options) */}
-                {variants && variants.length > 1 && (
+                {/* Product Variants - Embedded (like Amazon/HYGGER) */}
+                {hasEmbeddedVariants && product.variants && (
+                  <div className="mb-6">
+                    <EmbeddedVariantSelector
+                      variants={product.variants}
+                      selectedVariantId={selectedVariant?.id || ""}
+                      onVariantSelect={setSelectedVariant}
+                      productCategory={product.category}
+                    />
+                  </div>
+                )}
+
+                {/* Product Variants - Legacy (separate products) */}
+                {!hasEmbeddedVariants && legacyVariants && legacyVariants.length > 1 && (
                   <div className="mb-6">
                     <ProductVariantSelector
                       currentProduct={product}
-                      variants={variants}
+                      variants={legacyVariants}
                     />
                   </div>
                 )}
 
                 {/* Stock Status */}
                 <div className="flex items-center gap-2 mb-4">
-                  {(product.stock ?? 0) > 0 ? (
-                    (product.stock ?? 0) <= (product.lowStockThreshold || 10) ? (
+                  {displayStock > 0 ? (
+                    displayStock <= (product.lowStockThreshold || 10) ? (
                       <>
                         <AlertTriangle className="w-4 h-4 text-amber-500" />
                         <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                          متبقي {product.stock} فقط - اطلب الآن!
+                          متبقي {displayStock} فقط - اطلب الآن!
                         </span>
                       </>
                     ) : (
@@ -301,7 +331,7 @@ export default function ProductDetails() {
                           متوفر في المخزن
                         </span>
                         <Badge variant="secondary" className="text-xs">
-                          {product.stock ?? 0} قطعة
+                          {displayStock} قطعة
                         </Badge>
                       </>
                     )
@@ -321,7 +351,7 @@ export default function ProductDetails() {
                 </p>
 
                 {/* Quantity & Add to Cart */}
-                {(product.stock ?? 0) > 0 && (
+                {displayStock > 0 && (
                   <div className="space-y-4 mb-6">
                     <div className="flex items-center gap-4">
                       <label className="text-sm font-medium">الكمية:</label>
@@ -341,7 +371,7 @@ export default function ProductDetails() {
                           size="icon"
                           className="h-10 w-10 rounded-l-lg rounded-r-none"
                           onClick={() => handleQuantityChange(1)}
-                          disabled={quantity >= (product.stock ?? 0)}
+                          disabled={quantity >= displayStock}
                         >
                           +
                         </Button>
@@ -382,7 +412,7 @@ export default function ProductDetails() {
                 )}
 
                 {/* Out of Stock Button */}
-                {(product.stock ?? 0) <= 0 && (
+                {displayStock <= 0 && (
                   <Button size="lg" variant="outline" className="w-full gap-2 h-12 mb-6">
                     <Package className="w-5 h-5" />
                     أبلغني عند التوفر

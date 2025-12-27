@@ -67,6 +67,8 @@ export const products: Product[] = [
     updatedAt: new Date("2024-12-06"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
   {
     id: "hygger-hg978-22w",
@@ -107,6 +109,8 @@ export const products: Product[] = [
     updatedAt: new Date("2024-12-06"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
   {
     id: "hygger-hg978-26w",
@@ -147,5 +151,7 @@ export const products: Product[] = [
     updatedAt: new Date("2024-12-06"),
     categoryId: null,
     deletedAt: null,
+    variants: null,
+    hasVariants: false,
   },
 ];

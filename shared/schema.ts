@@ -4,6 +4,19 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Product variant type for size/power options within a single product
+export interface ProductVariant {
+  id: string;                         // Unique variant ID (e.g., "S", "M", "L", "18W")
+  label: string;                      // Display label (e.g., "30×100 سم", "18 واط")
+  price: number;                      // Price for this variant
+  originalPrice?: number;             // Original price for discounts
+  stock: number;                      // Stock for this variant
+  sku?: string;                       // Optional SKU code
+  isDefault?: boolean;                // Is this the default/popular variant
+  specifications?: Record<string, any>; // Variant-specific specs (tank size, etc.)
+}
+
+
 export const users = pgTable("users", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()`),
   email: text("email").notNull().unique(),
@@ -55,6 +68,9 @@ export const products = pgTable("products", {
   isBestSeller: boolean("is_best_seller").notNull().default(false),
   isProductOfWeek: boolean("is_product_of_week").notNull().default(false),
   specifications: jsonb("specifications").notNull().$type<Record<string, any>>(),
+  // Product variants (for products with multiple sizes/options like HYGGER)
+  variants: jsonb("variants").$type<ProductVariant[] | null>(),
+  hasVariants: boolean("has_variants").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   deletedAt: timestamp("deleted_at"),
