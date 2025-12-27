@@ -430,8 +430,11 @@ export default function AdminDashboard() {
     if (!selectedProduct) return;
 
     try {
+      // Remove date fields that the server will regenerate
+      const { createdAt, updatedAt, deletedAt, ...cleanFormData } = formData as any;
+
       const productPayload = {
-        ...formData,
+        ...cleanFormData,
         imageBase64: imageBase64 || undefined,
       };
 
