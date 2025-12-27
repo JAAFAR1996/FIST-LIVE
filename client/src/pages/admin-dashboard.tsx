@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { ImageReorderManager } from "@/components/admin/image-reorder-manager";
 import { OrdersManagement } from "@/components/admin/orders-management";
 import { GalleryManagement } from "@/components/admin/gallery-management";
 import CustomersManagement from "@/components/admin/customers-management";
@@ -915,6 +916,16 @@ export default function AdminDashboard() {
               onChange={(base64) => setImageBase64(base64)}
               onRemove={() => setImageBase64("")}
             />
+
+            {/* Image Reorder (only for edit mode with existing images) */}
+            {isEditMode && formData.images && formData.images.length > 1 && (
+              <ImageReorderManager
+                images={formData.images}
+                thumbnail={formData.thumbnail || formData.images[0]}
+                onImagesChange={(newImages) => setFormData({ ...formData, images: newImages })}
+                onThumbnailChange={(newThumbnail) => setFormData({ ...formData, thumbnail: newThumbnail })}
+              />
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2 col-span-2">

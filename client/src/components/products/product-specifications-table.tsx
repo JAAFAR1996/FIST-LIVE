@@ -83,11 +83,28 @@ function normalizeSpecifications(specs: Specification[] | Record<string, any>): 
         return specs;
     }
 
-    // Convert object to array
-    return Object.entries(specs).map(([key, value]) => ({
-        label: key,
-        value: typeof value === 'object' ? JSON.stringify(value) : String(value),
-    }));
+    // Keys to exclude from technical specifications (shown elsewhere)
+    const excludeKeys = ['benefits', 'difficulty', 'ecoFriendly', 'videoUrl', 'explodedViewParts'];
+
+    // Convert object to array, filtering out excluded keys and arrays
+    return Object.entries(specs)
+        .filter(([key, value]) => {
+            // Exclude specific keys
+            if (excludeKeys.includes(key)) return false;
+            // Exclude arrays (they're usually benefits or parts)
+            if (Array.isArray(value)) return false;
+            // Exclude empty/null values
+            if (value === null || value === undefined || value === '') return false;
+            return true;
+        })
+        .map(([key, value]) => ({
+            label: key,
+            value: typeof value === 'boolean'
+                ? (value ? 'نعم ✓' : 'لا ✗')
+                : typeof value === 'object'
+                    ? JSON.stringify(value)
+                    : String(value),
+        }));
 }
 
 export function ProductSpecificationsTable({
