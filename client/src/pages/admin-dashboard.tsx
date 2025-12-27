@@ -436,7 +436,7 @@ export default function AdminDashboard() {
       };
 
       const response = await fetch(`/api/admin/products/${selectedProduct.id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: addCsrfHeader({
           "Content-Type": "application/json",
         }),

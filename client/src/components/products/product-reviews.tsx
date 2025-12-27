@@ -387,7 +387,7 @@ export function ProductReviews({ productId, productName }: ProductReviewsProps) 
                           )}
                         />
                       </div>
-                      <div className="w-12 text-xs text-muted-foreground text-left">
+                      <div className="w-12 text-xs text-muted-foreground text-right">
                         ({count})
                       </div>
                     </button>

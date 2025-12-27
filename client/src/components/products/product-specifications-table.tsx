@@ -152,7 +152,7 @@ export function ProductSpecificationsTable({
                                         {spec.label}
                                     </span>
                                 </div>
-                                <span className="font-semibold text-sm text-left max-w-[50%]">
+                                <span className="font-semibold text-sm text-right max-w-[50%]">
                                     {spec.value}
                                 </span>
                             </div>
