@@ -13,6 +13,7 @@ import { CompareButton } from "@/components/products/product-comparison";
 import { Link } from "wouter";
 import { useABTest, EXPERIMENTS, trackABConversion } from "@/lib/ab-testing";
 import { ShrimpMascot } from "@/components/gamification/shrimp-mascot";
+import { formatNumber } from "@/lib/format";
 
 interface ProductCardProps {
   product: Product;
@@ -68,7 +69,7 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
             <div className="absolute inset-0 p-6 flex items-center justify-center bg-transparent">
               <div className="transition-transform duration-500 group-hover:scale-105">
                 <img
-                  src={`${product.thumbnail || product.image || "/placeholder-product.svg"}?v=1`}
+                  src={`${product.thumbnail || product.image || "/logo_aquavo.png"}?v=1`}
                   alt={`صورة منتج ${product.name} من ${product.brand}`}
                   className="w-full h-full object-contain filter drop-shadow-2xl"
                   loading="lazy"
@@ -77,8 +78,8 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
                   decoding="async"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    if (target.src !== "/placeholder-product.svg") {
-                      target.src = "/placeholder-product.svg";
+                    if (target.src !== "/logo_aquavo.png") {
+                      target.src = "/logo_aquavo.png";
                     }
                   }}
                 />
@@ -132,11 +133,11 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
           <CardContent className="flex-1">
             <div className="flex items-baseline gap-2 mb-2 flex-row-reverse justify-end">
               <span className="text-xl font-bold text-primary">
-                {product.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">د.ع</span>
+                {formatNumber(product.price)} <span className="text-sm font-normal text-muted-foreground">د.ع</span>
               </span>
               {product.originalPrice && (
                 <span className="text-sm text-muted-foreground line-through" aria-label="السعر السابق">
-                  {product.originalPrice.toLocaleString()}
+                  {formatNumber(product.originalPrice)}
                 </span>
               )}
             </div>

@@ -34,6 +34,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { ImageReorderManager } from "@/components/admin/image-reorder-manager";
+import { MultipleImageUpload } from "@/components/admin/multiple-image-upload";
 import { OrdersManagement } from "@/components/admin/orders-management";
 import { GalleryManagement } from "@/components/admin/gallery-management";
 import CustomersManagement from "@/components/admin/customers-management";
@@ -921,14 +922,32 @@ export default function AdminDashboard() {
             />
 
             {/* Image Reorder (only for edit mode with existing images) */}
-            {isEditMode && formData.images && formData.images.length > 1 && (
+            {isEditMode && formData.images && formData.images.length > 0 && (
               <ImageReorderManager
                 images={formData.images}
                 thumbnail={formData.thumbnail || formData.images[0]}
                 onImagesChange={(newImages) => setFormData({ ...formData, images: newImages })}
                 onThumbnailChange={(newThumbnail) => setFormData({ ...formData, thumbnail: newThumbnail })}
+                onDeleteImage={(imageToDelete) => {
+                  if (!formData.images) return;
+                  const newImages = formData.images.filter(img => img !== imageToDelete);
+                  setFormData({
+                    ...formData,
+                    images: newImages,
+                    thumbnail: formData.thumbnail === imageToDelete
+                      ? (newImages[0] || "")
+                      : formData.thumbnail
+                  });
+                }}
               />
             )}
+
+            {/* Multiple Image Upload */}
+            <MultipleImageUpload
+              images={formData.images || []}
+              onImagesChange={(newImages) => setFormData({ ...formData, images: newImages })}
+              maxImages={10}
+            />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2 col-span-2">

@@ -7,6 +7,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { formatNumber } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Heart, Star, ExternalLink, Package, Leaf, X } from "lucide-react";
@@ -90,8 +91,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                         key={idx}
                                         onClick={() => setSelectedImage(idx)}
                                         className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === idx
-                                                ? "border-primary ring-2 ring-primary/30"
-                                                : "border-border hover:border-primary/50"
+                                            ? "border-primary ring-2 ring-primary/30"
+                                            : "border-border hover:border-primary/50"
                                             }`}
                                     >
                                         <img
@@ -124,11 +125,11 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                         <div className="flex items-baseline gap-3 justify-end mb-4">
                             {product.originalPrice && (
                                 <span className="text-lg text-muted-foreground line-through">
-                                    {product.originalPrice.toLocaleString()} د.ع
+                                    {formatNumber(product.originalPrice)} د.ع
                                 </span>
                             )}
                             <span className="text-3xl font-bold text-primary">
-                                {product.price.toLocaleString()} <span className="text-lg">د.ع</span>
+                                {formatNumber(product.price)} <span className="text-lg">د.ع</span>
                             </span>
                         </div>
 

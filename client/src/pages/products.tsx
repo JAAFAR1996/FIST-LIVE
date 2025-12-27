@@ -57,6 +57,7 @@ export default function Products() {
   );
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [displayCount, setDisplayCount] = useState(24);
 
   // Comparison - user-initiated
   const { compareIds, addToCompare, removeFromCompare } = useComparison();
@@ -143,6 +144,17 @@ export default function Products() {
       return true;
     });
   }, [products, filters.difficulties, filters.tags]);
+
+  // Load More functionality
+  const displayedProducts = useMemo(() => {
+    return finalProducts.slice(0, displayCount);
+  }, [finalProducts, displayCount]);
+
+  const hasMore = displayCount < finalProducts.length;
+
+  const loadMore = () => {
+    setDisplayCount(prev => prev + 24);
+  };
 
   const isLoading = isAttributesLoading || isProductsLoading;
 
@@ -256,7 +268,7 @@ export default function Products() {
         {!isLoading && (
           <div className="mb-6 text-sm text-muted-foreground">
             {finalProducts.length > 0 ? (
-              <span>عرض <strong>{finalProducts.length}</strong> منتج</span>
+              <span>عرض <strong>{displayedProducts.length}</strong> من <strong>{finalProducts.length}</strong> منتج</span>
             ) : null}
           </div>
         )}
@@ -273,16 +285,46 @@ export default function Products() {
         {!isLoading && (
           <>
             {finalProducts.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                {finalProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onQuickView={(p) => setQuickViewProduct(p)}
-                    onCompare={(p) => addToCompare(p.id)}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                  {displayedProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onQuickView={(p) => setQuickViewProduct(p)}
+                      onCompare={(p) => addToCompare(p.id)}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More Button */}
+                {hasMore && (
+                  <div className="flex justify-center mt-12">
+                    <Button
+                      onClick={loadMore}
+                      size="lg"
+                      className="min-w-[250px] bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      تحميل المزيد من المنتجات
+                      <span className="mr-2">
+                        ({finalProducts.length - displayCount} متبقي)
+                      </span>
+                    </Button>
+                  </div>
+                )}
+
+                {/* End Message */}
+                {!hasMore && finalProducts.length > 24 && (
+                  <div className="text-center mt-8 p-6 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl border border-primary/20">
+                    <p className="text-lg font-semibold text-primary">
+                      ✨ شاهدت جميع المنتجات المتاحة
+                    </p>
+                    <p className="text-muted-foreground mt-2">
+                      تم عرض {finalProducts.length} منتج
+                    </p>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="text-center py-16 bg-muted/30 rounded-xl">
                 <div className="w-20 h-20 mx-auto bg-muted rounded-full flex items-center justify-center mb-6">

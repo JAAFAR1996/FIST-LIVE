@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { formatNumber } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -271,13 +272,13 @@ export default function ProductDetails() {
                 <div className="mb-4">
                   <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="text-4xl font-bold text-primary">
-                      {displayPrice.toLocaleString()}
+                      {formatNumber(displayPrice)}
                     </span>
                     <span className="text-lg text-muted-foreground">د.ع</span>
                     {displayOriginalPrice && displayOriginalPrice > displayPrice && (
                       <>
                         <span className="text-xl text-muted-foreground line-through">
-                          {displayOriginalPrice.toLocaleString()} د.ع
+                          {formatNumber(displayOriginalPrice)} د.ع
                         </span>
                         <Badge variant="destructive" className="text-sm font-bold">
                           خصم {Math.round(((displayOriginalPrice - displayPrice) / displayOriginalPrice) * 100)}%

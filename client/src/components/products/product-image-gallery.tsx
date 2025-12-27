@@ -22,8 +22,8 @@ export function ProductImageGallery({
     const imageRef = useRef<HTMLDivElement>(null);
 
     // Ensure we have at least one image
-    const galleryImages = images && images.length > 0 && images[0] ? images.filter(img => img && img.length > 0) : ["/placeholder-product.svg"];
-    const currentImage = galleryImages[selectedIndex] || "/placeholder-product.svg";
+    const galleryImages = images && images.length > 0 && images[0] ? images.filter(img => img && img.length > 0) : ["/logo_aquavo.png"];
+    const currentImage = galleryImages[selectedIndex] || "/logo_aquavo.png";
 
     const handlePrevious = useCallback(() => {
         setSelectedIndex((prev) =>
@@ -73,7 +73,7 @@ export function ProductImageGallery({
                         src={currentImage}
                         alt={`${productName} - صورة ${selectedIndex + 1}`}
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-300",
+                            "w-full h-full object-contain transition-transform duration-300 p-4",
                             isZoomed && "scale-110"
                         )}
                         style={isZoomed ? {
@@ -84,8 +84,8 @@ export function ProductImageGallery({
                         fetchPriority="high"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            if (target.src !== "/placeholder-product.svg") {
-                                target.src = "/placeholder-product.svg";
+                            if (target.src !== "/logo_aquavo.png") {
+                                target.src = "/logo_aquavo.png";
                             }
                         }}
                     />
