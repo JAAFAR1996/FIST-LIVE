@@ -117,13 +117,12 @@ interface Discount {
 // Metadata will be fetched from API
 // Fallback defaults in case API fails
 const DEFAULT_CATEGORIES = [
-  "إضاءات",
-  "طعام الأسماك",
-  "الأدوية",
-  "معالجة المياه",
-  "اكسسوارات",
-  "فلاتر ماء",
+  "أحواض",
+  "معدات",
+  "إضاءة",
+  "طعام ورعاية",
   "ديكور",
+  "إكسسوارات",
 ];
 
 const DEFAULT_BRANDS = [
