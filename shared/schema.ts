@@ -71,8 +71,6 @@ export const products = pgTable("products", {
   // Product variants (for products with multiple sizes/options like HYGGER)
   variants: jsonb("variants").$type<ProductVariant[] | null>(),
   hasVariants: boolean("has_variants").notNull().default(false),
-  // Variant group linking - link multiple products as variants (simple method)
-  variantGroupId: text("variant_group_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   deletedAt: timestamp("deleted_at"),
@@ -87,7 +85,6 @@ export const products = pgTable("products", {
   categoryIdIdx: index("products_category_id_idx").on(table.categoryId),
   isNewIdx: index("products_is_new_idx").on(table.isNew),
   isBestSellerIdx: index("products_is_best_seller_idx").on(table.isBestSeller),
-  variantGroupIdIdx: index("products_variant_group_id_idx").on(table.variantGroupId),
 
   createdAtIdx: index("products_created_at_idx").on(table.createdAt),
   ratingIdx: index("products_rating_idx").on(table.rating),

@@ -49,8 +49,7 @@ import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
 import { PriceSuggestionsPanel } from "@/components/admin/price-suggestions-panel";
 import { AIInsightsPanel } from "@/components/admin/ai-insights-panel";
 import { AIChatPanel } from "@/components/admin/ai-chat-panel";
-import { ProductVariantLinker } from "@/components/admin/product-variant-linker";
-import { CreateVariantGroupDialog } from "@/components/admin/create-variant-group-dialog";
+import { ProductVariantsManager } from "@/components/admin/product-variants-manager";
 import {
   Plus,
   Pencil,
@@ -76,7 +75,6 @@ import {
   Tag,
   Shield,
   Settings,
-  Link2,
 } from "lucide-react";
 import { addCsrfHeader } from "@/lib/csrf";
 
@@ -198,7 +196,6 @@ export default function AdminDashboard() {
   // Variants management state
   const [isVariantsDialogOpen, setIsVariantsDialogOpen] = useState(false);
   const [variantsProduct, setVariantsProduct] = useState<Product | null>(null);
-  const [isCreateGroupDialogOpen, setIsCreateGroupDialogOpen] = useState(false);
   // Specifications editor state
   const [specKey, setSpecKey] = useState<string>("");
   const [specValue, setSpecValue] = useState<string>("");
@@ -715,16 +712,10 @@ export default function AdminDashboard() {
                   <CardTitle>إدارة المنتجات</CardTitle>
                   <CardDescription>إضافة، تعديل، وحذف المنتجات</CardDescription>
                 </div>
-                <div className="flex gap-2">
-                  <Button onClick={() => setIsCreateGroupDialogOpen(true)} variant="outline">
-                    <Link2 className="ml-2 h-4 w-4" />
-                    إنشاء مجموعة منتجات
-                  </Button>
-                  <Button onClick={openCreateDialog}>
-                    <Plus className="ml-2 h-4 w-4" />
-                    إضافة منتج جديد
-                  </Button>
-                </div>
+                <Button onClick={openCreateDialog}>
+                  <Plus className="ml-2 h-4 w-4" />
+                  إضافة منتج جديد
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -1369,10 +1360,11 @@ export default function AdminDashboard() {
       <Dialog open={isVariantsDialogOpen} onOpenChange={setIsVariantsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           {variantsProduct && (
-            <ProductVariantLinker
+            <ProductVariantsManager
               productId={variantsProduct.id}
               productName={variantsProduct.name}
-              currentVariantGroupId={(variantsProduct as any).variantGroupId}
+              variants={(variantsProduct as any).variants || null}
+              hasVariants={(variantsProduct as any).hasVariants || false}
               onUpdate={() => {
                 fetchProducts();
                 setIsVariantsDialogOpen(false);
@@ -1381,15 +1373,6 @@ export default function AdminDashboard() {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Create Variant Group Dialog */}
-      <CreateVariantGroupDialog
-        open={isCreateGroupDialogOpen}
-        onOpenChange={setIsCreateGroupDialogOpen}
-        onSuccess={() => {
-          fetchProducts();
-        }}
-      />
     </div>
   );
 }
