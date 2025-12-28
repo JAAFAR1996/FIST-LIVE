@@ -113,6 +113,7 @@ export function ProductVariantSelector({
                                 className={cn(
                                     "block relative rounded-xl border-2 p-4 transition-all duration-200",
                                     "hover:border-primary/50 hover:shadow-md",
+                                    "min-h-[140px] flex flex-col items-center justify-center",
                                     isSelected
                                         ? "border-primary bg-primary/10 shadow-sm"
                                         : "border-muted bg-background",

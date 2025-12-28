@@ -18,6 +18,10 @@ interface ImageSelectorProps {
     onSelect: (imageUrl: string) => void;
     /** العنوان المعروض */
     label?: string;
+    /** Optional: callback عند بدء السحب */
+    onImageDragStart?: (imageUrl: string) => void;
+    /** Optional: callback عند انتهاء السحب */
+    onImageDragEnd?: () => void;
 }
 
 /**
@@ -29,6 +33,8 @@ export function ImageSelector({
     selectedImage,
     onSelect,
     label = "اختر صورة المتغير",
+    onImageDragStart,
+    onImageDragEnd,
 }: ImageSelectorProps) {
     const [showPreview, setShowPreview] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -101,9 +107,13 @@ export function ImageSelector({
                         {images.map((img) => (
                             <div
                                 key={img}
+                                draggable={!!onImageDragStart}
+                                onDragStart={() => onImageDragStart?.(img)}
+                                onDragEnd={onImageDragEnd}
                                 className={cn(
                                     "relative cursor-pointer rounded-lg border-2 overflow-hidden transition-all group",
                                     "hover:border-primary/50 hover:shadow-md",
+                                    onImageDragStart && "cursor-move",
                                     selectedImage === img
                                         ? "border-primary ring-2 ring-primary"
                                         : "border-gray-200 dark:border-gray-700"
@@ -114,6 +124,7 @@ export function ImageSelector({
                                     src={img}
                                     alt="صورة المنتج"
                                     className="w-full h-24 object-cover"
+                                    draggable={false}
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src = "/placeholder-product.svg";
                                     }}

@@ -29,6 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Image as ImageIcon, Save, X } from "lucide-react";
 import type { ProductVariant } from "@/types";
 import { ImageSelector } from "@/components/admin/image-selector";
+import { cn } from "@/lib/utils";
 
 interface ProductVariantsManagerProps {
   productId: string;
@@ -52,6 +53,14 @@ export function ProductVariantsManager({
   const [editingVariant, setEditingVariant] = useState<ProductVariant | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [productImages, setProductImages] = useState<string[]>([]);
+
+  // Drag & Drop state
+  const [draggedImage, setDraggedImage] = useState<string | null>(null);
+  const [dropTargetVariantId, setDropTargetVariantId] = useState<string | null>(null);
+
+  // Inline editing state
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [tempPrice, setTempPrice] = useState<number>(0);
 
   // Form state for variant editor
   const [formData, setFormData] = useState<Partial<ProductVariant>>({
@@ -191,6 +200,77 @@ export function ProductVariantsManager({
     setHasVariants(!hasVariants);
   };
 
+  // Drag & Drop handlers
+  const handleImageDragStart = (imageUrl: string) => {
+    setDraggedImage(imageUrl);
+  };
+
+  const handleImageDragEnd = () => {
+    setDraggedImage(null);
+    setDropTargetVariantId(null);
+  };
+
+  const handleVariantDragOver = (e: React.DragEvent, variantId: string) => {
+    e.preventDefault();
+    setDropTargetVariantId(variantId);
+  };
+
+  const handleVariantDragLeave = () => {
+    setDropTargetVariantId(null);
+  };
+
+  const handleVariantDrop = (e: React.DragEvent, variantId: string) => {
+    e.preventDefault();
+    if (draggedImage) {
+      // Update variant image
+      const newVariants = variants.map((v) =>
+        v.id === variantId ? { ...v, image: draggedImage } : v
+      );
+      setVariants(newVariants);
+
+      toast({
+        title: "تم! 🎨",
+        description: "تم ربط الصورة بالمتغير",
+      });
+    }
+    setDraggedImage(null);
+    setDropTargetVariantId(null);
+  };
+
+  // Inline editing handlers
+  const handlePriceClick = (variant: ProductVariant) => {
+    setEditingPriceId(variant.id);
+    setTempPrice(variant.price);
+  };
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value) && value >= 0) {
+      setTempPrice(value);
+    }
+  };
+
+  const handlePriceSave = (variantId: string) => {
+    const newVariants = variants.map((v) =>
+      v.id === variantId ? { ...v, price: tempPrice } : v
+    );
+    setVariants(newVariants);
+    setEditingPriceId(null);
+
+    toast({
+      title: "تم! ✅",
+      description: "تم تحديث السعر",
+    });
+  };
+
+  const handlePriceKeyDown = (e: React.KeyboardEvent, variantId: string) => {
+    if (e.key === "Enter") {
+      handlePriceSave(variantId);
+    } else if (e.key === "Escape") {
+      setEditingPriceId(null);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -240,10 +320,9 @@ export function ProductVariantsManager({
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
-                    <TableHead>التسمية</TableHead>
+                    <TableHead>المنتج</TableHead>
                     <TableHead>السعر</TableHead>
                     <TableHead>المخزون</TableHead>
-                    <TableHead>الصورة</TableHead>
                     <TableHead>افتراضي</TableHead>
                     <TableHead>إجراءات</TableHead>
                   </TableRow>
@@ -256,35 +335,76 @@ export function ProductVariantsManager({
                           {variant.id}
                         </code>
                       </TableCell>
-                      <TableCell className="font-medium">{variant.label}</TableCell>
+                      <TableCell
+                        onDragOver={(e) => handleVariantDragOver(e, variant.id)}
+                        onDragLeave={handleVariantDragLeave}
+                        onDrop={(e) => handleVariantDrop(e, variant.id)}
+                        className={cn(
+                          "transition-colors",
+                          dropTargetVariantId === variant.id && "bg-primary/10 ring-2 ring-primary"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          {variant.image ? (
+                            <img
+                              src={variant.image}
+                              alt={variant.label}
+                              className="w-12 h-12 object-cover rounded border"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
+                              <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div className="flex flex-col">
+                            <span className="font-medium">{variant.label}</span>
+                            {variant.image && (
+                              <span className="text-xs text-green-600 flex items-center gap-1">
+                                <ImageIcon className="w-3 h-3" />
+                                صورة مخصصة
+                              </span>
+                            )}
+                            {dropTargetVariantId === variant.id && (
+                              <span className="text-xs text-primary font-medium animate-pulse">
+                                📸 إفلات الصورة هنا
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell>
-                        {variant.price.toLocaleString()} د.ع
-                        {variant.originalPrice && (
-                          <span className="text-xs text-muted-foreground line-through mr-2">
-                            {variant.originalPrice.toLocaleString()}
-                          </span>
+                        {editingPriceId === variant.id ? (
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              value={tempPrice}
+                              onChange={handlePriceChange}
+                              onKeyDown={(e) => handlePriceKeyDown(e, variant.id)}
+                              onBlur={() => handlePriceSave(variant.id)}
+                              className="w-32"
+                              autoFocus
+                            />
+                            <span className="text-xs text-muted-foreground">د.ع</span>
+                          </div>
+                        ) : (
+                          <div
+                            className="cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                            onClick={() => handlePriceClick(variant)}
+                            title="اضغط للتعديل"
+                          >
+                            {variant.price.toLocaleString()} د.ع
+                            {variant.originalPrice && (
+                              <span className="text-xs text-muted-foreground line-through mr-2">
+                                {variant.originalPrice.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={variant.stock > 0 ? "default" : "destructive"}>
                           {variant.stock} قطعة
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {variant.image ? (
-                          <div className="flex items-center gap-2">
-                            <img
-                              src={variant.image}
-                              alt={variant.label}
-                              className="w-10 h-10 object-cover rounded"
-                            />
-                            <ImageIcon className="w-4 h-4 text-green-500" />
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground text-xs">
-                            لا توجد صورة
-                          </span>
-                        )}
                       </TableCell>
                       <TableCell>
                         {variant.isDefault && (
@@ -426,6 +546,8 @@ export function ProductVariantsManager({
                   onSelect={(imageUrl) =>
                     setFormData({ ...formData, image: imageUrl })
                   }
+                  onImageDragStart={handleImageDragStart}
+                  onImageDragEnd={handleImageDragEnd}
                   label="اختر صورة المتغير (اختياري)"
                 />
               </div>
