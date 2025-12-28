@@ -2,7 +2,7 @@
  * Product Variants Manager Component
  * Allows admin to add, edit, and delete product variants with images
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Image as ImageIcon, Save, X } from "lucide-react";
 import type { ProductVariant } from "@/types";
+import { ImageSelector } from "@/components/admin/image-selector";
 
 interface ProductVariantsManagerProps {
   productId: string;
@@ -50,6 +51,7 @@ export function ProductVariantsManager({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVariant, setEditingVariant] = useState<ProductVariant | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [productImages, setProductImages] = useState<string[]>([]);
 
   // Form state for variant editor
   const [formData, setFormData] = useState<Partial<ProductVariant>>({
@@ -62,6 +64,24 @@ export function ProductVariantsManager({
     image: "",
     specifications: {},
   });
+
+  // Fetch product images when component mounts
+  useEffect(() => {
+    const fetchProductImages = async () => {
+      try {
+        const response = await fetch(`/api/products/${productId}`);
+        if (!response.ok) throw new Error("Failed to fetch product");
+        const product = await response.json();
+        setProductImages(product.images || []);
+      } catch (error) {
+        console.error("Error fetching product images:", error);
+      }
+    };
+
+    if (productId) {
+      fetchProductImages();
+    }
+  }, [productId]);
 
   const handleAddVariant = () => {
     setEditingVariant(null);
@@ -398,29 +418,16 @@ export function ProductVariantsManager({
                 />
               </div>
 
-              {/* Image */}
+              {/* Image Selector */}
               <div>
-                <Label htmlFor="variant-image">رابط الصورة (اختياري)</Label>
-                <Input
-                  id="variant-image"
-                  value={formData.image}
-                  onChange={(e) =>
-                    setFormData({ ...formData, image: e.target.value })
+                <ImageSelector
+                  images={productImages}
+                  selectedImage={formData.image || ""}
+                  onSelect={(imageUrl) =>
+                    setFormData({ ...formData, image: imageUrl })
                   }
-                  placeholder="/images/products/..."
+                  label="اختر صورة المتغير (اختياري)"
                 />
-                {formData.image && (
-                  <div className="mt-2">
-                    <img
-                      src={formData.image}
-                      alt="معاينة"
-                      className="w-32 h-32 object-cover rounded border"
-                    />
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground mt-1">
-                  انسخ رابط الصورة من صور المنتج الأساسية
-                </p>
               </div>
 
               {/* Is Default */}
