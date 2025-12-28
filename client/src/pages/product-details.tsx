@@ -61,19 +61,47 @@ export default function ProductDetails() {
   const { data: legacyVariants = [] } = useQuery({
     queryKey: ["product-variants", slug],
     queryFn: () => fetchProductVariants(slug!),
-    enabled: !!slug && !!product && !product.hasVariants,
+    enabled: !!slug && !!product && !product.hasVariants && !(product as any)?.variantGroupId,
   });
 
-  // Use embedded variants if available, otherwise use legacy
+  // Fetch variant group products (new simple linking system)
+  const { data: variantGroupData } = useQuery<{ products: Product[] }>({
+    queryKey: ["variant-group", (product as any)?.variantGroupId],
+    queryFn: async () => {
+      const response = await fetch(`/api/products/variant-group/${(product as any)?.variantGroupId}`);
+      if (!response.ok) throw new Error("Failed to fetch variant group");
+      return response.json();
+    },
+    enabled: !!(product as any)?.variantGroupId,
+  });
+
+  // Convert variant group products to variant format
+  const linkedVariants = useMemo(() => {
+    if (!variantGroupData?.products) return [];
+    return variantGroupData.products.map((p: Product) => ({
+      id: p.id,
+      label: p.name,
+      price: Number(p.price),
+      originalPrice: p.originalPrice ? Number(p.originalPrice) : undefined,
+      stock: p.stock ?? 0,
+      isDefault: p.id === product?.id, // Current product is default
+      image: p.images[0] || p.thumbnail,
+      specifications: p.specifications,
+    })) as ProductVariant[];
+  }, [variantGroupData, product?.id]);
+
+  // Use embedded variants if available, otherwise use linked variants or legacy
   const hasEmbeddedVariants = product?.hasVariants && product?.variants && product.variants.length > 0;
+  const hasLinkedVariants = linkedVariants.length > 0;
+  const effectiveVariants = hasEmbeddedVariants ? product.variants : (hasLinkedVariants ? linkedVariants : null);
 
   // Set default variant on product load
   useMemo(() => {
-    if (hasEmbeddedVariants && product?.variants && !selectedVariant) {
-      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
+    if (effectiveVariants && effectiveVariants.length > 0 && !selectedVariant) {
+      const defaultVariant = effectiveVariants.find(v => v.isDefault) || effectiveVariants[0];
       setSelectedVariant(defaultVariant);
     }
-  }, [hasEmbeddedVariants, product?.variants, selectedVariant]);
+  }, [effectiveVariants, selectedVariant]);
 
   // Current display values (from selected variant or product)
   const displayPrice = selectedVariant?.price ?? product?.price ?? 0;
@@ -298,11 +326,11 @@ export default function ProductDetails() {
                   )}
                 </div>
 
-                {/* Product Variants - Embedded (like Amazon/HYGGER) */}
-                {hasEmbeddedVariants && product.variants && (
+                {/* Product Variants - Embedded, Linked, or Legacy */}
+                {effectiveVariants && effectiveVariants.length > 0 && (
                   <div className="mb-6">
                     <EmbeddedVariantSelector
-                      variants={product.variants}
+                      variants={effectiveVariants}
                       selectedVariantId={selectedVariant?.id || ""}
                       onVariantSelect={setSelectedVariant}
                       productCategory={product.category}
@@ -310,8 +338,8 @@ export default function ProductDetails() {
                   </div>
                 )}
 
-                {/* Product Variants - Legacy (separate products) */}
-                {!hasEmbeddedVariants && legacyVariants && legacyVariants.length > 1 && (
+                {/* Product Variants - Legacy (for old products) */}
+                {!effectiveVariants && legacyVariants && legacyVariants.length > 1 && (
                   <div className="mb-6">
                     <ProductVariantSelector
                       currentProduct={product}

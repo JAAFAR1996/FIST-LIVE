@@ -17,6 +17,9 @@ export interface IStorage {
     createProduct(product: Partial<Product>): Promise<Product>;
     updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
     updateProductVariants(id: string, hasVariants: boolean, variants: any[] | null): Promise<boolean>;
+    linkProductsAsVariants(productIds: string[], groupId: string): Promise<boolean>;
+    unlinkVariantGroup(groupId: string): Promise<boolean>;
+    getVariantGroupProducts(groupId: string): Promise<any[]>;
     deleteProduct(id: string): Promise<boolean>;
     getOrders(userId?: string, options?: { limit?: number, offset?: number }): Promise<Order[]>;
     getOrder(id: string): Promise<Order | undefined>;
@@ -155,6 +158,9 @@ class CombinedStorage implements IStorage {
     createProduct = this.productStorage.createProduct.bind(this.productStorage);
     updateProduct = this.productStorage.updateProduct.bind(this.productStorage);
     updateProductVariants = this.productStorage.updateProductVariants.bind(this.productStorage);
+    linkProductsAsVariants = this.productStorage.linkProductsAsVariants.bind(this.productStorage);
+    unlinkVariantGroup = this.productStorage.unlinkVariantGroup.bind(this.productStorage);
+    getVariantGroupProducts = this.productStorage.getVariantGroupProducts.bind(this.productStorage);
     deleteProduct = this.productStorage.deleteProduct.bind(this.productStorage);
     getReviews = this.productStorage.getReviews.bind(this.productStorage);
     getAllReviews = this.productStorage.getAllReviews.bind(this.productStorage);

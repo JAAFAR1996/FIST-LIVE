@@ -273,6 +273,38 @@ export class ProductStorage {
         return result.length > 0;
     }
 
+    // Simple variant linking - link multiple products as variants
+    async linkProductsAsVariants(productIds: string[], groupId: string): Promise<boolean> {
+        const db = this.ensureDb();
+        const result = await db.update(products)
+            .set({
+                variantGroupId: groupId,
+                updatedAt: new Date()
+            } as any)
+            .where(inArray(products.id, productIds))
+            .returning();
+        return result.length > 0;
+    }
+
+    async unlinkVariantGroup(groupId: string): Promise<boolean> {
+        const db = this.ensureDb();
+        const result = await db.update(products)
+            .set({
+                variantGroupId: null,
+                updatedAt: new Date()
+            } as any)
+            .where(eq(products.variantGroupId, groupId))
+            .returning();
+        return result.length > 0;
+    }
+
+    async getVariantGroupProducts(groupId: string): Promise<any[]> {
+        const db = this.ensureDb();
+        return db.select()
+            .from(products)
+            .where(eq(products.variantGroupId, groupId));
+    }
+
     async deleteProduct(id: string): Promise<boolean> {
         const db = this.ensureDb();
         // Soft delete

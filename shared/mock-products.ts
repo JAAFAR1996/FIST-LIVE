@@ -39,6 +39,7 @@ export const mockProducts: Product[] = [
     deletedAt: null,
     variants: null,
     hasVariants: false,
+    variantGroupId: null,
   },
   {
     id: "aquaclear-70",
@@ -70,6 +71,7 @@ export const mockProducts: Product[] = [
     deletedAt: null,
     variants: null,
     hasVariants: false,
+    variantGroupId: null,
   },
   {
     id: "seachem-prime",
@@ -101,6 +103,7 @@ export const mockProducts: Product[] = [
     deletedAt: null,
     variants: null,
     hasVariants: false,
+    variantGroupId: null,
   },
   {
     id: "eheim-jager-200w",
@@ -132,5 +135,6 @@ export const mockProducts: Product[] = [
     deletedAt: null,
     variants: null,
     hasVariants: false,
+    variantGroupId: null,
   },
 ];
