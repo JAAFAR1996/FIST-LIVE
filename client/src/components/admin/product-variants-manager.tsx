@@ -316,269 +316,309 @@ export function ProductVariantsManager({
                 <p>لا توجد خيارات بعد. اضغط "إضافة خيار جديد" للبدء.</p>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>المنتج</TableHead>
-                    <TableHead>السعر</TableHead>
-                    <TableHead>المخزون</TableHead>
-                    <TableHead>افتراضي</TableHead>
-                    <TableHead>إجراءات</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {variants.map((variant) => (
-                    <TableRow key={variant.id}>
-                      <TableCell>
-                        <code className="text-xs bg-muted px-2 py-1 rounded">
-                          {variant.id}
-                        </code>
-                      </TableCell>
-                      <TableCell
-                        onDragOver={(e) => handleVariantDragOver(e, variant.id)}
-                        onDragLeave={handleVariantDragLeave}
-                        onDrop={(e) => handleVariantDrop(e, variant.id)}
-                        className={cn(
-                          "transition-colors",
-                          dropTargetVariantId === variant.id && "bg-primary/10 ring-2 ring-primary"
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          {variant.image ? (
-                            <img
-                              src={variant.image}
-                              alt={variant.label}
-                              className="w-12 h-12 object-cover rounded border"
-                            />
+              <>
+                {/* معرض الصور للسحب والإفلات */}
+                {productImages.length > 0 && (
+                  <div className="mb-6 p-4 bg-muted/30 rounded-lg border-2 border-dashed">
+                    <div className="flex items-center gap-2 mb-3">
+                      <ImageIcon className="w-4 h-4 text-primary" />
+                      <Label className="text-sm font-medium">
+                        اسحب الصور وأفلتها على المتغيرات:
+                      </Label>
+                    </div>
+                    <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
+                      {productImages.map((img) => (
+                        <div
+                          key={img}
+                          draggable
+                          onDragStart={() => handleImageDragStart(img)}
+                          onDragEnd={handleImageDragEnd}
+                          className={cn(
+                            "relative cursor-move rounded border-2 overflow-hidden transition-all",
+                            "hover:border-primary hover:scale-105",
+                            draggedImage === img && "opacity-50 scale-95"
+                          )}
+                          title="اسحب لتعيين الصورة"
+                        >
+                          <img
+                            src={img}
+                            alt="صورة المنتج"
+                            className="w-full h-16 object-cover"
+                            draggable={false}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      💡 نصيحة: اسحب الصورة وأفلتها على اسم المتغير لتعيينها
+                    </p>
+                  </div>
+                )}
+
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>المنتج</TableHead>
+                      <TableHead>السعر</TableHead>
+                      <TableHead>المخزون</TableHead>
+                      <TableHead>افتراضي</TableHead>
+                      <TableHead>إجراءات</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {variants.map((variant) => (
+                      <TableRow key={variant.id}>
+                        <TableCell>
+                          <code className="text-xs bg-muted px-2 py-1 rounded">
+                            {variant.id}
+                          </code>
+                        </TableCell>
+                        <TableCell
+                          onDragOver={(e) => handleVariantDragOver(e, variant.id)}
+                          onDragLeave={handleVariantDragLeave}
+                          onDrop={(e) => handleVariantDrop(e, variant.id)}
+                          className={cn(
+                            "transition-colors",
+                            dropTargetVariantId === variant.id && "bg-primary/10 ring-2 ring-primary"
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            {variant.image ? (
+                              <img
+                                src={variant.image}
+                                alt={variant.label}
+                                className="w-12 h-12 object-cover rounded border"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
+                                <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                              </div>
+                            )}
+                            <div className="flex flex-col">
+                              <span className="font-medium">{variant.label}</span>
+                              {variant.image && (
+                                <span className="text-xs text-green-600 flex items-center gap-1">
+                                  <ImageIcon className="w-3 h-3" />
+                                  صورة مخصصة
+                                </span>
+                              )}
+                              {dropTargetVariantId === variant.id && (
+                                <span className="text-xs text-primary font-medium animate-pulse">
+                                  📸 إفلات الصورة هنا
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {editingPriceId === variant.id ? (
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                value={tempPrice}
+                                onChange={handlePriceChange}
+                                onKeyDown={(e) => handlePriceKeyDown(e, variant.id)}
+                                onBlur={() => handlePriceSave(variant.id)}
+                                className="w-32"
+                                autoFocus
+                              />
+                              <span className="text-xs text-muted-foreground">د.ع</span>
+                            </div>
                           ) : (
-                            <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
-                              <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                            <div
+                              className="cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
+                              onClick={() => handlePriceClick(variant)}
+                              title="اضغط للتعديل"
+                            >
+                              {variant.price.toLocaleString()} د.ع
+                              {variant.originalPrice && (
+                                <span className="text-xs text-muted-foreground line-through mr-2">
+                                  {variant.originalPrice.toLocaleString()}
+                                </span>
+                              )}
                             </div>
                           )}
-                          <div className="flex flex-col">
-                            <span className="font-medium">{variant.label}</span>
-                            {variant.image && (
-                              <span className="text-xs text-green-600 flex items-center gap-1">
-                                <ImageIcon className="w-3 h-3" />
-                                صورة مخصصة
-                              </span>
-                            )}
-                            {dropTargetVariantId === variant.id && (
-                              <span className="text-xs text-primary font-medium animate-pulse">
-                                📸 إفلات الصورة هنا
-                              </span>
-                            )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={variant.stock > 0 ? "default" : "destructive"}>
+                            {variant.stock} قطعة
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {variant.isDefault && (
+                            <Badge variant="secondary">افتراضي</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditVariant(variant)}
+                            >
+                              <Pencil className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteVariant(variant.id)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {editingPriceId === variant.id ? (
-                          <div className="flex items-center gap-2">
-                            <Input
-                              type="number"
-                              value={tempPrice}
-                              onChange={handlePriceChange}
-                              onKeyDown={(e) => handlePriceKeyDown(e, variant.id)}
-                              onBlur={() => handlePriceSave(variant.id)}
-                              className="w-32"
-                              autoFocus
-                            />
-                            <span className="text-xs text-muted-foreground">د.ع</span>
-                          </div>
-                        ) : (
-                          <div
-                            className="cursor-pointer hover:bg-muted/50 p-2 rounded transition-colors"
-                            onClick={() => handlePriceClick(variant)}
-                            title="اضغط للتعديل"
-                          >
-                            {variant.price.toLocaleString()} د.ع
-                            {variant.originalPrice && (
-                              <span className="text-xs text-muted-foreground line-through mr-2">
-                                {variant.originalPrice.toLocaleString()}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={variant.stock > 0 ? "default" : "destructive"}>
-                          {variant.stock} قطعة
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {variant.isDefault && (
-                          <Badge variant="secondary">افتراضي</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEditVariant(variant)}
-                          >
-                            <Pencil className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleDeleteVariant(variant.id)}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             )}
+
+            {!hasVariants && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>الخيارات معطلة. فعّل الخيارات لإضافة أحجام وألوان مختلفة.</p>
+              </div>
+            )}
+
+            {/* Variant Editor Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingVariant ? "تعديل الخيار" : "إضافة خيار جديد"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    أدخل تفاصيل الخيار (مثل: الحجم، اللون، القدرة)
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4" dir="rtl">
+                  {/* ID */}
+                  <div>
+                    <Label htmlFor="variant-id">
+                      ID الخيار <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="variant-id"
+                      value={formData.id}
+                      onChange={(e) =>
+                        setFormData({ ...formData, id: e.target.value })
+                      }
+                      placeholder="مثال: 5g-green, M, 18W"
+                      disabled={!!editingVariant}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      معرف فريد للخيار (بالإنجليزية فقط)
+                    </p>
+                  </div>
+
+                  {/* Label */}
+                  <div>
+                    <Label htmlFor="variant-label">
+                      التسمية (العرض) <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="variant-label"
+                      value={formData.label}
+                      onChange={(e) =>
+                        setFormData({ ...formData, label: e.target.value })
+                      }
+                      placeholder="مثال: 5 جرام - أخضر"
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="variant-price">
+                        السعر (د.ع) <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="variant-price"
+                        type="number"
+                        value={formData.price}
+                        onChange={(e) =>
+                          setFormData({ ...formData, price: Number(e.target.value) })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="variant-original-price">
+                        السعر الأصلي (اختياري)
+                      </Label>
+                      <Input
+                        id="variant-original-price"
+                        type="number"
+                        value={formData.originalPrice || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            originalPrice: e.target.value
+                              ? Number(e.target.value)
+                              : undefined,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {/* Stock */}
+                  <div>
+                    <Label htmlFor="variant-stock">المخزون</Label>
+                    <Input
+                      id="variant-stock"
+                      type="number"
+                      value={formData.stock}
+                      onChange={(e) =>
+                        setFormData({ ...formData, stock: Number(e.target.value) })
+                      }
+                    />
+                  </div>
+
+                  {/* Image Selector */}
+                  <div>
+                    <ImageSelector
+                      images={productImages}
+                      selectedImage={formData.image || ""}
+                      onSelect={(imageUrl) =>
+                        setFormData({ ...formData, image: imageUrl })
+                      }
+                      onImageDragStart={handleImageDragStart}
+                      onImageDragEnd={handleImageDragEnd}
+                      label="اختر صورة المتغير (اختياري)"
+                    />
+                  </div>
+
+                  {/* Is Default */}
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="variant-default"
+                      checked={formData.isDefault}
+                      onCheckedChange={(checked) =>
+                        setFormData({ ...formData, isDefault: !!checked })
+                      }
+                    />
+                    <Label htmlFor="variant-default" className="cursor-pointer">
+                      جعل هذا الخيار افتراضياً (الأكثر شعبية)
+                    </Label>
+                  </div>
+                </div>
+
+                <DialogFooter className="gap-2">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    <X className="w-4 h-4 mr-2" />
+                    إلغاء
+                  </Button>
+                  <Button onClick={handleSaveVariant}>
+                    <Save className="w-4 h-4 mr-2" />
+                    حفظ الخيار
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </>
         )}
-
-        {!hasVariants && (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>الخيارات معطلة. فعّل الخيارات لإضافة أحجام وألوان مختلفة.</p>
-          </div>
-        )}
-
-        {/* Variant Editor Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingVariant ? "تعديل الخيار" : "إضافة خيار جديد"}
-              </DialogTitle>
-              <DialogDescription>
-                أدخل تفاصيل الخيار (مثل: الحجم، اللون، القدرة)
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4" dir="rtl">
-              {/* ID */}
-              <div>
-                <Label htmlFor="variant-id">
-                  ID الخيار <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="variant-id"
-                  value={formData.id}
-                  onChange={(e) =>
-                    setFormData({ ...formData, id: e.target.value })
-                  }
-                  placeholder="مثال: 5g-green, M, 18W"
-                  disabled={!!editingVariant}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  معرف فريد للخيار (بالإنجليزية فقط)
-                </p>
-              </div>
-
-              {/* Label */}
-              <div>
-                <Label htmlFor="variant-label">
-                  التسمية (العرض) <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="variant-label"
-                  value={formData.label}
-                  onChange={(e) =>
-                    setFormData({ ...formData, label: e.target.value })
-                  }
-                  placeholder="مثال: 5 جرام - أخضر"
-                />
-              </div>
-
-              {/* Price */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="variant-price">
-                    السعر (د.ع) <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="variant-price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price: Number(e.target.value) })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="variant-original-price">
-                    السعر الأصلي (اختياري)
-                  </Label>
-                  <Input
-                    id="variant-original-price"
-                    type="number"
-                    value={formData.originalPrice || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        originalPrice: e.target.value
-                          ? Number(e.target.value)
-                          : undefined,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Stock */}
-              <div>
-                <Label htmlFor="variant-stock">المخزون</Label>
-                <Input
-                  id="variant-stock"
-                  type="number"
-                  value={formData.stock}
-                  onChange={(e) =>
-                    setFormData({ ...formData, stock: Number(e.target.value) })
-                  }
-                />
-              </div>
-
-              {/* Image Selector */}
-              <div>
-                <ImageSelector
-                  images={productImages}
-                  selectedImage={formData.image || ""}
-                  onSelect={(imageUrl) =>
-                    setFormData({ ...formData, image: imageUrl })
-                  }
-                  onImageDragStart={handleImageDragStart}
-                  onImageDragEnd={handleImageDragEnd}
-                  label="اختر صورة المتغير (اختياري)"
-                />
-              </div>
-
-              {/* Is Default */}
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="variant-default"
-                  checked={formData.isDefault}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, isDefault: !!checked })
-                  }
-                />
-                <Label htmlFor="variant-default" className="cursor-pointer">
-                  جعل هذا الخيار افتراضياً (الأكثر شعبية)
-                </Label>
-              </div>
-            </div>
-
-            <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                <X className="w-4 h-4 mr-2" />
-                إلغاء
-              </Button>
-              <Button onClick={handleSaveVariant}>
-                <Save className="w-4 h-4 mr-2" />
-                حفظ الخيار
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </CardContent>
     </Card>
   );
