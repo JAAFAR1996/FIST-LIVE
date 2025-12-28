@@ -239,7 +239,12 @@ export default function ProductDetails() {
                 </div>
 
                 <ProductImageGallery
-                  images={product.images && product.images.length > 0 ? product.images : (product.thumbnail ? [product.thumbnail] : (product.image ? [product.image] : []))}
+                  images={
+                    // Show variant image first if selected and has image
+                    selectedVariant?.image
+                      ? [selectedVariant.image, ...product.images.filter(img => img !== selectedVariant.image)]
+                      : (product.images && product.images.length > 0 ? product.images : (product.thumbnail ? [product.thumbnail] : (product.image ? [product.image] : [])))
+                  }
                   productName={product.name}
                 />
               </div>

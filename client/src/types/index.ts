@@ -71,6 +71,7 @@ export interface ProductVariant {
   stock: number;                      // Stock for this variant
   sku?: string;                       // Optional SKU code
   isDefault?: boolean;                // Is this the default/popular variant
+  image?: string;                     // Variant-specific image (shown when selected)
   specifications?: Record<string, any>; // Variant-specific specs
 }
 
