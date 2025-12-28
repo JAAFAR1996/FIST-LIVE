@@ -49,6 +49,7 @@ import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
 import { PriceSuggestionsPanel } from "@/components/admin/price-suggestions-panel";
 import { AIInsightsPanel } from "@/components/admin/ai-insights-panel";
 import { AIChatPanel } from "@/components/admin/ai-chat-panel";
+import { ProductVariantsManager } from "@/components/admin/product-variants-manager";
 import {
   Plus,
   Pencil,
@@ -192,6 +193,9 @@ export default function AdminDashboard() {
   const [customBrand, setCustomBrand] = useState<string>("");
   const [customCategory, setCustomCategory] = useState<string>("");
   const [customSubcategory, setCustomSubcategory] = useState<string>("");
+  // Variants management state
+  const [isVariantsDialogOpen, setIsVariantsDialogOpen] = useState(false);
+  const [variantsProduct, setVariantsProduct] = useState<Product | null>(null);
   // Specifications editor state
   const [specKey, setSpecKey] = useState<string>("");
   const [specValue, setSpecValue] = useState<string>("");
@@ -815,6 +819,17 @@ export default function AdminDashboard() {
                               </Button>
                               <Button
                                 size="sm"
+                                variant="secondary"
+                                onClick={() => {
+                                  setVariantsProduct(product);
+                                  setIsVariantsDialogOpen(true);
+                                }}
+                                title="إدارة الخيارات"
+                              >
+                                <Settings className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
                                 variant="destructive"
                                 onClick={() => handleDeleteProduct(product.id)}
                               >
@@ -1338,6 +1353,24 @@ export default function AdminDashboard() {
               {isEditMode ? "تحديث" : "إضافة"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Product Variants Management Dialog */}
+      <Dialog open={isVariantsDialogOpen} onOpenChange={setIsVariantsDialogOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          {variantsProduct && (
+            <ProductVariantsManager
+              productId={variantsProduct.id}
+              productName={variantsProduct.name}
+              variants={(variantsProduct as any).variants || null}
+              hasVariants={(variantsProduct as any).hasVariants || false}
+              onUpdate={() => {
+                fetchProducts();
+                setIsVariantsDialogOpen(false);
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

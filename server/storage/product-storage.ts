@@ -260,6 +260,19 @@ export class ProductStorage {
         return result[0];
     }
 
+    async updateProductVariants(id: string, hasVariants: boolean, variants: any[] | null): Promise<boolean> {
+        const db = this.ensureDb();
+        const result = await db.update(products)
+            .set({
+                hasVariants,
+                variants: variants as any,
+                updatedAt: new Date()
+            } as any)
+            .where(eq(products.id, id))
+            .returning();
+        return result.length > 0;
+    }
+
     async deleteProduct(id: string): Promise<boolean> {
         const db = this.ensureDb();
         // Soft delete

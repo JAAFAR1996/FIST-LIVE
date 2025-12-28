@@ -176,5 +176,22 @@ export function createProductRouter(): RouterType {
         }
     });
 
+    // Update product variants
+    router.put("/:productId/variants", requireAuth, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { productId } = req.params as { productId: string };
+            const { hasVariants, variants } = req.body as { hasVariants: boolean; variants: any[] | null };
+
+            await storage.updateProductVariants(productId, hasVariants, variants);
+
+            res.json({
+                success: true,
+                message: "تم تحديث خيارات المنتج بنجاح"
+            });
+        } catch (err) {
+            next(err);
+        }
+    });
+
     return router;
 }

@@ -16,6 +16,7 @@ export interface IStorage {
     getProductBySlug(slug: string): Promise<Product | undefined>;
     createProduct(product: Partial<Product>): Promise<Product>;
     updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
+    updateProductVariants(id: string, hasVariants: boolean, variants: any[] | null): Promise<boolean>;
     deleteProduct(id: string): Promise<boolean>;
     getOrders(userId?: string, options?: { limit?: number, offset?: number }): Promise<Order[]>;
     getOrder(id: string): Promise<Order | undefined>;
@@ -153,6 +154,7 @@ class CombinedStorage implements IStorage {
     getProductBySlug = this.productStorage.getProductBySlug.bind(this.productStorage);
     createProduct = this.productStorage.createProduct.bind(this.productStorage);
     updateProduct = this.productStorage.updateProduct.bind(this.productStorage);
+    updateProductVariants = this.productStorage.updateProductVariants.bind(this.productStorage);
     deleteProduct = this.productStorage.deleteProduct.bind(this.productStorage);
     getReviews = this.productStorage.getReviews.bind(this.productStorage);
     getAllReviews = this.productStorage.getAllReviews.bind(this.productStorage);
