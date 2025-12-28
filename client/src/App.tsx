@@ -328,6 +328,19 @@ function Router() {
         )}
       </Route>
 
+      {/* Alias for merge-product (singular) */}
+      <Route path="/admin/merge-product">
+        {() => (
+          <ErrorBoundary>
+            <RequireAdmin>
+              <Suspense fallback={<PageLoader />}>
+                <MergeProductsPage />
+              </Suspense>
+            </RequireAdmin>
+          </ErrorBoundary>
+        )}
+      </Route>
+
       <Route component={NotFound} />
     </Switch>
   );
