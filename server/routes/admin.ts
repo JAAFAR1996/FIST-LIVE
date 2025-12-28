@@ -816,5 +816,101 @@ export function createAdminRouter(): RouterType {
         }
     });
 
+    // ============ PRODUCT MERGE ============
+
+    // Merge two products: transfer images from source to target, delete source
+    router.post("/products/merge", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { targetProductId, sourceProductId } = req.body;
+
+            // Validation
+            if (!targetProductId || !sourceProductId) {
+                res.status(400).json({
+                    success: false,
+                    message: "يرجى تقديم معرفات المنتجات المطلوبة",
+                    code: "MISSING_PARAMETERS"
+                });
+                return;
+            }
+
+            if (targetProductId === sourceProductId) {
+                res.status(400).json({
+                    success: false,
+                    message: "لا يمكن دمج المنتج مع نفسه",
+                    code: "SAME_PRODUCT"
+                });
+                return;
+            }
+
+            // Get both products
+            const targetProduct = await storage.getProduct(targetProductId);
+            const sourceProduct = await storage.getProduct(sourceProductId);
+
+            if (!targetProduct) {
+                res.status(404).json({
+                    success: false,
+                    message: "المنتج الرئيسي غير موجود",
+                    code: "TARGET_NOT_FOUND"
+                });
+                return;
+            }
+
+            if (!sourceProduct) {
+                res.status(404).json({
+                    success: false,
+                    message: "المنتج المصدر غير موجود",
+                    code: "SOURCE_NOT_FOUND"
+                });
+                return;
+            }
+
+            // Merge images (remove duplicates)
+            const targetImages = Array.isArray(targetProduct.images) ? targetProduct.images : [];
+            const sourceImages = Array.isArray(sourceProduct.images) ? sourceProduct.images : [];
+
+            const mergedImages = Array.from(new Set([...targetImages, ...sourceImages]));
+            const newImagesCount = mergedImages.length - targetImages.length;
+
+            // Update target product with merged images
+            await storage.updateProduct(targetProductId, {
+                images: mergedImages,
+                updatedAt: new Date()
+            });
+
+            // Delete source product (soft delete)
+            await storage.deleteProduct(sourceProductId);
+
+            // Audit log
+            await storage.createAuditLog({
+                userId: getSession(req)?.userId || "admin",
+                action: "merge",
+                entityType: "product",
+                entityId: targetProductId,
+                changes: {
+                    sourceProductId,
+                    sourceProductName: sourceProduct.name,
+                    addedImages: newImagesCount,
+                    totalImages: mergedImages.length
+                }
+            });
+
+            // Get updated product
+            const updatedProduct = await storage.getProduct(targetProductId);
+
+            res.json({
+                success: true,
+                data: {
+                    updatedProduct,
+                    deletedProductId: sourceProductId,
+                    mergedImagesCount: newImagesCount,
+                    totalImages: mergedImages.length
+                }
+            });
+        } catch (err) {
+            console.error("[Admin API] ❌ Error merging products:", err);
+            next(err);
+        }
+    });
+
     return router;
 }

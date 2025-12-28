@@ -46,7 +46,7 @@ const Register = lazy(() => import("@/pages/register"));
 const Compare = lazy(() => import("@/pages/compare"));
 const AquariumWizard = lazy(() => import("@/pages/aquarium-wizard"));
 const FishCompatibility = lazy(() => import("@/pages/fish-compatibility"));
-
+const MergeProductsPage = lazy(() => import("@/pages/admin/merge-products"));
 
 
 // Medium-weight pages (direct imports for faster navigation)
@@ -309,6 +309,19 @@ function Router() {
             <RequireAdmin>
               <Suspense fallback={<PageLoader />}>
                 <AdminDashboard />
+              </Suspense>
+            </RequireAdmin>
+          </ErrorBoundary>
+        )}
+      </Route>
+
+      {/* Admin: Merge Products */}
+      <Route path="/admin/merge-products">
+        {() => (
+          <ErrorBoundary>
+            <RequireAdmin>
+              <Suspense fallback={<PageLoader />}>
+                <MergeProductsPage />
               </Suspense>
             </RequireAdmin>
           </ErrorBoundary>
