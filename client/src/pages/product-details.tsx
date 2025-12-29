@@ -23,6 +23,7 @@ import { ExplodedProductView } from "@/components/products/exploded-product-view
 import { FrequentlyBoughtTogether } from "@/components/products/frequently-bought-together";
 import { ProductVariantSelector } from "@/components/products/product-variant-selector";
 import { EmbeddedVariantSelector } from "@/components/products/embedded-variant-selector";
+import { MultiDimensionVariantSelector } from "@/components/products/multi-dimension-variant-selector";
 import { ProductSpecificationsTable } from "@/components/products/product-specifications-table";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "wouter";
@@ -298,15 +299,24 @@ export default function ProductDetails() {
                   )}
                 </div>
 
-                {/* Product Variants - Embedded (like Amazon/HYGGER) */}
+                {/* Product Variants - Check for multi-dimensional first, then embedded */}
                 {hasEmbeddedVariants && product.variants && (
                   <div className="mb-6">
-                    <EmbeddedVariantSelector
+                    {/* Try MultiDimensionVariantSelector first (for color + size products) */}
+                    <MultiDimensionVariantSelector
                       variants={product.variants}
                       selectedVariantId={selectedVariant?.id || ""}
                       onVariantSelect={setSelectedVariant}
-                      productCategory={product.category}
                     />
+                    {/* Fall back to EmbeddedVariantSelector for single-dimension variants */}
+                    {!product.variants.some(v => v.specifications?.["اللون"] && v.specifications?.["الحجم"]) && (
+                      <EmbeddedVariantSelector
+                        variants={product.variants}
+                        selectedVariantId={selectedVariant?.id || ""}
+                        onVariantSelect={setSelectedVariant}
+                        productCategory={product.category}
+                      />
+                    )}
                   </div>
                 )}
 
