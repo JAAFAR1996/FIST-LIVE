@@ -128,27 +128,25 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" aria-label="الصفحة الرئيسية - AQUAVO">
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative">
-                <img
-                  src="/logo_aquavo_icon.webp"
-                  alt="AQUAVO Logo"
-                  className="h-10 w-10 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md"
-                />
-              </div>
-              <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-600 tracking-tighter group-hover:to-cyan-300 transition-all font-sans">
+            <div className="flex items-center gap-2 cursor-pointer group">
+              <img
+                src="/brand/logos/aquavo-icon.png"
+                alt="AQUAVO Logo"
+                className="h-9 w-9 object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+              />
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-500 tracking-tight">
                 AQUAVO
               </span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-3 lg:gap-4">
+          <div className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <span className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer flex items-center gap-1.5 ${location === link.href ? "text-primary" : "text-muted-foreground"
+                <span className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary hover:bg-primary/5 cursor-pointer flex items-center gap-1 px-2 py-1.5 rounded-md ${location === link.href ? "text-primary bg-primary/10" : "text-muted-foreground"
                   }`}>
-                  {link.icon && <link.icon className="h-4 w-4 opacity-50" />}
+                  {link.icon && <link.icon className="h-3.5 w-3.5 lg:h-4 lg:w-4" />}
                   {link.label}
                 </span>
               </Link>

@@ -123,7 +123,7 @@ export function CategoryScrollBar({
             {/* Scrollable Categories */}
             <div
                 ref={scrollRef}
-                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-1"
+                className="flex gap-2 overflow-x-auto scrollbar-hide py-2 px-1 justify-start"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {/* All Categories Option */}
@@ -133,22 +133,22 @@ export function CategoryScrollBar({
                         selectedCategories.forEach(cat => onCategoryToggle(cat));
                     }}
                     className={cn(
-                        "flex flex-col items-center gap-2 min-w-[80px] px-4 py-3 rounded-xl transition-all duration-200",
-                        "border-2 hover:shadow-lg",
+                        "flex flex-col items-center gap-1.5 min-w-[64px] px-3 py-2 rounded-lg transition-all duration-200",
+                        "border hover:shadow-md",
                         selectedCategories.length === 0
-                            ? "border-primary bg-primary/10 text-primary shadow-md"
-                            : "border-transparent bg-card hover:bg-accent text-muted-foreground hover:text-foreground"
+                            ? "border-primary bg-primary/10 text-primary shadow-sm"
+                            : "border-border/50 bg-card/80 hover:bg-accent text-muted-foreground hover:text-foreground"
                     )}
                 >
                     <div className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center transition-all",
+                        "w-10 h-10 rounded-full flex items-center justify-center transition-all",
                         selectedCategories.length === 0
                             ? "bg-primary text-white"
                             : "bg-muted"
                     )}>
-                        <Boxes className="w-6 h-6" />
+                        <Boxes className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-medium whitespace-nowrap">الكل</span>
+                    <span className="text-[10px] font-medium whitespace-nowrap">الكل</span>
                 </button>
 
                 {categories.map((category) => {
@@ -161,24 +161,24 @@ export function CategoryScrollBar({
                             key={category}
                             onClick={() => onCategoryToggle(category)}
                             className={cn(
-                                "flex flex-col items-center gap-2 min-w-[80px] px-4 py-3 rounded-xl transition-all duration-200",
-                                "border-2 hover:shadow-lg group/item",
+                                "flex flex-col items-center gap-1.5 min-w-[64px] px-3 py-2 rounded-lg transition-all duration-200",
+                                "border hover:shadow-md group/item",
                                 isSelected
-                                    ? "border-primary bg-primary/10 text-primary shadow-md"
-                                    : "border-transparent bg-card hover:bg-accent text-muted-foreground hover:text-foreground"
+                                    ? "border-primary bg-primary/10 text-primary shadow-sm"
+                                    : "border-border/50 bg-card/80 hover:bg-accent text-muted-foreground hover:text-foreground"
                             )}
                         >
                             <div className={cn(
-                                "relative w-12 h-12 rounded-full flex items-center justify-center transition-all",
-                                "group-hover/item:scale-110",
+                                "relative w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                                "group-hover/item:scale-105",
                                 isSelected
                                     ? "bg-primary text-white"
                                     : "bg-muted group-hover/item:bg-primary/20"
                             )}>
-                                <Icon className="w-6 h-6" />
+                                <Icon className="w-5 h-5" />
                                 {count > 0 && (
                                     <span className={cn(
-                                        "absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center",
+                                        "absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center",
                                         isSelected
                                             ? "bg-white text-primary"
                                             : "bg-primary text-white"
@@ -187,7 +187,7 @@ export function CategoryScrollBar({
                                     </span>
                                 )}
                             </div>
-                            <span className="text-xs font-medium whitespace-nowrap">{category}</span>
+                            <span className="text-[10px] font-medium whitespace-nowrap">{category}</span>
                         </button>
                     );
                 })}
