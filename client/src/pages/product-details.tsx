@@ -362,7 +362,7 @@ export default function ProductDetails() {
                 </div>
 
                 {/* Description */}
-                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
                   {product.description}
                 </p>
 
