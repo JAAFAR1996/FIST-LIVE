@@ -524,13 +524,7 @@ export default function ProductDetails() {
                           </div>
                         </div>
                       </div>
-                      {/* Show product description as benefits */}
-                      {product.description && (
-                        <div className="space-y-4">
-                          <h4 className="font-bold">وصف المنتج:</h4>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
-                        </div>
-                      )}
+
                       {/* Only show benefits if they exist in database */}
                       {Array.isArray(product.specifications?.benefits) && product.specifications.benefits.length > 0 && (
                         <div className="space-y-4">
