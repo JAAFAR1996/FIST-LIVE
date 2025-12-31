@@ -3,8 +3,6 @@
  * Standard 404 page with animated background
  */
 
-'use client';
-
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { Home } from 'lucide-react';

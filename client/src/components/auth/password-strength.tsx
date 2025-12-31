@@ -76,11 +76,11 @@ export function PasswordStrength({ password, showRequirements = true }: Password
                         متطلبات كلمة المرور:
                     </p>
                     <ul className="grid grid-cols-1 gap-1">
-                        {requirements.map((req, index) => {
+                        {requirements.map((req) => {
                             const passed = req.test(password);
                             return (
                                 <li
-                                    key={index}
+                                    key={req.label}
                                     className={cn(
                                         "flex items-center gap-2 text-xs transition-colors",
                                         passed ? "text-green-600" : "text-muted-foreground"

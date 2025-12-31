@@ -154,10 +154,10 @@ export function JourneySummary({ wizardData, products }: JourneySummaryProps) {
                             { day: "الأسبوع 1-6", task: "دورة النيتروجين - الصبر!", icon: TestTube },
                             { day: "بعد التدوير", task: "إضافة الأسماك تدريجياً", icon: Fish },
                             { day: "مستمر", task: "الصيانة الأسبوعية", icon: Calendar }
-                        ].map((step, idx) => {
+                        ].map((step) => {
                             const StepIcon = step.icon;
                             return (
-                                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg border bg-card">
+                                <div key={`${step.day}-${step.task}`} className="flex items-start gap-3 p-3 rounded-lg border bg-card">
                                     <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                                         <StepIcon className="h-4 w-4 text-primary" />
                                     </div>
@@ -182,8 +182,8 @@ export function JourneySummary({ wizardData, products }: JourneySummaryProps) {
 
                     {products.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {recommendedProducts.map((product, idx) => (
-                                <div key={idx} className="flex gap-3 p-4 rounded-xl border bg-card hover:border-primary/50 transition-all">
+                            {recommendedProducts.map((product) => (
+                                <div key={product.id} className="flex gap-3 p-4 rounded-xl border bg-card hover:border-primary/50 transition-all">
                                     <img
                                         src={product.image}
                                         alt={product.name}

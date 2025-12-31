@@ -1,15 +1,15 @@
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera, Heart, Box, Stethoscope, FileText, Sparkles } from "lucide-react";
+import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera, Heart, Box, Stethoscope, FileText, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { FontSizeControllerCompact } from "@/components/ui/font-size-controller";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { CheckoutDialog } from "@/components/cart/checkout-dialog";
 import { InvoiceDialog } from "@/components/cart/invoice-dialog";
-import { formatIQD, generateOrderNumber } from "@/lib/utils";
+import { formatIQD, generateOrderNumber, cn } from "@/lib/utils";
 import { useCart, CartItem } from "@/contexts/cart-context";
 import { useWishlist } from "@/contexts/wishlist-context";
 import { GlobalSearch } from "@/components/search/global-search";
@@ -25,6 +25,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Package as PackageIcon } from "lucide-react";
 import { ShrimpMascot } from "@/components/gamification/shrimp-mascot";
+import { NavbarStyleSwitcher } from "@/components/navbar/NavbarStyleSwitcher";
+import { useNavbarPreferences, type NavbarStyle } from "@/hooks/use-navbar-preferences";
+import { useDeviceDetection } from "@/hooks/use-device-detection";
+
 
 interface OrderData {
   customerInfo: {
@@ -47,10 +51,36 @@ export default function Navbar() {
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [isImmersiveMenuOpen, setIsImmersiveMenuOpen] = useState(false);
 
   const { items: cartItems, removeItem, clearCart, totalItems, totalPrice } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
   const { user, logout } = useAuth();
+
+  // 2025 Style hooks
+  const { style: navbarStyle } = useNavbarPreferences();
+  const { isMobile, isTablet, isDesktop, deviceType } = useDeviceDetection();
+
+  // Compute navbar classes based on selected style
+  const navbarClasses = useMemo(() => {
+    const baseClasses = "navbar-2025 sticky top-0 z-50 w-full transition-colors duration-300";
+
+    const styleClassMap: Record<NavbarStyle, string> = {
+      'glassmorphism': "navbar-glassmorphism border-b",
+      'micro-interactions': "navbar-micro-interactions bg-background/80 backdrop-blur-md border-b",
+      'ultra-minimal': "navbar-ultra-minimal",
+      'ai-personalized': "navbar-ai-personalized",
+      'device-adaptive': cn(
+        "navbar-device-adaptive bg-background/80 backdrop-blur-md border-b",
+        isMobile && "is-mobile",
+        isTablet && "is-tablet",
+        isDesktop && "is-desktop"
+      ),
+      'immersive': "navbar-immersive",
+    };
+
+    return cn(baseClasses, styleClassMap[navbarStyle]);
+  }, [navbarStyle, isMobile, isTablet, isDesktop]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -89,10 +119,11 @@ export default function Navbar() {
     { href: "/journey", label: "رحلتك", icon: Fish },
   ];
 
+
   return (
     <>
       <nav
-        className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-colors duration-300"
+        className={navbarClasses}
         role="navigation"
         aria-label="التنقل الرئيسي"
       >
@@ -128,7 +159,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" aria-label="الصفحة الرئيسية - AQUAVO">
-            <div className="flex items-center gap-3 cursor-pointer group">
+            <div className="nav-logo flex items-center gap-3 cursor-pointer group">
               <img
                 src="/brand/logos/aquavo-icon-only.png"
                 alt="AQUAVO Logo"
@@ -144,9 +175,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <span className={`text-xs lg:text-sm font-medium transition-colors hover:text-primary hover:bg-primary/5 cursor-pointer flex items-center gap-1 px-2 py-1.5 rounded-md ${location === link.href ? "text-primary bg-primary/10" : "text-muted-foreground"
-                  }`}>
-                  {link.icon && <link.icon className="h-3.5 w-3.5 lg:h-4 lg:w-4" />}
+                <span className={cn(
+                  "nav-link text-xs lg:text-sm font-medium transition-colors hover:text-primary hover:bg-primary/5 cursor-pointer flex items-center gap-1 px-2 py-1.5 rounded-md",
+                  location === link.href ? "text-primary bg-primary/10" : "text-muted-foreground"
+                )}>
+                  {link.icon && <link.icon className="nav-icon h-3.5 w-3.5 lg:h-4 lg:w-4" />}
                   {link.label}
                 </span>
               </Link>
@@ -154,8 +187,9 @@ export default function Navbar() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="nav-actions flex items-center gap-2 sm:gap-3">
             <ThemeSwitcher />
+            <NavbarStyleSwitcher />
             <FontSizeControllerCompact />
 
             {user ? (

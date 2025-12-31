@@ -17,6 +17,7 @@ import "@/lib/sentry"; // Auto-initializes on import
 import { WinnerNotificationBanner } from "@/components/notifications/winner-notification-banner";
 
 import { ComparisonProvider } from "@/contexts/comparison-context";
+import { NavbarPreferencesProvider } from "@/hooks/use-navbar-preferences";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { LiveChatWidget } from "@/components/chat/live-chat-widget";
 import { AIChatBot } from "@/components/chat/ai-chat-bot";
@@ -359,22 +360,24 @@ function App() {
           <WishlistProvider>
 
             <ComparisonProvider>
-              <TooltipProvider>
-                <PageViewTracker />
-                {/* Skip to main content for keyboard navigation */}
-                <a href="#main-content" className="skip-to-main">
-                  الانتقال إلى المحتوى الرئيسي
-                </a>
-                <ScrollProgress />
-                <FloatingActionButton />
+              <NavbarPreferencesProvider>
+                <TooltipProvider>
+                  <PageViewTracker />
+                  {/* Skip to main content for keyboard navigation */}
+                  <a href="#main-content" className="skip-to-main">
+                    الانتقال إلى المحتوى الرئيسي
+                  </a>
+                  <ScrollProgress />
+                  <FloatingActionButton />
 
-                <WinnerNotificationBanner />
+                  <WinnerNotificationBanner />
 
-                <Toaster />
-                <LiveChatWidget />
-                <AIChatBot />
-                <Router />
-              </TooltipProvider>
+                  <Toaster />
+                  <LiveChatWidget />
+                  <AIChatBot />
+                  <Router />
+                </TooltipProvider>
+              </NavbarPreferencesProvider>
             </ComparisonProvider>
 
           </WishlistProvider>

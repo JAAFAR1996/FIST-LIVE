@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { type Product, type ProductVariant } from "@/types";
@@ -69,12 +69,12 @@ export default function ProductDetails() {
   const hasEmbeddedVariants = product?.hasVariants && product?.variants && product.variants.length > 0;
 
   // Set default variant on product load
-  useMemo(() => {
+  useEffect(() => {
     if (hasEmbeddedVariants && product?.variants && !selectedVariant) {
       const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
       setSelectedVariant(defaultVariant);
     }
-  }, [hasEmbeddedVariants, product?.variants, selectedVariant]);
+  }, [hasEmbeddedVariants, product?.variants]);
 
   // Current display values (from selected variant or product)
   const displayPrice = selectedVariant?.price ?? product?.price ?? 0;
@@ -730,10 +730,6 @@ export default function ProductDetails() {
               title="يتم شراؤها معاً عادةً"
             />
 
-            {/* Product Reviews */}
-            <div className="mt-16">
-              <ProductReviews productId={product.id} productName={product.name} />
-            </div>
 
             {/* Similar Products (Real Data) */}
             <RecommendationsSection

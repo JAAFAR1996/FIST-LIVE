@@ -483,9 +483,9 @@ export function CompatibilityCalculator() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
-                                {compatibilityResults.map((result, index) => (
+                                {compatibilityResults.map((result) => (
                                     <div
-                                        key={index}
+                                        key={`${result.fish1.id}-${result.fish2.id}`}
                                         className={cn(
                                             "p-3 rounded-lg border",
                                             result.compatible

@@ -112,8 +112,8 @@ export function AquascapeStyles() {
                                 </p>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    {currentStyle.features.map((feature, idx) => (
-                                        <Card key={idx} className="bg-card/50 border-primary/20">
+                                    {currentStyle.features.map((feature) => (
+                                        <Card key={feature} className="bg-card/50 border-primary/20">
                                             <CardContent className="p-4 flex flex-col items-center text-center gap-2">
                                                 <Leaf className="h-6 w-6 text-primary mb-1" />
                                                 <span className="text-sm font-semibold">{feature}</span>
@@ -129,9 +129,9 @@ export function AquascapeStyles() {
                                     </Button>
 
                                     <div className="flex-1 flex justify-center items-center gap-2">
-                                        {aquascapeStyles.map((_, idx) => (
+                                        {aquascapeStyles.map((style, idx) => (
                                             <button
-                                                key={idx}
+                                                key={style.id}
                                                 onClick={() => setCurrentIndex(idx)}
                                                 className={`w-3 h-3 rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-primary w-8" : "bg-muted-foreground/30 hover:bg-primary/50"
                                                     }`}

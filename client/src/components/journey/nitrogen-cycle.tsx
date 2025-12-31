@@ -148,8 +148,8 @@ export function NitrogenCycle({ wizardData, updateData }: NitrogenCycleProps) {
                             { week: "الأسبوع 2-3", event: "ظهور النيتريت، انخفاض الأمونيا", status: "warning" },
                             { week: "الأسبوع 3-4", event: "ظهور النترات، انخفاض النيتريت", status: "info" },
                             { week: "الأسبوع 4-6", event: "اكتمال التدوير - جاهز للأسماك!", status: "success" }
-                        ].map((phase, idx) => (
-                            <div key={idx} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                        ].map((phase) => (
+                            <div key={phase.week} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
                                 <div className={cn(
                                     "font-bold text-sm px-3 py-1 rounded-full",
                                     phase.status === "danger" && "bg-red-500/20 text-red-500",

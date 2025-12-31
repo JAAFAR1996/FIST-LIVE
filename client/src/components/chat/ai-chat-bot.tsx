@@ -219,9 +219,9 @@ export function AIChatBot() {
                                     {/* Messages */}
                                     <ScrollArea className="h-[300px] p-3" ref={scrollRef}>
                                         <div className="space-y-3">
-                                            {messages.map((message, index) => (
+                                            {messages.map((message) => (
                                                 <div
-                                                    key={index}
+                                                    key={`${message.timestamp.getTime()}-${message.role}`}
                                                     className={cn(
                                                         "flex gap-2",
                                                         message.role === "user" ? "flex-row-reverse" : ""
@@ -330,9 +330,9 @@ export function AIChatBot() {
                                         <div className="p-3 border-t bg-muted/30">
                                             <p className="text-xs text-muted-foreground mb-2">أسئلة سريعة:</p>
                                             <div className="flex flex-wrap gap-1.5">
-                                                {quickQuestions.map((q, i) => (
+                                                {quickQuestions.map((q) => (
                                                     <Button
-                                                        key={i}
+                                                        key={q}
                                                         variant="outline"
                                                         size="sm"
                                                         className="text-xs h-7"

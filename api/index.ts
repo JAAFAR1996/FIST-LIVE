@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import session from "express-session";
 import helmet from "helmet";
@@ -33,14 +33,14 @@ async function buildApp() {
 
   app.use(
     express.json({
-      limit: '50mb',
+      limit: '10mb',
       verify: (req: RawBodyRequest, _res: ServerResponse, buf: Buffer, _encoding: string) => {
         req.rawBody = buf;
       },
     }),
   );
 
-  app.use(express.urlencoded({ limit: '50mb', extended: true }));
+  app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
   // Security: Request body sanitization (must be AFTER parsing)
   app.use(sanitizeBody);
@@ -68,7 +68,7 @@ async function buildApp() {
   );
   console.log("✅ Session middleware configured");
 
-  app.use((req: any, res: any, next: any) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
 
     res.on("finish", () => {

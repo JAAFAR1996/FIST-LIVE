@@ -73,9 +73,9 @@ export function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" dir="rtl">
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial) => (
             <Card
-              key={index}
+              key={testimonial.name}
               className="hover:shadow-lg transition-shadow duration-300 relative overflow-hidden"
             >
               <div className="absolute top-4 left-4 text-primary/10">
@@ -88,11 +88,10 @@ export function Testimonials() {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
-                        i < testimonial.rating
+                      className={`w-4 h-4 ${i < testimonial.rating
                           ? "fill-amber-400 text-amber-400"
                           : "text-gray-300"
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>

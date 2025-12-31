@@ -147,8 +147,8 @@ export function MaintenanceSchedule({ wizardData, updateData }: MaintenanceSched
                             "ملقط طويل (للنباتات)",
                             "مقص للتقليم",
                             "معالج ماء (Seachem Prime)"
-                        ].map((tool, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
+                        ].map((tool) => (
+                            <div key={tool} className="flex items-center gap-2">
                                 <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                                 <span className="text-muted-foreground">{tool}</span>
                             </div>

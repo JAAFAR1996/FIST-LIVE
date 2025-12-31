@@ -259,8 +259,8 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
               النظام الغذائي
             </h3>
             <div className="flex flex-wrap gap-2">
-              {fish.diet.map((food, index) => (
-                <Badge key={index} variant="secondary" className="text-sm">
+              {fish.diet.map((food) => (
+                <Badge key={food} variant="secondary" className="text-sm">
                   {food}
                 </Badge>
               ))}
@@ -393,9 +393,9 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                 متوافق مع
               </h3>
               <div className="space-y-2">
-                {fish.compatibility.goodWith.map((species, index) => (
+                {fish.compatibility.goodWith.map((species) => (
                   <div
-                    key={index}
+                    key={species}
                     className="flex items-center gap-2 bg-green-500/5 border border-green-500/20 rounded-lg p-3"
                   >
                     <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -410,9 +410,9 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                 تجنب مع
               </h3>
               <div className="space-y-2">
-                {fish.compatibility.avoidWith.map((species, index) => (
+                {fish.compatibility.avoidWith.map((species) => (
                   <div
-                    key={index}
+                    key={species}
                     className="flex items-center gap-2 bg-red-500/5 border border-red-500/20 rounded-lg p-3"
                   >
                     <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
@@ -432,9 +432,9 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
               نصائح العناية
             </h3>
             <div className="grid gap-3">
-              {fish.careTips.map((tip, index) => (
+              {fish.careTips.map((tip) => (
                 <div
-                  key={index}
+                  key={tip}
                   className="flex items-start gap-3 bg-card border border-border/50 shadow-sm rounded-xl p-4 hover:bg-accent/50 transition-colors"
                 >
                   <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />

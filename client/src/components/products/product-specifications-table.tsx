@@ -133,15 +133,14 @@ export function ProductSpecificationsTable({
             </CardHeader>
             <CardContent className="p-0">
                 <div className="divide-y">
-                    {specs.map((spec, index) => {
+                    {specs.map((spec) => {
                         const IconComponent = getIcon(spec.label);
 
                         return (
                             <div
-                                key={index}
+                                key={spec.label}
                                 className={cn(
-                                    "flex items-center justify-between p-4 transition-colors",
-                                    index % 2 === 0 ? "bg-muted/30" : "bg-background"
+                                    "flex items-center justify-between p-4 transition-colors"
                                 )}
                             >
                                 <div className="flex items-center gap-3">
@@ -178,12 +177,12 @@ export function ProductSpecificationsCompact({
 
     return (
         <div className={cn("grid grid-cols-2 gap-3", className)}>
-            {specs.map((spec, index) => {
+            {specs.map((spec) => {
                 const IconComponent = getIcon(spec.label);
 
                 return (
                     <div
-                        key={index}
+                        key={spec.label}
                         className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg"
                     >
                         <IconComponent className="w-4 h-4 text-primary flex-shrink-0" />

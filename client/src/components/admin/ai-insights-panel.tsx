@@ -79,13 +79,6 @@ export function AIInsightsPanel() {
     const isLoading = productsLoading || insightsLoading;
     const realInsights = insightsData?.data;
 
-    // Debug logging
-    console.log("AI Insights Data:", {
-        isLoading,
-        insightsData,
-        realInsights,
-        error: insightsError
-    });
 
     // Generate insights based on product data
     const insights = useMemo((): Insight[] => {
@@ -304,9 +297,9 @@ export function AIInsightsPanel() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {forecasts.map((forecast, index) => (
+                        {forecasts.map((forecast) => (
                             <div
-                                key={index}
+                                key={forecast.category}
                                 className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                             >
                                 <div className="flex items-center gap-3">
