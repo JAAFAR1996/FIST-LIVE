@@ -257,7 +257,7 @@ export default function ProductDetails() {
                   <DifficultyBadge level={product.difficulty} />
                 </div>
 
-                <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
+                <h1 className="text-xl md:text-2xl font-bold mb-4">{product.name}</h1>
 
                 {/* Rating */}
                 <div className="flex items-center gap-2 mb-6">
@@ -474,12 +474,12 @@ export default function ProductDetails() {
 
             {/* Detailed Information Tabs */}
             <Tabs defaultValue="benefits" className="mb-12">
-              <TabsList className="w-full justify-start">
-                <TabsTrigger value="benefits">لماذا هذا المنتج؟</TabsTrigger>
-                <TabsTrigger value="specs">المواصفات الفنية</TabsTrigger>
-                <TabsTrigger value="reviews">التقييمات ({product.reviewCount})</TabsTrigger>
-                <TabsTrigger value="shipping">الشحن والإرجاع</TabsTrigger>
-                <TabsTrigger value="usage">إرشادات الاستخدام</TabsTrigger>
+              <TabsList className="w-full justify-start gap-2 flex-wrap h-auto p-2">
+                <TabsTrigger value="benefits" className="rounded-full">لماذا هذا المنتج؟</TabsTrigger>
+                <TabsTrigger value="specs" className="rounded-full">المواصفات الفنية</TabsTrigger>
+                <TabsTrigger value="reviews" className="rounded-full">التقييمات ({product.reviewCount})</TabsTrigger>
+                <TabsTrigger value="shipping" className="rounded-full">الشحن والإرجاع</TabsTrigger>
+                <TabsTrigger value="usage" className="rounded-full">إرشادات الاستخدام</TabsTrigger>
               </TabsList>
 
               <TabsContent value="benefits" className="mt-6">
@@ -502,15 +502,18 @@ export default function ProductDetails() {
                             <p className="text-sm text-muted-foreground">منتج أصلي 100% من علامة {product.brand} العالمية</p>
                           </div>
                         </div>
-                        <div className="flex items-start gap-3 p-3 bg-white dark:bg-slate-900 rounded-lg border">
-                          <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Star className="w-5 h-5 text-blue-600" />
+                        {/* Only show rating if there are reviews */}
+                        {product.reviewCount > 0 && (
+                          <div className="flex items-start gap-3 p-3 bg-white dark:bg-slate-900 rounded-lg border">
+                            <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Star className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-sm">تقييم عالي</h4>
+                              <p className="text-sm text-muted-foreground">حصل على {product.rating} من 5 نجوم من {product.reviewCount} عميل</p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="font-bold text-sm">تقييم عالي</h4>
-                            <p className="text-sm text-muted-foreground">حصل على {product.rating} من 5 نجوم من {product.reviewCount} عميل</p>
-                          </div>
-                        </div>
+                        )}
                         <div className="flex items-start gap-3 p-3 bg-white dark:bg-slate-900 rounded-lg border">
                           <div className="w-10 h-10 bg-amber-500/10 rounded-full flex items-center justify-center flex-shrink-0">
                             <Truck className="w-5 h-5 text-amber-600" />
@@ -521,6 +524,13 @@ export default function ProductDetails() {
                           </div>
                         </div>
                       </div>
+                      {/* Show product description as benefits */}
+                      {product.description && (
+                        <div className="space-y-4">
+                          <h4 className="font-bold">وصف المنتج:</h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
+                        </div>
+                      )}
                       {/* Only show benefits if they exist in database */}
                       {Array.isArray(product.specifications?.benefits) && product.specifications.benefits.length > 0 && (
                         <div className="space-y-4">

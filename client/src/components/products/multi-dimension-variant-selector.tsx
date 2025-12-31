@@ -1,14 +1,13 @@
 /**
  * MultiDimensionVariantSelector - For products with multiple variant dimensions
  * Example: Colors (Black, White) + Sizes (S, M, L)
- * Shows separate rows for each dimension
+ * Shows separate rows for each dimension - Compact design
  */
 import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ProductVariant } from "@/types";
-import { Check, Palette, Ruler } from "lucide-react";
+import { Check, Palette, Ruler, Sparkles, Tag } from "lucide-react";
 
 interface VariantDimension {
     name: string;
@@ -58,7 +57,7 @@ function extractDimensions(variants: ProductVariant[]): VariantDimension[] {
 }
 
 /**
- * Multi-dimensional variant selector
+ * Multi-dimensional variant selector - Compact design
  * Shows separate rows for colors and sizes
  */
 export function MultiDimensionVariantSelector({
@@ -112,96 +111,95 @@ export function MultiDimensionVariantSelector({
     const selectedVariant = variants.find((v) => v.id === selectedVariantId);
 
     return (
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent" dir="rtl">
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                    ✨ اختر الخصائص
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                {/* Render each dimension as a separate row */}
-                {dimensions.map((dimension) => {
-                    const Icon = dimension.icon || Palette;
-                    const selectedValue = selectedValues[dimension.name];
+        <div className="space-y-4" dir="rtl">
+            {/* Header */}
+            <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="font-semibold text-sm">اختر الخصائص</span>
+            </div>
 
-                    return (
-                        <div key={dimension.name} className="space-y-3">
-                            {/* Dimension label */}
-                            <div className="flex items-center gap-2">
-                                <Icon className="w-4 h-4 text-primary" />
-                                <span className="font-medium">{dimension.name}:</span>
-                                {selectedValue && (
-                                    <Badge variant="secondary">{selectedValue}</Badge>
-                                )}
-                            </div>
+            {/* Render each dimension as a compact row */}
+            {dimensions.map((dimension) => {
+                const Icon = dimension.icon || Palette;
+                const selectedValue = selectedValues[dimension.name];
 
-                            {/* Dimension options */}
-                            <div className="flex flex-wrap gap-2">
-                                {dimension.values.map((value) => {
-                                    const isSelected = selectedValue === value;
-
-                                    // Check if this combination is available
-                                    const isAvailable = variants.some((v) => {
-                                        const matchesDimension = v.specifications?.[dimension.name] === value;
-                                        const matchesOthers = dimensions
-                                            .filter((d) => d.name !== dimension.name)
-                                            .every((d) => {
-                                                const otherSelected = selectedValues[d.name];
-                                                return !otherSelected || v.specifications?.[d.name] === otherSelected;
-                                            });
-                                        return matchesDimension && matchesOthers && v.stock > 0;
-                                    });
-
-                                    return (
-                                        <button
-                                            key={value}
-                                            onClick={() => handleDimensionSelect(dimension.name, value)}
-                                            disabled={!isAvailable}
-                                            className={cn(
-                                                "relative px-4 py-2 rounded-lg border-2 font-medium transition-all",
-                                                "min-w-[80px] text-center",
-                                                isSelected
-                                                    ? "border-primary bg-primary/10 text-primary"
-                                                    : "border-muted hover:border-primary/50 bg-background",
-                                                !isAvailable && "opacity-40 cursor-not-allowed"
-                                            )}
-                                        >
-                                            {/* Selection indicator */}
-                                            {isSelected && (
-                                                <div className="absolute top-1 left-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                                                    <Check className="w-2.5 h-2.5 text-white" />
-                                                </div>
-                                            )}
-                                            {value}
-                                        </button>
-                                    );
-                                })}
-                            </div>
+                return (
+                    <div key={dimension.name} className="space-y-2">
+                        {/* Dimension label */}
+                        <div className="flex items-center gap-2 text-sm">
+                            <Icon className="w-4 h-4 text-muted-foreground" />
+                            <span className="font-medium">{dimension.name}:</span>
+                            {selectedValue && (
+                                <span className="text-primary font-semibold">{selectedValue}</span>
+                            )}
                         </div>
-                    );
-                })}
 
-                {/* Show selected variant price */}
-                {selectedVariant && (
-                    <div className="pt-4 border-t">
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">السعر:</span>
-                            <div className="text-xl font-bold text-primary">
-                                {selectedVariant.price.toLocaleString()} د.ع
-                            </div>
+                        {/* Dimension options as compact buttons */}
+                        <div className="flex flex-wrap gap-2">
+                            {dimension.values.map((value) => {
+                                const isSelected = selectedValue === value;
+
+                                // Check if this combination is available
+                                const isAvailable = variants.some((v) => {
+                                    const matchesDimension = v.specifications?.[dimension.name] === value;
+                                    const matchesOthers = dimensions
+                                        .filter((d) => d.name !== dimension.name)
+                                        .every((d) => {
+                                            const otherSelected = selectedValues[d.name];
+                                            return !otherSelected || v.specifications?.[d.name] === otherSelected;
+                                        });
+                                    return matchesDimension && matchesOthers && v.stock > 0;
+                                });
+
+                                return (
+                                    <button
+                                        key={value}
+                                        onClick={() => handleDimensionSelect(dimension.name, value)}
+                                        disabled={!isAvailable}
+                                        className={cn(
+                                            "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                                            "border-2 hover:shadow-sm",
+                                            isSelected
+                                                ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                                                : "border-muted bg-background hover:border-primary/50",
+                                            !isAvailable && "opacity-40 cursor-not-allowed line-through"
+                                        )}
+                                    >
+                                        {isSelected && <Check className="inline w-3 h-3 ml-1" />}
+                                        {value}
+                                    </button>
+                                );
+                            })}
                         </div>
+                    </div>
+                );
+            })}
+
+            {/* Show selected variant price */}
+            {selectedVariant && (
+                <div className="pt-3 border-t space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Tag className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">السعر:</span>
+                        <span className="font-bold text-primary">
+                            {selectedVariant.price.toLocaleString()} د.ع
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm">
                         {selectedVariant.stock > 0 ? (
-                            <Badge variant="outline" className="mt-2 text-green-600 border-green-600">
-                                ✓ متوفر ({selectedVariant.stock} قطعة)
-                            </Badge>
+                            <>
+                                <Check className="w-4 h-4 text-green-500" />
+                                <span className="text-green-600 dark:text-green-400">
+                                    متوفر ({selectedVariant.stock} قطعة)
+                                </span>
+                            </>
                         ) : (
-                            <Badge variant="destructive" className="mt-2">
-                                غير متوفر
-                            </Badge>
+                            <span className="text-red-500">غير متوفر</span>
                         )}
                     </div>
-                )}
-            </CardContent>
-        </Card>
+                </div>
+            )}
+        </div>
     );
 }

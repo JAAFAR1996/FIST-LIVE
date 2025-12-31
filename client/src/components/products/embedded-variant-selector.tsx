@@ -5,9 +5,8 @@
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ProductVariant } from "@/types";
-import { Check, Ruler, Zap, Thermometer, Star } from "lucide-react";
+import { Check, Sparkles, Tag } from "lucide-react";
 
 interface EmbeddedVariantSelectorProps {
     variants: ProductVariant[];
@@ -19,134 +18,98 @@ interface EmbeddedVariantSelectorProps {
 
 /**
  * Variant selector for products with embedded variants
- * Updates price in place without page navigation (like Amazon/HYGGER)
+ * Compact design similar to HOUYI product style
  */
 export function EmbeddedVariantSelector({
     variants,
     selectedVariantId,
     onVariantSelect,
-    title = "اختر الحجم المناسب",
+    title = "اختر الخصائص",
     productCategory,
 }: EmbeddedVariantSelectorProps) {
     if (!variants || variants.length <= 1) {
         return null;
     }
 
-    // Determine icon based on category
-    const isHeater = productCategory?.toLowerCase().includes("heater");
-    const Icon = isHeater ? Thermometer : Zap;
-
     // Sort variants by price (ascending)
     const sortedVariants = useMemo(() => {
         return [...variants].sort((a, b) => a.price - b.price);
     }, [variants]);
 
+    // Get selected variant for price display
+    const selectedVariant = sortedVariants.find(v => v.id === selectedVariantId) || sortedVariants[0];
+
     return (
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent" dir="rtl">
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                    <Icon className="w-5 h-5 text-primary" />
-                    {title}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {sortedVariants.map((variant) => {
-                        const isSelected = variant.id === selectedVariantId;
-                        const inStock = variant.stock > 0;
+        <div className="space-y-3" dir="rtl">
+            {/* Header */}
+            <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="font-semibold text-sm">{title}</span>
+            </div>
 
-                        return (
-                            <button
-                                key={variant.id}
-                                onClick={() => onVariantSelect(variant)}
-                                disabled={!inStock}
-                                className={cn(
-                                    "relative rounded-xl border-2 p-4 transition-all duration-200 text-right",
-                                    "hover:border-primary/50 hover:shadow-md",
-                                    "min-h-[140px] flex flex-col items-center justify-center",
-                                    isSelected
-                                        ? "border-primary bg-primary/10 shadow-sm"
-                                        : "border-muted bg-background",
-                                    !inStock && "opacity-60 cursor-not-allowed"
-                                )}
-                            >
-                                {/* Selection checkmark */}
-                                {isSelected && (
-                                    <div className="absolute top-2 left-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                                        <Check className="w-3 h-3 text-primary-foreground" />
-                                    </div>
-                                )}
+            {/* Variants as compact buttons */}
+            <div className="flex flex-wrap gap-2">
+                {sortedVariants.map((variant) => {
+                    const isSelected = variant.id === selectedVariantId;
+                    const inStock = variant.stock > 0;
 
-                                {/* Default/Popular badge */}
-                                {variant.isDefault && (
-                                    <div className="absolute top-2 right-2">
-                                        <Badge variant="secondary" className="text-[10px] gap-1">
-                                            <Star className="w-2 h-2 fill-current" />
-                                            الأكثر شعبية
-                                        </Badge>
-                                    </div>
-                                )}
+                    return (
+                        <button
+                            key={variant.id}
+                            onClick={() => onVariantSelect(variant)}
+                            disabled={!inStock}
+                            className={cn(
+                                "relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                                "border-2 hover:shadow-sm",
+                                isSelected
+                                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                                    : "border-muted bg-background hover:border-primary/50",
+                                !inStock && "opacity-50 cursor-not-allowed line-through"
+                            )}
+                        >
+                            {/* Selection checkmark */}
+                            {isSelected && (
+                                <Check className="inline w-3 h-3 ml-1" />
+                            )}
+                            {variant.label}
+                        </button>
+                    );
+                })}
+            </div>
 
-                                {/* Variant label */}
-                                <div className="text-center mb-2 mt-4">
-                                    <span className={cn(
-                                        "text-xl font-bold",
-                                        isSelected ? "text-primary" : "text-foreground"
-                                    )}>
-                                        {variant.label}
-                                    </span>
-                                </div>
-
-                                {/* Tank size if available */}
-                                {variant.specifications?.["قياس الحوض"] && (
-                                    <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-2">
-                                        <Ruler className="w-3 h-3" />
-                                        <span>{variant.specifications["قياس الحوض"]}</span>
-                                    </div>
-                                )}
-
-                                {/* Price */}
-                                <div className="text-center">
-                                    <span className="text-sm font-semibold">
-                                        {variant.price.toLocaleString()}
-                                    </span>
-                                    <span className="text-xs text-muted-foreground mr-1">د.ع</span>
-                                </div>
-
-                                {/* Discount badge */}
-                                {variant.originalPrice && variant.originalPrice > variant.price && (
-                                    <div className="text-center mt-1">
-                                        <Badge variant="destructive" className="text-[10px]">
-                                            خصم {Math.round(((variant.originalPrice - variant.price) / variant.originalPrice) * 100)}%
-                                        </Badge>
-                                    </div>
-                                )}
-
-                                {/* Out of stock badge */}
-                                {!inStock && (
-                                    <Badge variant="secondary" className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px]">
-                                        غير متوفر
-                                    </Badge>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Tip */}
-                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <p className="text-sm text-blue-700 dark:text-blue-300 flex items-start gap-2">
-                        <span className="text-lg">💡</span>
-                        <span>
-                            <strong>نصيحة:</strong> اختر الحجم بناءً على طول حوضك.
-                            {isHeater
-                                ? " قوة السخان يجب أن تتناسب مع حجم الماء."
-                                : " الإضاءة الأقوى تناسب الأحواض الأكبر والنباتات."}
+            {/* Price display */}
+            <div className="flex items-center gap-2 pt-2">
+                <Tag className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">السعر:</span>
+                <span className="font-bold text-primary">
+                    {selectedVariant.price.toLocaleString()} د.ع
+                </span>
+                {selectedVariant.originalPrice && selectedVariant.originalPrice > selectedVariant.price && (
+                    <>
+                        <span className="text-sm text-muted-foreground line-through">
+                            {selectedVariant.originalPrice.toLocaleString()}
                         </span>
-                    </p>
-                </div>
-            </CardContent>
-        </Card>
+                        <Badge variant="destructive" className="text-[10px]">
+                            خصم {Math.round(((selectedVariant.originalPrice - selectedVariant.price) / selectedVariant.originalPrice) * 100)}%
+                        </Badge>
+                    </>
+                )}
+            </div>
+
+            {/* Stock status */}
+            <div className="flex items-center gap-2 text-sm">
+                {selectedVariant.stock > 0 ? (
+                    <>
+                        <Check className="w-4 h-4 text-green-500" />
+                        <span className="text-green-600 dark:text-green-400">
+                            متوفر ({selectedVariant.stock} قطعة)
+                        </span>
+                    </>
+                ) : (
+                    <span className="text-red-500">غير متوفر</span>
+                )}
+            </div>
+        </div>
     );
 }
 
