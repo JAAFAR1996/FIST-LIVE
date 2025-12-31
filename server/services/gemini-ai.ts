@@ -11,6 +11,21 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 // Get the model - Using Gemini 2.5 Flash (stable release June 2025)
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+// Timeout Configuration
+const AI_TIMEOUT_MS = 30000; // 30 ثانية - الحد الأقصى لانتظار رد الـ AI
+
+/**
+ * Wrapper لإضافة timeout لأي Promise
+ */
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, errorMessage: string): Promise<T> {
+    return Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+            setTimeout(() => reject(new Error(errorMessage)), timeoutMs)
+        )
+    ]);
+}
+
 // Advanced System Prompt - E-commerce Chatbot Best Practices 2025
 const createSystemPrompt = (userName?: string, context?: ChatContext) => {
     const greeting = userName ? `اسم العميل الحالي: ${userName}. نادِه باسمه لتجربة شخصية.` : "";
@@ -149,8 +164,12 @@ export async function sendMessage(
             ],
         });
 
-        // Send message and get response
-        const result = await chat.sendMessage(message);
+        // Send message and get response (مع timeout للحماية من التعليق)
+        const result = await withTimeout(
+            chat.sendMessage(message),
+            AI_TIMEOUT_MS,
+            "انتهت مهلة الاتصال بالذكاء الاصطناعي. حاول مرة أخرى."
+        );
         const response = await result.response;
         const text = response.text();
 
@@ -164,6 +183,10 @@ export async function sendMessage(
 
         // Handle specific errors
         if (error instanceof Error) {
+            // Timeout error
+            if (error.message.includes("مهلة الاتصال") || error.message.includes("timeout")) {
+                throw new Error("انتهت مهلة الاتصال بالذكاء الاصطناعي. حاول مرة أخرى.");
+            }
             if (error.message.includes("API_KEY") || error.message.includes("API key")) {
                 throw new Error("مفتاح API غير صالح");
             }
@@ -172,6 +195,10 @@ export async function sendMessage(
             }
             if (error.message.includes("SAFETY")) {
                 throw new Error("تم حظر الرسالة لأسباب أمنية");
+            }
+            // Network errors
+            if (error.message.includes("fetch") || error.message.includes("network") || error.message.includes("ECONNREFUSED")) {
+                throw new Error("خطأ في الاتصال بالشبكة. تحقق من الإنترنت.");
             }
             // Return the actual error message for debugging
             throw new Error(`خطأ في الذكاء الاصطناعي: ${error.message}`);

@@ -1,10 +1,38 @@
 import { Router, Request, Response } from "express";
+import rateLimit from "express-rate-limit";
 import { sendMessage, ChatMessage, ChatContext } from "../services/gemini-ai.js";
 import { getDb } from "../db.js";
 import * as schema from "../../shared/schema.js";
 import { count, lt, and, gt, or, ilike, desc, eq, inArray } from "drizzle-orm";
 
 const router = Router();
+
+// Rate Limiting للحماية من الاستخدام المفرط
+const aiRateLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 دقيقة
+    max: 20, // 20 طلب في الدقيقة لكل مستخدم
+    message: {
+        success: false,
+        error: "تم تجاوز الحد المسموح من الطلبات. حاول مرة أخرى بعد دقيقة.",
+        retryAfter: 60
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => {
+        // استخدام userId إذا متوفر، وإلا IP
+        return req.body?.userId || req.ip || 'anonymous';
+    },
+});
+
+// Rate Limiter أقوى للـ health check (منع الإساءة)
+const healthRateLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 5, // 5 طلبات فقط في الدقيقة
+    message: {
+        success: false,
+        error: "تم تجاوز الحد المسموح",
+    },
+});
 
 // Helper: Find relevant products based on keywords
 async function findRelevantProducts(message: string, limit: number = 5) {
@@ -65,7 +93,7 @@ async function findRelevantProducts(message: string, limit: number = 5) {
 }
 
 // POST /api/ai/chat - Chat with Gemini AI
-router.post("/chat", async (req: Request, res: Response) => {
+router.post("/chat", aiRateLimiter, async (req: Request, res: Response) => {
     try {
         const { message, history = [], userName, userId } = req.body as {
             message: string;
@@ -219,7 +247,7 @@ router.post("/chat", async (req: Request, res: Response) => {
 });
 
 // GET /api/ai/health - Check if AI is working
-router.get("/health", async (_req: Request, res: Response) => {
+router.get("/health", healthRateLimiter, async (_req: Request, res: Response) => {
     try {
         const response = await sendMessage("مرحبا، هل تعمل؟");
         res.json({
