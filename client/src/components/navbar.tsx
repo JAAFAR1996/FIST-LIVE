@@ -141,7 +141,7 @@ export default function Navbar() {
                   <Menu className="h-6 w-6" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetContent side="right" className="w-[85vw] max-w-[400px] sm:w-[400px]">
                 <div className="flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
                     <Link key={link.href} href={link.href} onClick={() => setIsMenuOpen(false)}>
@@ -186,8 +186,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Actions */}
-          <div className="nav-actions flex items-center gap-2 sm:gap-3">
+          {/* Actions - Mobile Optimized */}
+          <div className="nav-actions flex items-center gap-3 sm:gap-4">
             <ThemeSwitcher />
             <NavbarStyleSwitcher />
             <FontSizeControllerCompact />
@@ -195,8 +195,8 @@ export default function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full touch-target-sm">
+                    <Avatar className="h-10 w-10">
                       <AvatarImage src="" alt={user.fullName || user.email} />
                       <AvatarFallback className="bg-primary/10 text-primary">
                         {(user.fullName || user.email).charAt(0).toUpperCase()}
@@ -333,7 +333,7 @@ export default function Navbar() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10 touch-target-sm"
                                   onClick={() => removeItem(item.id)}
                                   aria-label={`إزالة ${item.name} من السلة`}
                                 >

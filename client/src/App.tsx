@@ -12,6 +12,7 @@ import { ScrollProgress } from "@/components/effects/scroll-progress";
 import { FloatingActionButton } from "@/components/effects/floating-action-button";
 
 import { initGA, trackPageView } from "@/lib/analytics";
+import { useDeviceDetection } from "@/hooks/use-device-detection";
 import "@/lib/sentry"; // Auto-initializes on import
 
 import { WinnerNotificationBanner } from "@/components/notifications/winner-notification-banner";
@@ -348,6 +349,9 @@ function Router() {
 }
 
 function App() {
+  // Initialize device detection (adds body classes automatically)
+  useDeviceDetection();
+
   useEffect(() => {
     // Initialize Google Analytics
     initGA();

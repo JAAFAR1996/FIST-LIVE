@@ -661,6 +661,133 @@
     padding-right: max(1rem, env(safe-area-inset-right));
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
+
+  .safe-area-top {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+
+  /* Fixed elements safe area */
+  .fixed-bottom-safe {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .fixed-top-safe {
+    top: max(0px, env(safe-area-inset-top));
+  }
+}
+
+/* ============================================
+   MOBILE-FIRST OPTIMIZATIONS 2025
+   ============================================ */
+
+/* Device-specific body classes */
+body.is-mobile {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.is-tablet {
+  -webkit-text-size-adjust: 100%;
+}
+
+body.is-touch-device {
+  cursor: default;
+}
+
+/* Mobile-optimized touch targets */
+@media (max-width: 768px) {
+  /* Larger touch targets on mobile */
+  .touch-target,
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better spacing for mobile forms */
+  input, textarea, select {
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+
+  /* Increased spacing between interactive elements */
+  .nav-actions > * + * {
+    margin-right: 8px;
+  }
+
+  /* Better scroll behavior */
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent text selection on buttons */
+  button, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Better focus states for mobile */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+}
+
+/* Small mobile screens (< 375px) */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* Slightly smaller fonts on very small screens */
+  .text-sm {
+    font-size: 0.8125rem;
+  }
+
+  .text-xs {
+    font-size: 0.6875rem;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 896px) and (orientation: landscape) {
+  .navbar-2025 {
+    height: 56px;
+  }
+
+  .container {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+/* Foldable devices support */
+@media (spanning: single-fold-vertical) {
+  .container {
+    padding-left: env(fold-left, 1rem);
+    padding-right: env(fold-right, 1rem);
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Improved RTL support for mobile */
