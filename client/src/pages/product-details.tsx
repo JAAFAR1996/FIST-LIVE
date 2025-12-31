@@ -530,8 +530,8 @@ export default function ProductDetails() {
                         <div className="space-y-4">
                           <h4 className="font-bold">الفوائد الرئيسية:</h4>
                           <ul className="space-y-2 text-sm text-muted-foreground">
-                            {product.specifications.benefits.map((benefit: string, index: number) => (
-                              <li key={index} className="flex items-start gap-2">
+                            {product.specifications.benefits.map((benefit: string) => (
+                              <li key={benefit} className="flex items-start gap-2">
                                 <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
                                 <span>{benefit}</span>
                               </li>

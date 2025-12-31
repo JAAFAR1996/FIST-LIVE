@@ -219,11 +219,11 @@ export function ProductMerger() {
                                         </Button>
                                     </div>
                                     <div className="grid grid-cols-4 gap-2">
-                                        {targetProduct.images.slice(0, 4).map((img, idx) => (
+                                        {targetProduct.images.slice(0, 4).map((img) => (
                                             <img
-                                                key={idx}
+                                                key={img}
                                                 src={img}
-                                                alt={`${targetProduct.name} ${idx + 1}`}
+                                                alt={`صورة ${targetProduct.name}`}
                                                 className="w-full h-16 object-cover rounded border"
                                             />
                                         ))}
@@ -275,11 +275,11 @@ export function ProductMerger() {
                                         </Button>
                                     </div>
                                     <div className="grid grid-cols-4 gap-2">
-                                        {sourceProduct.images.slice(0, 4).map((img, idx) => (
+                                        {sourceProduct.images.slice(0, 4).map((img) => (
                                             <img
-                                                key={idx}
+                                                key={img}
                                                 src={img}
-                                                alt={`${sourceProduct.name} ${idx + 1}`}
+                                                alt={`صورة ${sourceProduct.name}`}
                                                 className="w-full h-16 object-cover rounded border"
                                             />
                                         ))}

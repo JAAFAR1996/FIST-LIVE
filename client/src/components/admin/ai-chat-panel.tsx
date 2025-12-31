@@ -144,9 +144,9 @@ export function AIChatPanel() {
                 {/* Messages */}
                 <ScrollArea className="flex-1 p-4" ref={scrollRef}>
                     <div className="space-y-4">
-                        {messages.map((message) => (
+                        {messages.map((message, index) => (
                             <div
-                                key={`${message.timestamp.getTime()}-${message.role}`}
+                                key={index}
                                 className={cn(
                                     "flex gap-3",
                                     message.role === "user" ? "flex-row-reverse" : ""

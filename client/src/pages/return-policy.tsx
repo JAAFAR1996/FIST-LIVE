@@ -176,7 +176,7 @@ export default function ReturnPolicy() {
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {steps.map((step, index) => (
-                <Card key={index} className="relative overflow-hidden group hover:shadow-lg transition-shadow">
+                <Card key={step.title} className="relative overflow-hidden group hover:shadow-lg transition-shadow">
                   <div className="absolute top-0 right-0 w-12 h-12 bg-primary/10 flex items-center justify-center text-primary font-bold text-xl rounded-bl-2xl">
                     {index + 1}
                   </div>
@@ -207,8 +207,8 @@ export default function ReturnPolicy() {
                     <h2 className="text-2xl font-bold text-green-600">المنتجات المؤهلة للإرجاع</h2>
                   </div>
                   <ul className="space-y-3">
-                    {eligibleItems.map((item, index) => (
-                      <li key={index} className="flex items-center gap-3 p-3 bg-green-500/5 rounded-lg">
+                    {eligibleItems.map((item) => (
+                      <li key={item} className="flex items-center gap-3 p-3 bg-green-500/5 rounded-lg">
                         <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                         <span>{item}</span>
                       </li>
@@ -232,8 +232,8 @@ export default function ReturnPolicy() {
                     <h2 className="text-2xl font-bold text-red-600">المنتجات غير المؤهلة</h2>
                   </div>
                   <ul className="space-y-3">
-                    {nonEligibleItems.map((item, index) => (
-                      <li key={index} className="flex items-center gap-3 p-3 bg-red-500/5 rounded-lg">
+                    {nonEligibleItems.map((item) => (
+                      <li key={item} className="flex items-center gap-3 p-3 bg-red-500/5 rounded-lg">
                         <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <span>{item}</span>
                       </li>
@@ -255,8 +255,8 @@ export default function ReturnPolicy() {
               طرق الاسترداد
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {refundMethods.map((method, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+              {refundMethods.map((method) => (
+                <Card key={method.title} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                       <method.icon className="w-7 h-7 text-primary" />

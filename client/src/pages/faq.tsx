@@ -287,12 +287,12 @@ export default function FAQ() {
                 الأسئلة الأكثر شيوعاً
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {popularQuestions.map((question, index) => (
+                {popularQuestions.map((question) => (
                   <button
-                    key={index}
+                    key={question}
                     onClick={() => setSearchQuery(question.slice(0, 10))}
                     className="p-4 text-right bg-muted/50 hover:bg-primary/10 rounded-xl transition-colors border hover:border-primary/30"
-                    data-testid={`button-popular-question-${index}`}
+                    data-testid={`button-popular-question-${question.slice(0, 15).replace(/\s+/g, '-')}`}
                   >
                     <span className="text-sm">{question}</span>
                   </button>
@@ -350,15 +350,15 @@ export default function FAQ() {
                     </div>
                     <CardContent className="p-0">
                       <Accordion type="single" collapsible className="w-full">
-                        {category.faqs.map((faq, index) => (
+                        {category.faqs.map((faq) => (
                           <AccordionItem
-                            key={index}
-                            value={`${category.id}-${index}`}
+                            key={faq.question}
+                            value={`${category.id}-${faq.question}`}
                             className="border-b last:border-0"
                           >
                             <AccordionTrigger
                               className="px-6 py-4 text-right hover:bg-muted/50 [&[data-state=open]]:bg-muted/50"
-                              data-testid={`accordion-trigger-${category.id}-${index}`}
+                              data-testid={`accordion-trigger-${category.id}-${faq.question.slice(0, 15).replace(/\s+/g, '-')}`}
                             >
                               <span className="font-medium">{faq.question}</span>
                             </AccordionTrigger>

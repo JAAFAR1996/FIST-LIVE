@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { User } from "@shared/schema";
-import { Loader2, User as UserIcon, Mail, Calendar, Users, ShieldCheck, Search } from "lucide-react";
+import { Loader2, User as UserIcon, Mail, Trophy, Calendar, Users, ShieldCheck, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";

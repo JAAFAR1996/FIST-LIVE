@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Search, Clock, TrendingUp, X, Loader2, Fish } from "lucide-react";
 import { Input } from "@/components/ui/input";

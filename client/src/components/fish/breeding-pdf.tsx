@@ -31,9 +31,8 @@ try {
         ],
     });
     fontLoaded = true;
-    console.log("[PDF Font] Arabic font registered successfully");
-} catch (error) {
-    console.error("[PDF Font] Failed to register Arabic font:", error);
+} catch {
+    // Font registration failed - fallback will be used
 }
 
 // Fallback font in case Arabic fails

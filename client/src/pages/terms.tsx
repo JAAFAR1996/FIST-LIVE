@@ -155,8 +155,8 @@ export default function Terms() {
               شروط الاستخدام الأساسية
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
-              {sections.map((section, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+              {sections.map((section) => (
+                <Card key={section.title} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
@@ -165,8 +165,8 @@ export default function Terms() {
                       <h3 className="text-xl font-semibold">{section.title}</h3>
                     </div>
                     <ul className="space-y-2">
-                      {section.content.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      {section.content.map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </li>
@@ -199,8 +199,8 @@ export default function Terms() {
                   </p>
                 </div>
                 <ul className="grid md:grid-cols-2 gap-3">
-                  {prohibitedActivities.map((activity, index) => (
-                    <li key={index} className="flex items-start gap-2 p-3 bg-background rounded-lg">
+                  {prohibitedActivities.map((activity) => (
+                    <li key={activity} className="flex items-start gap-2 p-3 bg-background rounded-lg">
                       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{activity}</span>
                     </li>
@@ -234,8 +234,8 @@ export default function Terms() {
                   </div>
                 </div>
                 <ul className="space-y-2">
-                  {intellectualProperty.map((item, index) => (
-                    <li key={index} className="flex items-start gap-2 p-3 bg-background rounded-lg">
+                  {intellectualProperty.map((item) => (
+                    <li key={item} className="flex items-start gap-2 p-3 bg-background rounded-lg">
                       <CheckCircle2 className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{item}</span>
                     </li>
@@ -258,8 +258,8 @@ export default function Terms() {
             <Card className="border-blue-500/30 bg-blue-500/5">
               <CardContent className="p-6">
                 <ul className="space-y-3">
-                  {limitations.map((limit, index) => (
-                    <li key={index} className="flex items-start gap-3 p-3 bg-background rounded-lg">
+                  {limitations.map((limit) => (
+                    <li key={limit} className="flex items-start gap-3 p-3 bg-background rounded-lg">
                       <Shield className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <span>{limit}</span>
                     </li>

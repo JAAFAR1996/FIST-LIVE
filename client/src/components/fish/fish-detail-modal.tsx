@@ -309,8 +309,8 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                 <div>
                   <div className="font-bold mb-2">محفزات التكاثر:</div>
                   <ul className="text-sm space-y-1">
-                    {fish.breeding.spawningTriggers.map((trigger, i) => (
-                      <li key={i} className="flex items-start gap-2">
+                    {fish.breeding.spawningTriggers.map((trigger) => (
+                      <li key={trigger} className="flex items-start gap-2">
                         <span className="text-primary mt-0.5">•</span>
                         <span className="text-muted-foreground">{trigger}</span>
                       </li>
@@ -334,8 +334,8 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                     <div className="md:col-span-2">
                       <span className="font-semibold text-primary">المعدات:</span>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {fish.breeding.breedingSetup.equipment.map((eq, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">{eq}</Badge>
+                        {fish.breeding.breedingSetup.equipment.map((eq) => (
+                          <Badge key={eq} variant="secondary" className="text-xs">{eq}</Badge>
                         ))}
                       </div>
                     </div>
@@ -371,8 +371,8 @@ export function FishDetailModal({ fish, open, onOpenChange }: FishDetailModalPro
                     نصائح مهمة:
                   </div>
                   <ul className="space-y-2">
-                    {fish.breeding.tips.map((tip, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm bg-muted/30 rounded p-2">
+                    {fish.breeding.tips.map((tip) => (
+                      <li key={tip} className="flex items-start gap-2 text-sm bg-muted/30 rounded p-2">
                         <span className="text-primary">✓</span>
                         <span className="text-muted-foreground">{tip}</span>
                       </li>

@@ -81,7 +81,6 @@ export function NavbarPreferencesProvider({ children }: { children: ReactNode })
     }, []);
 
     const setStyle = useCallback((style: NavbarStyle) => {
-        console.log('Setting navbar style to:', style); // Debug log
         setPreferences(prev => ({ ...prev, style }));
     }, []);
 

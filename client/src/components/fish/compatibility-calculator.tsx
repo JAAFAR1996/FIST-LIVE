@@ -505,8 +505,8 @@ export function CompatibilityCalculator() {
                                         </div>
                                         {result.issues.length > 0 && (
                                             <ul className="text-xs text-muted-foreground space-y-1">
-                                                {result.issues.map((issue, i) => (
-                                                    <li key={i} className="flex items-start gap-1">
+                                                {result.issues.map((issue) => (
+                                                    <li key={issue} className="flex items-start gap-1">
                                                         <AlertTriangle className="w-3 h-3 text-amber-500 mt-0.5 flex-shrink-0" />
                                                         {issue}
                                                     </li>
@@ -530,8 +530,8 @@ export function CompatibilityCalculator() {
                             </CardHeader>
                             <CardContent>
                                 <ul className="space-y-2 text-sm">
-                                    {tankCapacity.warnings.map((warning, i) => (
-                                        <li key={i} className="flex items-start gap-2">
+                                    {tankCapacity.warnings.map((warning) => (
+                                        <li key={warning} className="flex items-start gap-2">
                                             <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
                                             {warning}
                                         </li>

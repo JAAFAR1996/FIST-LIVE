@@ -352,8 +352,8 @@ export function FishComparisonTool({ className }: FishComparisonToolProps) {
                                             </div>
                                         </div>
                                         <ul className="text-sm text-muted-foreground space-y-1 text-right">
-                                            {result.reasons.map((reason, i) => (
-                                                <li key={i}>• {reason}</li>
+                                            {result.reasons.map((reason) => (
+                                                <li key={reason}>• {reason}</li>
                                             ))}
                                         </ul>
                                     </div>

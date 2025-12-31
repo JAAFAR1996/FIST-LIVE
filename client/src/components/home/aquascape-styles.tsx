@@ -4,7 +4,7 @@ import { aquascapeStyles } from "@/lib/aquascape-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Leaf, Info } from "lucide-react";
+import { ArrowLeft, ArrowRight, Leaf } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AquascapeStyles() {

@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Check, X, Crown, Heart, Trophy, Tag, Trash2, Clock } from "lucide-react";
+import { Check, X, Crown, Heart, Trophy, Tag, Percent, Trash2, Clock } from "lucide-react";
 import { addCsrfHeader } from "@/lib/csrf";
 
 interface GallerySubmission {

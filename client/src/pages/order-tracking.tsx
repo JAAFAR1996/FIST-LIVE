@@ -320,9 +320,9 @@ export default function OrderTracking() {
                         محتويات الطلب
                       </h3>
                       <div className="space-y-4">
-                        {orderDetails.items.map((item, index) => (
+                        {orderDetails.items.map((item) => (
                           <div
-                            key={index}
+                            key={item.name}
                             className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg"
                           >
                             <div className="flex-1">
@@ -401,7 +401,7 @@ export default function OrderTracking() {
                   { icon: Truck, title: "في الطريق", desc: "المندوب في طريقه إليك" },
                   { icon: Home, title: "تم التسليم", desc: "وصل طلبك بأمان" }
                 ].map((step, index) => (
-                  <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+                  <Card key={step.title} className="text-center p-6 hover:shadow-lg transition-shadow">
                     <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <step.icon className="w-8 h-8 text-primary" />
                     </div>

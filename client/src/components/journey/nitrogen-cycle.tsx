@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { TestTube, Clock, Info, ArrowRight, AlertCircle } from "lucide-react";
+import { TestTube, Clock, Info, ArrowRight, AlertCircle, Calendar } from "lucide-react";
 import { WizardData } from "@/types/journey";
 
 interface NitrogenCycleProps {
@@ -183,6 +183,3 @@ export function NitrogenCycle({ wizardData, updateData }: NitrogenCycleProps) {
         </Card>
     );
 }
-
-// Missing Calendar import, adding it.
-import { Calendar } from "lucide-react";

@@ -359,8 +359,8 @@ export default function FishHealthDiagnosis() {
                       الأعراض:
                     </h4>
                     <ul className="space-y-2">
-                      {diagnosis.symptoms.map((symptom, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm">
+                      {diagnosis.symptoms.map((symptom) => (
+                        <li key={symptom} className="flex items-start gap-2 text-sm">
                           <span className="text-red-500 mt-1">•</span>
                           <span>{symptom}</span>
                         </li>
@@ -378,7 +378,7 @@ export default function FishHealthDiagnosis() {
                     </h4>
                     <ol className="space-y-2">
                       {diagnosis.treatment.map((step, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm">
+                        <li key={step} className="flex items-start gap-2 text-sm">
                           <Badge variant="outline" className="shrink-0">{i + 1}</Badge>
                           <span>{step}</span>
                         </li>
@@ -424,8 +424,8 @@ export default function FishHealthDiagnosis() {
           <h2 className="text-3xl font-bold mb-8 text-center">الأمراض الشائعة</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mockDiseases.map((disease, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow">
+            {mockDiseases.map((disease) => (
+              <Card key={disease.disease} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <CardTitle className="text-lg">{disease.arabicName}</CardTitle>
@@ -440,8 +440,8 @@ export default function FishHealthDiagnosis() {
                     <div>
                       <span className="font-semibold block mb-1">الأعراض الرئيسية:</span>
                       <ul className="text-xs text-muted-foreground space-y-1">
-                        {disease.symptoms.slice(0, 2).map((s, j) => (
-                          <li key={j} className="flex gap-1">
+                        {disease.symptoms.slice(0, 2).map((s) => (
+                          <li key={s} className="flex gap-1">
                             <span>•</span>
                             <span>{s}</span>
                           </li>

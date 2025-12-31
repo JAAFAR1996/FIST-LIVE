@@ -54,7 +54,7 @@ export default function EcoFriendlyGuide() {
               { icon: Recycle, label: "الاستدامة", color: "text-green-500", bg: "bg-green-500/10" },
             ].map((item, i) => (
               <motion.div
-                key={i}
+                key={item.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}

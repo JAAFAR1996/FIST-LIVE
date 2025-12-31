@@ -349,8 +349,8 @@ export function AnalyticsDashboard() {
                                                 outerRadius={80}
                                                 label={({ source, percentage }) => `${source} (${percentage}%)`}
                                             >
-                                                {data.trafficSources.map((entry, index) => (
-                                                    <Cell key={entry.source} fill={COLORS[index % COLORS.length]} />
+                                                {data.trafficSources.map((_, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
                                             <Tooltip />

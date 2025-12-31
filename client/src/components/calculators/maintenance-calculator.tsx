@@ -175,8 +175,8 @@ export function MaintenanceCalculator() {
                                 <Clock className="h-5 w-5 text-primary" />
                             </h4>
                             <ul className="space-y-2">
-                                {schedule.weekly.map((task, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                {schedule.weekly.map((task) => (
+                                    <li key={task} className="flex items-start gap-2 text-sm text-muted-foreground">
                                         <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                                         <span>{task}</span>
                                     </li>
@@ -191,8 +191,8 @@ export function MaintenanceCalculator() {
                                 <Clock className="h-5 w-5 text-primary" />
                             </h4>
                             <ul className="space-y-2">
-                                {schedule.biweekly.map((task, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                {schedule.biweekly.map((task) => (
+                                    <li key={task} className="flex items-start gap-2 text-sm text-muted-foreground">
                                         <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                                         <span>{task}</span>
                                     </li>
@@ -207,8 +207,8 @@ export function MaintenanceCalculator() {
                                 <Calendar className="h-5 w-5 text-accent" />
                             </h4>
                             <ul className="space-y-2">
-                                {schedule.monthly.map((task, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                {schedule.monthly.map((task) => (
+                                    <li key={task} className="flex items-start gap-2 text-sm text-muted-foreground">
                                         <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-accent" />
                                         <span>{task}</span>
                                     </li>

@@ -697,7 +697,7 @@ export default function FishBreedingCalculator() {
                           {timeline?.map((event, i) => {
                             const Icon = event.icon;
                             return (
-                              <div key={i} className="flex gap-4">
+                              <div key={event.eventAr} className="flex gap-4">
                                 <div className="flex flex-col items-center">
                                   <div className={`w-12 h-12 rounded-full bg-muted flex items-center justify-center ${event.color}`}>
                                     <Icon className="h-6 w-6" />
@@ -740,9 +740,9 @@ export default function FishBreedingCalculator() {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
-                          {growthStages.map((stage, i) => (
+                          {growthStages.map((stage) => (
                             <div
-                              key={i}
+                              key={stage.stageAr}
                               className="flex gap-4 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                             >
                               <div className="flex flex-col items-center min-w-[60px]">

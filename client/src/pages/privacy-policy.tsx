@@ -139,16 +139,16 @@ export default function PrivacyPolicy() {
               البيانات التي نجمعها
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {dataTypes.map((type, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
+              {dataTypes.map((type) => (
+                <Card key={type.title} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                       <type.icon className="w-7 h-7 text-primary" />
                     </div>
                     <h3 className="text-xl font-semibold mb-4">{type.title}</h3>
                     <ul className="space-y-2">
-                      {type.items.map((item, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      {type.items.map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
                           <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                           <span>{item}</span>
                         </li>
@@ -173,8 +173,8 @@ export default function PrivacyPolicy() {
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="p-6">
                 <ul className="grid md:grid-cols-2 gap-4">
-                  {usageReasons.map((reason, index) => (
-                    <li key={index} className="flex items-start gap-3 p-3 bg-background rounded-lg">
+                  {usageReasons.map((reason) => (
+                    <li key={reason} className="flex items-start gap-3 p-3 bg-background rounded-lg">
                       <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-muted-foreground">{reason}</span>
                     </li>
@@ -195,8 +195,8 @@ export default function PrivacyPolicy() {
               كيف نحمي بياناتك
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {protectionMeasures.map((measure, index) => (
-                <Card key={index} className="group hover:shadow-lg transition-shadow">
+              {protectionMeasures.map((measure) => (
+                <Card key={measure.title} className="group hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                       <measure.icon className="w-6 h-6 text-primary" />
@@ -222,8 +222,8 @@ export default function PrivacyPolicy() {
             <Card className="border-green-500/30 bg-green-500/5">
               <CardContent className="p-6">
                 <ul className="space-y-3">
-                  {userRights.map((right, index) => (
-                    <li key={index} className="flex items-start gap-3 p-3 bg-background rounded-lg">
+                  {userRights.map((right) => (
+                    <li key={right} className="flex items-start gap-3 p-3 bg-background rounded-lg">
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <span>{right}</span>
                     </li>

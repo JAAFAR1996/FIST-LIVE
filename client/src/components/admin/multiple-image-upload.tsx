@@ -97,7 +97,7 @@ export function MultipleImageUpload({
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                     {images.map((image, index) => (
                         <div
-                            key={index}
+                            key={`${image.slice(0, 50)}-${index}`}
                             className="relative group aspect-square rounded-lg border-2 border-border overflow-hidden bg-muted"
                         >
                             <img
@@ -131,8 +131,8 @@ export function MultipleImageUpload({
             {canAddMore && (
                 <div
                     className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${isDragging
-                            ? 'border-primary bg-primary/10'
-                            : 'border-muted-foreground/25 hover:border-primary'
+                        ? 'border-primary bg-primary/10'
+                        : 'border-muted-foreground/25 hover:border-primary'
                         }`}
                     onDrop={handleDrop}
                     onDragOver={(e) => {

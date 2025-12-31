@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, SearchIcon, Trash2, Tag, BookOpen, Camera, Heart, Box, Stethoscope, FileText, Sparkles, X } from "lucide-react";
+import { Search, ShoppingCart, Menu, Fish, Calculator, Home, Package, Trash2, Tag, BookOpen, Camera, Heart, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useState, useEffect, useMemo } from "react";

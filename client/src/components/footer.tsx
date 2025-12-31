@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Instagram, Twitter, Phone, Mail, MapPin, Fish, CreditCard, Truck, Shield, Clock, ChevronLeft, Youtube, MessageCircle, Lock, Award, Heart } from "lucide-react";
+import { Facebook, Instagram, Phone, Mail, MapPin, Fish, CreditCard, Truck, Shield, Clock, ChevronLeft, Youtube, MessageCircle, Lock, Award, Heart } from "lucide-react";
 import { useState } from "react";
 import { addCsrfHeader } from "@/lib/csrf";
 
