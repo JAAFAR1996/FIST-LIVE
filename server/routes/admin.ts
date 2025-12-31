@@ -114,10 +114,31 @@ export function createAdminRouter(): RouterType {
     });
 
     // Users
+    // Users
+    // Users Stats
+    router.get("/users/stats", async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const stats = await storage.getUserStats();
+            res.json(stats);
+        } catch (err) { next(err); }
+    });
+
+    // Users
     router.get("/users", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const users = await storage.getUsers();
-            res.json(users);
+            // Check if pagination params are present
+            if (req.query.page || req.query.limit || req.query.search) {
+                const page = parseInt(req.query.page as string) || 1;
+                const limit = parseInt(req.query.limit as string) || 20;
+                const search = req.query.search as string || undefined;
+
+                const result = await storage.getUsersPaginated(page, limit, search);
+                res.json(result);
+            } else {
+                // Backward compatibility: return all users if no pagination requested
+                const users = await storage.getUsers();
+                res.json(users);
+            }
         } catch (err) {
             next(err);
         }
@@ -706,29 +727,39 @@ export function createAdminRouter(): RouterType {
             const { getDb } = await import("../db.js");
             const { productInteractions, searchQueries, priceHistory, chatMessages, supportTickets } = await import("../../shared/schema.js");
 
+            const { sql } = await import("drizzle-orm");
+
             const db = getDb();
+            if (!db) {
+                throw new Error("Database not initialized");
+            }
 
             // Embedding stats
             const embeddingStats = await embeddingGenerator.getEmbeddingStats();
 
             // Interaction stats
-            const interactionCount = await db.select({ count: productInteractions.id.count() })
+            // Interaction stats
+            const interactionCount = await db.select({ count: sql<number>`count(*)` })
                 .from(productInteractions);
 
             // Search stats
-            const searchCount = await db.select({ count: searchQueries.id.count() })
+            // Search stats
+            const searchCount = await db.select({ count: sql<number>`count(*)` })
                 .from(searchQueries);
 
             // Price history stats
-            const priceHistoryCount = await db.select({ count: priceHistory.id.count() })
+            // Price history stats
+            const priceHistoryCount = await db.select({ count: sql<number>`count(*)` })
                 .from(priceHistory);
 
             // Chat stats
-            const chatCount = await db.select({ count: chatMessages.id.count() })
+            // Chat stats
+            const chatCount = await db.select({ count: sql<number>`count(*)` })
                 .from(chatMessages);
 
             // Support ticket stats
-            const ticketCount = await db.select({ count: supportTickets.id.count() })
+            // Support ticket stats
+            const ticketCount = await db.select({ count: sql<number>`count(*)` })
                 .from(supportTickets);
 
             // Cart abandonment rate

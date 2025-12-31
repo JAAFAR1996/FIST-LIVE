@@ -1,5 +1,5 @@
 import { type User, type InsertUser, type InsertUserAddress, type UserAddress, users, userAddresses, passwordResetTokens, newsletterSubscriptions, type NewsletterSubscription, type InsertNewsletterSubscription } from "../../shared/schema.js";
-import { eq, isNull, sql } from "drizzle-orm";
+import { eq, isNull, sql, and, or, ilike, desc } from "drizzle-orm";
 import { getDb } from "../db.js";
 
 export class UserStorage {
@@ -15,6 +15,53 @@ export class UserStorage {
     async getUsers(): Promise<User[]> {
         const db = this.ensureDb();
         return await db.select().from(users).where(isNull(users.deletedAt));
+    }
+
+    async getUsersPaginated(page: number = 1, limit: number = 20, search?: string): Promise<{ users: User[], total: number }> {
+        const db = this.ensureDb();
+        const offset = (page - 1) * limit;
+
+        let whereClause = isNull(users.deletedAt);
+
+        if (search) {
+            whereClause = and(
+                whereClause,
+                or(
+                    ilike(users.fullName, `%${search}%`),
+                    ilike(users.email, `%${search}%`)
+                )
+            )!; // Force non-null because we know isNull(users.deletedAt) is present
+        }
+
+        const [usersResult, countResult] = await Promise.all([
+            db.select().from(users)
+                .where(whereClause)
+                .limit(limit)
+                .offset(offset)
+                .orderBy(desc(users.createdAt)),
+            db.select({ count: sql<number>`count(*)` })
+                .from(users)
+                .where(whereClause)
+        ]);
+
+        return {
+            users: usersResult,
+            total: Number(countResult[0]?.count || 0)
+        };
+    }
+
+    async getUserStats(): Promise<{ total: number, admins: number, customers: number }> {
+        const db = this.ensureDb();
+        const [totalResult, adminsResult] = await Promise.all([
+            db.select({ count: sql<number>`count(*)` }).from(users).where(isNull(users.deletedAt)),
+            db.select({ count: sql<number>`count(*)` }).from(users).where(and(isNull(users.deletedAt), eq(users.role, 'admin')))
+        ]);
+
+        const total = Number(totalResult[0]?.count || 0);
+        const admins = Number(adminsResult[0]?.count || 0);
+        const customers = total - admins;
+
+        return { total, admins, customers };
     }
 
     async getUser(id: string): Promise<User | undefined> {

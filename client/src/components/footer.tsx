@@ -158,7 +158,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3 pt-2">
               <a
-                href="https://facebook.com"
+                href="https://facebook.com/aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-blue-600 rounded-full transition-all hover:scale-110"
@@ -166,7 +166,7 @@ export default function Footer() {
                 <Facebook className="h-4 w-4" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full transition-all hover:scale-110"
@@ -174,7 +174,7 @@ export default function Footer() {
                 <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://youtube.com/@aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-slate-800 hover:bg-red-600 rounded-full transition-all hover:scale-110"

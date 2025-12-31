@@ -39,6 +39,10 @@ declare global {
 const app = express();
 const httpServer = http.createServer(app);
 
+// Initialize WebSocket Server
+import { setupWebSocket } from "./ws-server.js";
+setupWebSocket(httpServer);
+
 // Trust proxy for Vercel/production deployments
 // Required for secure cookies to work behind a reverse proxy
 // Trust proxy for Vercel/production/dev tunnels

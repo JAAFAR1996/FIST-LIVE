@@ -8,6 +8,8 @@ export interface IStorage {
     getUser(id: string): Promise<User | undefined>;
     getUserByEmail(email: string): Promise<User | undefined>;
     getUsers(): Promise<User[]>;
+    getUsersPaginated(page?: number, limit?: number, search?: string): Promise<{ users: User[], total: number }>;
+    getUserStats(): Promise<{ total: number, admins: number, customers: number }>;
     createUser(user: InsertUser): Promise<User>;
     updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
     getProducts(filters?: ProductFilters): Promise<Product[]>;
@@ -135,6 +137,8 @@ class CombinedStorage implements IStorage {
     getUser = this.userStorage.getUser.bind(this.userStorage);
     getUserByEmail = this.userStorage.getUserByEmail.bind(this.userStorage);
     getUsers = this.userStorage.getUsers.bind(this.userStorage);
+    getUsersPaginated = this.userStorage.getUsersPaginated.bind(this.userStorage);
+    getUserStats = this.userStorage.getUserStats.bind(this.userStorage);
     createUser = this.userStorage.createUser.bind(this.userStorage);
     updateUser = this.userStorage.updateUser.bind(this.userStorage);
     createUserAddress = this.userStorage.createUserAddress.bind(this.userStorage);
@@ -219,14 +223,14 @@ class CombinedStorage implements IStorage {
     getTrendingProducts = async (): Promise<Product[]> => {
         try {
             // Use AI analytics tracker for real trending products
-            const { analyticsTracker } = await import("./services/analytics-tracker.js");
+            const { analyticsTracker } = await import("../services/analytics-tracker.js");
             const trending = await analyticsTracker.getTrendingProducts(7, 8);
 
             if (trending.length > 0) {
                 // Get product details
-                const productIds = trending.map(t => t.productId);
+                const productIds = trending.map((t: any) => t.productId);
                 const products = await Promise.all(
-                    productIds.map(id => this.productStorage.getProduct(id))
+                    productIds.map((id: string) => this.productStorage.getProduct(id))
                 );
                 return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
             }
@@ -250,13 +254,13 @@ class CombinedStorage implements IStorage {
     getFrequentlyBoughtTogether = async (productId: string): Promise<Product[]> => {
         try {
             // Use AI recommendation engine for co-purchase analysis
-            const { recommendationEngine } = await import("./services/recommendation-engine.js");
+            const { recommendationEngine } = await import("../services/recommendation-engine.js");
             const coProductIds = await recommendationEngine.getFrequentlyBoughtTogether(productId, 4);
 
             if (coProductIds.length > 0) {
                 // Get product details
                 const products = await Promise.all(
-                    coProductIds.map(id => this.productStorage.getProduct(id))
+                    coProductIds.map((id: string) => this.productStorage.getProduct(id))
                 );
                 return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
             }
@@ -286,14 +290,14 @@ class CombinedStorage implements IStorage {
 
             // Try AI embedding similarity first
             try {
-                const { embeddingGenerator } = await import("./services/embedding-generator.js");
+                const { embeddingGenerator } = await import("../services/embedding-generator.js");
                 const similarByEmbedding = await embeddingGenerator.findSimilarByEmbedding(productId, 5);
 
                 if (similarByEmbedding.length > 0) {
                     // Get product details
-                    const productIds = similarByEmbedding.map(s => s.productId);
+                    const productIds = similarByEmbedding.map((s: any) => s.productId);
                     const products = await Promise.all(
-                        productIds.map(id => this.productStorage.getProduct(id))
+                        productIds.map((id: string) => this.productStorage.getProduct(id))
                     );
                     return products.filter((p): p is Product => p !== undefined && (p.stock ?? 0) > 0);
                 }

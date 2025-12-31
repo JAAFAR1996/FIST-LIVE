@@ -36,6 +36,8 @@ export function LiveChatWidget() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const wsRef = useRef<WebSocket | null>(null);
+
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         if (scrollRef.current) {
@@ -57,13 +59,60 @@ export function LiveChatWidget() {
         }
     }, [isOpen, isMinimized]);
 
-    // Simulate connection
+    // WebSocket Connection
     useEffect(() => {
-        if (isOpen) {
-            const timer = setTimeout(() => setIsConnected(true), 1000);
-            return () => clearTimeout(timer);
+        if (isOpen && !wsRef.current) {
+            try {
+                const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+                const wsUrl = `${protocol}//${window.location.host}/ws`;
+
+                const ws = new WebSocket(wsUrl);
+                wsRef.current = ws;
+
+                ws.onopen = () => {
+                    setIsConnected(true);
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'message') {
+                            setIsTyping(false);
+                            setMessages(prev => [...prev, {
+                                id: `msg-${Date.now()}`,
+                                content: data.text,
+                                sender: data.sender || 'support',
+                                timestamp: new Date(),
+                                status: 'delivered'
+                            }]);
+
+                            // Increment unread if minimized
+                            if (isMinimized) {
+                                setUnreadCount(prev => prev + 1);
+                            }
+                        }
+                    } catch (e) {
+                        console.error("WS parse error", e);
+                    }
+                };
+
+                ws.onclose = () => {
+                    setIsConnected(false);
+                    wsRef.current = null;
+                };
+
+                return () => {
+                    if (wsRef.current) {
+                        wsRef.current.close();
+                        wsRef.current = null;
+                    }
+                };
+            } catch (err) {
+                console.error("Failed to connect to WebSocket", err);
+                setIsConnected(false);
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, isMinimized]); // Re-connect logic needs care, mainly dependent on isOpen
 
     const handleOpen = useCallback(() => {
         setIsOpen(true);
@@ -93,9 +142,10 @@ export function LiveChatWidget() {
     const handleSendMessage = useCallback(() => {
         if (!inputValue.trim()) return;
 
+        const content = inputValue.trim();
         const newMessage: ChatMessage = {
             id: `msg-${Date.now()}`,
-            content: inputValue.trim(),
+            content: content,
             sender: "user",
             timestamp: new Date(),
             status: "sent",
@@ -104,32 +154,25 @@ export function LiveChatWidget() {
         setMessages(prev => [...prev, newMessage]);
         setInputValue("");
 
-        // Simulate typing indicator
-        setIsTyping(true);
-
-        // Simulate auto-response (in production, this would be WebSocket)
-        setTimeout(() => {
-            setIsTyping(false);
-            const responses = [
-                "شكراً لتواصلك! سيتم الرد عليك في أقرب وقت.",
-                "تم استلام رسالتك. أحد ممثلي خدمة العملاء سيرد عليك قريباً.",
-                "مرحباً! نحن نقدر تواصلك. سنعود إليك في غضون دقائق.",
-            ];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-
+        // Send via WebSocket
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({
+                type: 'message',
+                text: content,
+                userId: user?.id
+            }));
+            // Simulate typing from support side (server will respond)
+            setIsTyping(true);
+        } else {
+            // Fallback if disconnected
             setMessages(prev => [...prev, {
-                id: `response-${Date.now()}`,
-                content: randomResponse,
+                id: `err-${Date.now()}`,
+                content: "عذراً، فقدنا الاتصال بالخادم. حاول مرة أخرى لاحقاً.",
                 sender: "support",
                 timestamp: new Date(),
             }]);
-
-            // Increment unread if minimized
-            if (isMinimized) {
-                setUnreadCount(prev => prev + 1);
-            }
-        }, 2000);
-    }, [inputValue, isMinimized]);
+        }
+    }, [inputValue, user?.id]);
 
     const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
