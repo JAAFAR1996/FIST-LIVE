@@ -73,55 +73,92 @@ router.get("/", requireAdmin, async (req: Request<object, object, object, Analyt
         const newCustomers = newCustomersData[0]?.count || 0;
         const customersChange = totalCustomers > 0 ? (newCustomers / totalCustomers) * 100 : 0;
 
-        // Mock page views data (no table yet)
-        const totalPageViews = Math.floor(Math.random() * 5000) + 1000;
-        const pageViewsChange = Math.random() * 20 - 5;
+        // حساب الزيارات المقدرة من الطلبات (معدل التحويل الصناعي 2-3%)
+        // كل طلب يمثل تقريباً 40-50 زيارة
+        const estimatedConversionRate = 0.025; // 2.5% معدل تحويل واقعي
+        const totalPageViews = currentOrders > 0 ? Math.round(currentOrders / estimatedConversionRate) : 0;
+        const previousPageViews = previousOrders > 0 ? Math.round(previousOrders / estimatedConversionRate) : 0;
+        const pageViewsChange = previousPageViews > 0 ? ((totalPageViews - previousPageViews) / previousPageViews) * 100 : 0;
 
-        // Calculate averages
+        // حساب المتوسطات الحقيقية
         const averageOrderValue = currentOrders > 0 ? currentRevenue / currentOrders : 0;
-        const conversionRate = totalPageViews > 0 ? (currentOrders / totalPageViews) * 100 : 0;
+        const conversionRate = estimatedConversionRate * 100; // النسبة المئوية
 
-        // Generate sales chart data
+        // جلب بيانات المبيعات اليومية الحقيقية من قاعدة البيانات
+        const dailySalesData = await db
+            .select({
+                date: sql<string>`DATE(${orders.createdAt})`,
+                revenue: sum(orders.total),
+                orderCount: count(),
+            })
+            .from(orders)
+            .where(gte(orders.createdAt, startDate))
+            .groupBy(sql`DATE(${orders.createdAt})`)
+            .orderBy(sql`DATE(${orders.createdAt})`);
+
+        // إنشاء خريطة للبيانات اليومية
+        const dailyDataMap = new Map<string, { revenue: number; orders: number }>();
+        for (const day of dailySalesData) {
+            dailyDataMap.set(day.date, {
+                revenue: Number(day.revenue) || 0,
+                orders: day.orderCount || 0,
+            });
+        }
+
+        // بناء مصفوفة الرسم البياني مع جميع الأيام (حتى الأيام بدون مبيعات)
         const salesChart = [];
         for (let i = days - 1; i >= 0; i--) {
             const date = new Date();
             date.setDate(date.getDate() - i);
+            const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
             const dateStr = date.toLocaleDateString("ar-IQ", { month: "short", day: "numeric" });
 
-            const baseRevenue = currentRevenue / days;
-            const baseOrders = currentOrders / days;
+            const dayData = dailyDataMap.get(dateKey);
             salesChart.push({
                 date: dateStr,
-                revenue: Math.floor(baseRevenue * (0.5 + Math.random())),
-                orders: Math.max(1, Math.floor(baseOrders * (0.5 + Math.random()))),
+                revenue: dayData?.revenue || 0,
+                orders: dayData?.orders || 0,
             });
         }
 
-        // Get top products by review count (as proxy for popularity)
-        const topProductsData = await db
+        // جلب أفضل المنتجات مبيعاً من بيانات الطلبات الحقيقية
+        const topProductsSales = await db
             .select({
-                id: products.id,
-                name: products.name,
-                reviewCount: products.reviewCount,
+                productId: orderItems.productId,
+                productName: orderItems.productName,
+                totalQuantity: sum(orderItems.quantity),
+                totalRevenue: sum(sql`${orderItems.price} * ${orderItems.quantity}`),
             })
-            .from(products)
-            .orderBy(desc(products.reviewCount))
+            .from(orderItems)
+            .innerJoin(orders, eq(orders.id, orderItems.orderId))
+            .where(gte(orders.createdAt, startDate))
+            .groupBy(orderItems.productId, orderItems.productName)
+            .orderBy(desc(sum(orderItems.quantity)))
             .limit(10);
 
-        const topProducts = topProductsData.map(p => ({
-            name: p.name?.substring(0, 30) || "منتج",
-            sales: p.reviewCount || 0,
-            revenue: (p.reviewCount || 0) * 25000,
+        const topProducts = topProductsSales.map(p => ({
+            name: (p.productName || "منتج").substring(0, 30),
+            sales: Number(p.totalQuantity) || 0,
+            revenue: Number(p.totalRevenue) || 0,
         }));
 
-        // Traffic sources (mock data)
-        const trafficSources = [
-            { source: "بحث جوجل", visits: Math.floor(totalPageViews * 0.4), percentage: 40 },
-            { source: "مباشر", visits: Math.floor(totalPageViews * 0.25), percentage: 25 },
-            { source: "وسائل التواصل", visits: Math.floor(totalPageViews * 0.2), percentage: 20 },
-            { source: "إحالات", visits: Math.floor(totalPageViews * 0.1), percentage: 10 },
-            { source: "أخرى", visits: Math.floor(totalPageViews * 0.05), percentage: 5 },
+        // مصادر الزيارات - تقديرات مبنية على معايير التجارة الإلكترونية
+        // ملاحظة: هذه تقديرات مبنية على معدلات صناعية لأنه لا يوجد نظام تتبع مفعّل
+        // للحصول على بيانات دقيقة، يُنصح بربط Google Analytics
+        const trafficSourcesEstimates = [
+            { source: "بحث جوجل", percentage: 40 },      // معدل البحث العضوي النموذجي
+            { source: "مباشر", percentage: 25 },          // زيارات مباشرة
+            { source: "وسائل التواصل", percentage: 20 }, // فيسبوك، انستغرام
+            { source: "إحالات", percentage: 10 },         // مواقع أخرى
+            { source: "أخرى", percentage: 5 },            // مصادر متنوعة
         ];
+
+        const trafficSources = trafficSourcesEstimates.map(src => ({
+            source: src.source,
+            visits: Math.round(totalPageViews * (src.percentage / 100)),
+            percentage: src.percentage,
+            isEstimate: true, // علامة تدل على أنها تقديرات
+        }));
 
         // Orders by status
         const statusCounts = await db
@@ -163,6 +200,18 @@ router.get("/", requireAdmin, async (req: Request<object, object, object, Analyt
             topProducts,
             trafficSources,
             ordersByStatus,
+            // معلومات عن مصادر البيانات
+            dataSource: {
+                revenue: "real",           // من جدول الطلبات
+                orders: "real",            // من جدول الطلبات
+                customers: "real",         // من جدول المستخدمين
+                pageViews: "estimated",    // تقدير مبني على معدل التحويل 2.5%
+                salesChart: "real",        // من جدول الطلبات اليومية
+                topProducts: "real",       // من جدول عناصر الطلبات
+                trafficSources: "estimated", // تقديرات مبنية على معايير صناعية
+                ordersByStatus: "real",    // من جدول الطلبات
+                note: "للحصول على بيانات الزيارات الحقيقية، يُنصح بربط Google Analytics"
+            }
         });
     } catch (error) {
         console.error("Analytics error:", error);

@@ -342,6 +342,46 @@
   }
 }
 
+/* ============================================
+   IMAGE PROTECTION STYLES (Anti-Download)
+   ============================================ */
+@layer utilities {
+
+  /* Base protection for all product images */
+  .protected-image-container {
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .protected-image-container img {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+  }
+
+  /* Disable image saving on long press (mobile) */
+  .no-save-image {
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
+
+  /* Global product image protection */
+  .product-image,
+  [data-protected="true"] img {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
+}
+
 /* Utility Classes for Animations */
 @layer utilities {
   .underwater-glow {

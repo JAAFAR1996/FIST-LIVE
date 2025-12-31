@@ -65,17 +65,20 @@ export const ProductCard = memo(function ProductCard({ product, onCompare, onQui
           </div>
 
           {/* Image */}
-          <div className="relative pt-[100%] overflow-hidden">
+          <div className="relative pt-[100%] overflow-hidden" data-protected="true">
             <div className="absolute inset-0 p-6 flex items-center justify-center bg-transparent">
               <div className="transition-transform duration-500 group-hover:scale-105">
                 <img
                   src={`${product.thumbnail || product.image || "/logo_aquavo.png"}?v=1`}
                   alt={`صورة منتج ${product.name} من ${product.brand}`}
-                  className="w-full h-full object-contain filter drop-shadow-2xl"
+                  className="w-full h-full object-contain filter drop-shadow-2xl select-none"
                   loading="lazy"
                   width={300}
                   height={300}
                   decoding="async"
+                  draggable={false}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     if (target.src !== "/logo_aquavo.png") {

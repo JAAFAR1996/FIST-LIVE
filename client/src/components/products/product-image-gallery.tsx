@@ -59,7 +59,7 @@ export function ProductImageGallery({
     return (
         <div className={cn("space-y-4", className)} onKeyDown={handleKeyDown} tabIndex={0}>
             {/* Main Image with Zoom */}
-            <div className="relative group">
+            <div className="relative group" data-protected="true">
                 <div
                     ref={imageRef}
                     className="relative aspect-square cursor-zoom-in overflow-hidden max-w-lg mx-auto"
@@ -73,7 +73,7 @@ export function ProductImageGallery({
                         src={currentImage}
                         alt={`${productName} - صورة ${selectedIndex + 1}`}
                         className={cn(
-                            "w-full h-full object-contain transition-transform duration-300 p-4",
+                            "w-full h-full object-contain transition-transform duration-300 p-4 select-none",
                             isZoomed && "scale-110"
                         )}
                         style={isZoomed ? {
@@ -82,6 +82,9 @@ export function ProductImageGallery({
                         loading="eager"
                         decoding="async"
                         fetchPriority="high"
+                        draggable={false}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onDragStart={(e) => e.preventDefault()}
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (target.src !== "/logo_aquavo.png") {
@@ -182,7 +185,10 @@ export function ProductImageGallery({
                         <img
                             src={currentImage}
                             alt={productName}
-                            className="max-w-full max-h-[85vh] object-contain"
+                            className="max-w-full max-h-[85vh] object-contain select-none"
+                            draggable={false}
+                            onContextMenu={(e) => e.preventDefault()}
+                            onDragStart={(e) => e.preventDefault()}
                         />
 
                         {/* Navigation in Lightbox */}
