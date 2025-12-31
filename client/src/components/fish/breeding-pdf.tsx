@@ -244,8 +244,8 @@ export const BreedingPlanPDF = ({ species, timeline, inputData }: BreedingPlanPD
             {/* Timeline */}
             <View style={styles.timelineContainer}>
                 <Text style={styles.timelineHeader}>الجدول الزمني المتوقع</Text>
-                {timeline.map((event, index) => (
-                    <View key={index} style={styles.timelineItem}>
+                {timeline.map((event) => (
+                    <View key={event.eventAr} style={styles.timelineItem}>
                         <View style={styles.timelineDate}>
                             <Text>{new Date(event.date).toLocaleDateString('en-GB')}</Text>
                         </View>

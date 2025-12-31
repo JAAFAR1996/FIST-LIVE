@@ -649,7 +649,7 @@ export function ProductReviews({ productId, productName }: ProductReviewsProps) 
                   if (!shouldShow) {
                     if (pageNum === 2 || pageNum === totalPages - 1) {
                       return (
-                        <span key={i} className="px-2 text-muted-foreground">
+                        <span key={`ellipsis-${pageNum}`} className="px-2 text-muted-foreground">
                           ...
                         </span>
                       );
@@ -659,7 +659,7 @@ export function ProductReviews({ productId, productName }: ProductReviewsProps) 
 
                   return (
                     <Button
-                      key={i}
+                      key={pageNum}
                       variant={page === pageNum ? "default" : "ghost"}
                       size="sm"
                       className="w-8 h-8 p-0"

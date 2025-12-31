@@ -3,19 +3,26 @@
  * Handles PDF generation with better error handling
  */
 
+// Helper for development-only logging
+const debugLog = (...args: unknown[]) => {
+  if (import.meta.env.DEV) {
+    console.log('[PDF Generator]', ...args);
+  }
+};
+
 export async function generateBreedingPDF(elementId: string, fileName: string): Promise<void> {
-  console.log("[PDF Generator] Starting PDF generation...");
-  console.log("[PDF Generator] Element ID:", elementId);
-  console.log("[PDF Generator] File name:", fileName);
+  debugLog("Starting PDF generation...");
+  debugLog("Element ID:", elementId);
+  debugLog("File name:", fileName);
 
   try {
     // Import libraries dynamically
-    console.log("[PDF Generator] Importing jsPDF and html2canvas...");
+    debugLog("Importing jsPDF and html2canvas...");
     const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
       import('jspdf'),
       import('html2canvas')
     ]);
-    console.log("[PDF Generator] Libraries imported successfully");
+    debugLog("Libraries imported successfully");
 
     // Find element
     const element = document.getElementById(elementId);
@@ -24,7 +31,7 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
       throw new Error(`لم يتم العثور على العنصر: ${elementId}`);
     }
 
-    console.log("[PDF Generator] Element found. Dimensions:", {
+    debugLog("Element found. Dimensions:", {
       width: element.offsetWidth,
       height: element.offsetHeight,
       scrollWidth: element.scrollWidth,
@@ -39,28 +46,28 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     }
 
     // Capture element as canvas
-    console.log("[PDF Generator] Capturing element as canvas...");
+    debugLog("Capturing element as canvas...");
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
-      logging: true,
+      logging: import.meta.env.DEV, // Only log in dev mode
       backgroundColor: '#ffffff',
       windowWidth: element.scrollWidth,
       windowHeight: element.scrollHeight,
       onclone: (clonedDoc) => {
-        console.log("[PDF Generator] onclone called");
+        debugLog("onclone called");
         const clonedElement = clonedDoc.getElementById(elementId);
         if (clonedElement) {
           clonedElement.style.backgroundColor = '#ffffff';
           clonedElement.style.padding = '20px';
-          console.log("[PDF Generator] Cloned element styled");
+          debugLog("Cloned element styled");
         }
       }
     });
 
-    console.log("[PDF Generator] Canvas created successfully");
-    console.log("[PDF Generator] Canvas dimensions:", {
+    debugLog("Canvas created successfully");
+    debugLog("Canvas dimensions:", {
       width: canvas.width,
       height: canvas.height
     });
@@ -70,16 +77,16 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     }
 
     // Convert canvas to image
-    console.log("[PDF Generator] Converting canvas to image...");
+    debugLog("Converting canvas to image...");
     const imgData = canvas.toDataURL('image/png', 1.0);
-    console.log("[PDF Generator] Image data length:", imgData.length);
+    debugLog("Image data length:", imgData.length);
 
     if (!imgData || imgData.length < 100) {
       throw new Error("فشل في تحويل الصورة");
     }
 
     // Create PDF
-    console.log("[PDF Generator] Creating PDF document...");
+    debugLog("Creating PDF document...");
     const pdf = new jsPDF({
       orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
       unit: 'mm',
@@ -90,7 +97,7 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    console.log("[PDF Generator] PDF page size:", {
+    debugLog("PDF page size:", {
       width: pdfWidth,
       height: pdfHeight
     });
@@ -109,7 +116,7 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     const imgX = (pdfWidth - imgWidth) / 2;
     const imgY = (pdfHeight - imgHeight) / 2;
 
-    console.log("[PDF Generator] Image placement:", {
+    debugLog("Image placement:", {
       x: imgX,
       y: imgY,
       width: imgWidth,
@@ -121,14 +128,14 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight, undefined, 'FAST');
 
     // Save PDF
-    console.log("[PDF Generator] Saving PDF as:", fileName);
+    debugLog("Saving PDF as:", fileName);
     pdf.save(fileName);
 
-    console.log("[PDF Generator] PDF saved successfully!");
+    debugLog("PDF saved successfully!");
 
   } catch (error) {
     console.error("[PDF Generator] Error:", error);
-    if (error instanceof Error) {
+    if (import.meta.env.DEV && error instanceof Error) {
       console.error("[PDF Generator] Error details:", {
         name: error.name,
         message: error.message,
@@ -138,3 +145,4 @@ export async function generateBreedingPDF(elementId: string, fileName: string): 
     throw error;
   }
 }
+

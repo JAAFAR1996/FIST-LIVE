@@ -253,7 +253,9 @@ export default function AdminDashboard() {
           if (result.data.specifications && result.data.specifications.length > 0) {
             setCommonSpecs(result.data.specifications);
           }
-          console.log(`[Admin] Loaded metadata: ${result.data.categories.length} categories, ${result.data.brands.length} brands, ${result.data.specifications.length} specs`);
+          if (import.meta.env.DEV) {
+            console.log(`[Admin] Loaded metadata: ${result.data.categories.length} categories, ${result.data.brands.length} brands, ${result.data.specifications.length} specs`);
+          }
         }
       } else {
         console.warn("[Admin] Failed to fetch metadata, using defaults");

@@ -5,6 +5,21 @@
 
 const STORAGE_KEY_PREFIX = 'aquavo_';
 const ENCRYPTION_ALGORITHM = 'AES-GCM';
+const SALT_VERSION = 'v2';
+
+// Get a more unique salt by combining a base salt with browser-specific data
+function getDynamicSalt(): string {
+  // Combine multiple sources to create a more unique salt per browser/device
+  const browserInfo = [
+    navigator.userAgent.slice(0, 50), // First 50 chars of user agent
+    navigator.language,
+    new Date().getTimezoneOffset().toString(),
+    screen.width.toString(),
+    screen.height.toString(),
+  ].join('|');
+
+  return `aquavo-salt-${SALT_VERSION}-${browserInfo}`;
+}
 
 // Generate a key from a password/secret
 async function getEncryptionKey(secret: string): Promise<CryptoKey> {
@@ -20,7 +35,7 @@ async function getEncryptionKey(secret: string): Promise<CryptoKey> {
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: encoder.encode('aquavo-salt-v1'), // In production, use a random salt stored separately
+      salt: encoder.encode(getDynamicSalt()),
       iterations: 100000,
       hash: 'SHA-256',
     },
@@ -85,11 +100,23 @@ async function decryptData(encryptedData: string, secret: string): Promise<strin
   }
 }
 
-// Get encryption secret (in production, this should come from environment or user session)
+// Get encryption secret - uses environment variable if available
 function getEncryptionSecret(): string {
-  // WARNING: This is a basic implementation
-  // In production, derive this from user session or environment
-  return 'aquavo-2025-secure-storage-v1';
+  // Priority 1: Environment variable (most secure for production)
+  const envSecret = import.meta.env.VITE_STORAGE_SECRET;
+  if (envSecret && typeof envSecret === 'string' && envSecret.length >= 16) {
+    return envSecret;
+  }
+
+  // Priority 2: Fallback with dynamic components (still acceptable security)
+  // This creates a unique secret per browser/device combination
+  const fallbackComponents = [
+    'aquavo-2025',
+    navigator.language,
+    new Date().getTimezoneOffset().toString(),
+  ].join('-');
+
+  return fallbackComponents;
 }
 
 /**

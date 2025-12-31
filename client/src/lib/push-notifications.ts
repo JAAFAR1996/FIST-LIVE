@@ -74,7 +74,7 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
         const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: VAPID_PUBLIC_KEY
-                ? urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                ? urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as ArrayBuffer // Cast to satisfy TS
                 : undefined,
         });
 
@@ -90,7 +90,9 @@ export async function subscribeToPush(): Promise<PushSubscription | null> {
             throw new Error('Failed to save subscription');
         }
 
-        console.log('Push subscription successful');
+        if (import.meta.env.DEV) {
+            console.log('Push subscription successful');
+        }
         return subscription;
     } catch (error) {
         console.error('Push subscription failed:', error);

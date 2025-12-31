@@ -10,15 +10,23 @@ export function useJourney() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // State Initialization
+    // State Initialization - with try-catch for localStorage safety
     const [currentStep, setCurrentStep] = useState(() => {
-        const saved = localStorage.getItem("wizardStep");
-        return saved ? parseInt(saved) : 0;
+        try {
+            const saved = localStorage.getItem("wizardStep");
+            return saved ? parseInt(saved) : 0;
+        } catch {
+            return 0;
+        }
     });
 
     const [wizardData, setWizardData] = useState<WizardData>(() => {
-        const saved = localStorage.getItem("wizardData");
-        return saved ? JSON.parse(saved) : INITIAL_WIZARD_DATA;
+        try {
+            const saved = localStorage.getItem("wizardData");
+            return saved ? JSON.parse(saved) : INITIAL_WIZARD_DATA;
+        } catch {
+            return INITIAL_WIZARD_DATA;
+        }
     });
 
     // Queries
@@ -79,7 +87,11 @@ export function useJourney() {
     const updateData = useCallback(<K extends keyof WizardData>(key: K, value: WizardData[K]) => {
         setWizardData((prev) => {
             const newData = { ...prev, [key]: value };
-            localStorage.setItem("wizardData", JSON.stringify(newData));
+            try {
+                localStorage.setItem("wizardData", JSON.stringify(newData));
+            } catch {
+                // localStorage may be unavailable
+            }
             return newData;
         });
     }, []);
@@ -88,7 +100,11 @@ export function useJourney() {
         if (currentStep < STEPS.length - 1) {
             const next = currentStep + 1;
             setCurrentStep(next);
-            localStorage.setItem("wizardStep", next.toString());
+            try {
+                localStorage.setItem("wizardStep", next.toString());
+            } catch {
+                // localStorage may be unavailable
+            }
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     }, [currentStep]);
@@ -97,7 +113,11 @@ export function useJourney() {
         if (currentStep > 0) {
             const prev = currentStep - 1;
             setCurrentStep(prev);
-            localStorage.setItem("wizardStep", prev.toString());
+            try {
+                localStorage.setItem("wizardStep", prev.toString());
+            } catch {
+                // localStorage may be unavailable
+            }
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     }, [currentStep]);
@@ -106,8 +126,12 @@ export function useJourney() {
         if (confirm("هل أنت متأكد من البدء من جديد؟ سيتم فقدان جميع البيانات غير المحفوظة.")) {
             setWizardData(INITIAL_WIZARD_DATA);
             setCurrentStep(0);
-            localStorage.removeItem("wizardData");
-            localStorage.removeItem("wizardStep");
+            try {
+                localStorage.removeItem("wizardData");
+                localStorage.removeItem("wizardStep");
+            } catch {
+                // localStorage may be unavailable
+            }
             deletePlanMutation.mutate();
         }
     }, [deletePlanMutation]);
