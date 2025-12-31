@@ -86,18 +86,18 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                         {/* Thumbnail Gallery */}
                         {images.length > 1 && (
                             <div className="flex gap-2 mt-4 justify-center">
-                                {images.slice(0, 4).map((img, idx) => (
+                                {images.slice(0, 4).map((img) => (
                                     <button
-                                        key={idx}
-                                        onClick={() => setSelectedImage(idx)}
-                                        className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === idx
+                                        key={img}
+                                        onClick={() => setSelectedImage(images.indexOf(img))}
+                                        className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${selectedImage === images.indexOf(img)
                                             ? "border-primary ring-2 ring-primary/30"
                                             : "border-border hover:border-primary/50"
                                             }`}
                                     >
                                         <img
                                             src={img}
-                                            alt={`${product.name} - صورة ${idx + 1}`}
+                                            alt={`${product.name} - صورة ${images.indexOf(img) + 1}`}
                                             className="w-full h-full object-contain"
                                         />
                                     </button>

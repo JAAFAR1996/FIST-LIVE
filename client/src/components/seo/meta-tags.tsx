@@ -234,9 +234,9 @@ export function ReviewSchema({ reviews, productName }: ReviewSchemaProps) {
 
     return (
         <>
-            {schemas.map((schema, index) => (
+            {schemas.map((schema) => (
                 <script
-                    key={index}
+                    key={`${schema.author.name}-${schema.datePublished}`}
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(sanitizeSchemaValue(schema)) }}
                 />

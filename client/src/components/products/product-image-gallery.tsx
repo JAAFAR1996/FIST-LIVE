@@ -139,24 +139,24 @@ export function ProductImageGallery({
             {/* Thumbnails */}
             {galleryImages.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
-                    {galleryImages.map((image, index) => (
+                    {galleryImages.map((image) => (
                         <button
-                            key={index}
-                            onClick={() => setSelectedIndex(index)}
+                            key={image}
+                            onClick={() => setSelectedIndex(galleryImages.indexOf(image))}
                             className={cn(
                                 "relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all",
-                                selectedIndex === index
+                                selectedIndex === galleryImages.indexOf(image)
                                     ? "border-primary ring-2 ring-primary/30"
                                     : "border-transparent hover:border-muted-foreground/30"
                             )}
                         >
                             <img
                                 src={image}
-                                alt={`${productName} - صورة مصغرة ${index + 1}`}
+                                alt={`${productName} - صورة مصغرة ${galleryImages.indexOf(image) + 1}`}
                                 className="w-full h-full object-contain bg-transparent p-1"
                                 loading="lazy"
                             />
-                            {selectedIndex === index && (
+                            {selectedIndex === galleryImages.indexOf(image) && (
                                 <div className="absolute inset-0 bg-primary/10" />
                             )}
                         </button>
@@ -209,20 +209,20 @@ export function ProductImageGallery({
 
                         {/* Thumbnails in Lightbox */}
                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-black/50 p-2 rounded-lg">
-                            {galleryImages.map((image, index) => (
+                            {galleryImages.map((image) => (
                                 <button
-                                    key={index}
-                                    onClick={() => setSelectedIndex(index)}
+                                    key={image}
+                                    onClick={() => setSelectedIndex(galleryImages.indexOf(image))}
                                     className={cn(
                                         "w-12 h-12 rounded overflow-hidden border-2 transition-all",
-                                        selectedIndex === index
+                                        selectedIndex === galleryImages.indexOf(image)
                                             ? "border-white"
                                             : "border-transparent opacity-60 hover:opacity-100"
                                     )}
                                 >
                                     <img
                                         src={image}
-                                        alt={`صورة ${index + 1}`}
+                                        alt={`صورة ${galleryImages.indexOf(image) + 1}`}
                                         className="w-full h-full object-contain bg-transparent"
                                     />
                                 </button>

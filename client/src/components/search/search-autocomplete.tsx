@@ -226,9 +226,9 @@ export function SearchAutocomplete({
                                     مسح الكل
                                 </button>
                             </div>
-                            {recentSearches.map((search, index) => (
+                            {recentSearches.map((search) => (
                                 <button
-                                    key={index}
+                                    key={search}
                                     onClick={() => handleRecentClick(search)}
                                     className="w-full text-right px-3 py-2 hover:bg-muted rounded-md transition-colors text-sm"
                                 >

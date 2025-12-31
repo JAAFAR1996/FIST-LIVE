@@ -565,13 +565,13 @@ export function ProductReviews({ productId, productName }: ProductReviewsProps) 
                         {review.images && review.images.length > 0 && (
                           <ScrollArea className="w-full whitespace-nowrap pb-2">
                             <div className="flex w-max gap-2">
-                              {review.images.map((img, idx) => (
-                                <Dialog key={idx}>
+                              {review.images.map((img) => (
+                                <Dialog key={img}>
                                   <DialogTrigger asChild>
                                     <div className="relative w-16 h-16 rounded-lg overflow-hidden cursor-pointer group">
                                       <img
                                         src={img}
-                                        alt={`صورة المراجعة ${idx + 1}`}
+                                        alt={`صورة المراجعة`}
                                         className="object-cover w-full h-full transition-transform group-hover:scale-110"
                                       />
                                     </div>
@@ -579,7 +579,7 @@ export function ProductReviews({ productId, productName }: ProductReviewsProps) 
                                   <DialogContent className="max-w-3xl border-none bg-transparent shadow-none p-0">
                                     <img
                                       src={img}
-                                      alt={`صورة المراجعة ${idx + 1}`}
+                                      alt={`صورة المراجعة`}
                                       className="rounded-lg w-full h-auto max-h-[80vh] object-contain"
                                     />
                                   </DialogContent>
