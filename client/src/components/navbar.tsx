@@ -234,8 +234,8 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login">
-                <Button variant="default" size="sm" className="hidden md:flex">
+              <Link href="/login" aria-label="تسجيل الدخول">
+                <Button variant="default" size="sm" className="hidden md:flex" aria-label="تسجيل الدخول">
                   تسجيل الدخول
                 </Button>
                 <Button variant="ghost" size="icon" className="md:hidden" aria-label="تسجيل الدخول">

@@ -195,8 +195,9 @@ export function LiveChatWidget() {
                 onClick={handleOpen}
                 className="fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-cyan-500 hover:from-primary/90 hover:to-cyan-500/90"
                 size="icon"
+                aria-label="فتح محادثة الدعم المباشر"
             >
-                <MessageCircle className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6" aria-hidden="true" />
                 {unreadCount > 0 && (
                     <Badge
                         variant="destructive"
@@ -224,11 +225,11 @@ export function LiveChatWidget() {
                         )}
                     </div>
                     <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); handleMinimize(); }}>
-                            <Maximize2 className="h-4 w-4" />
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); handleMinimize(); }} aria-label="تكبير نافذة الدردشة">
+                            <Maximize2 className="h-4 w-4" aria-hidden="true" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); handleClose(); }}>
-                            <X className="h-4 w-4" />
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); handleClose(); }} aria-label="إغلاق الدردشة">
+                            <X className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     </div>
                 </CardHeader>
@@ -254,11 +255,11 @@ export function LiveChatWidget() {
                     </div>
                 </div>
                 <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={handleMinimize}>
-                        <Minimize2 className="h-4 w-4" />
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={handleMinimize} aria-label="تصغير نافذة الدردشة">
+                        <Minimize2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={handleClose}>
-                        <X className="h-4 w-4" />
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-white hover:bg-white/20" onClick={handleClose} aria-label="إغلاق الدردشة">
+                        <X className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 </div>
             </CardHeader>
@@ -335,8 +336,9 @@ export function LiveChatWidget() {
                         size="icon"
                         disabled={!inputValue.trim()}
                         className="shrink-0"
+                        aria-label="إرسال الرسالة"
                     >
-                        <Send className="h-4 w-4" />
+                        <Send className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 </div>
                 {user && (
