@@ -69,16 +69,18 @@ export function AquascapeStyles() {
                                         size="icon"
                                         className="rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
                                         onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                                        aria-label="الشريحة السابقة"
                                     >
-                                        <ArrowRight className="h-6 w-6" />
+                                        <ArrowRight className="h-6 w-6" aria-hidden="true" />
                                     </Button>
                                     <Button
                                         variant="secondary"
                                         size="icon"
                                         className="rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm"
                                         onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                                        aria-label="الشريحة التالية"
                                     >
-                                        <ArrowLeft className="h-6 w-6" />
+                                        <ArrowLeft className="h-6 w-6" aria-hidden="true" />
                                     </Button>
                                 </div>
                             </motion.div>

@@ -195,7 +195,7 @@ export default function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full touch-target-sm">
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full touch-target-sm" aria-label="قائمة الحساب الشخصي">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src="" alt={user.fullName || user.email} />
                       <AvatarFallback className="bg-primary/10 text-primary">
@@ -238,8 +238,8 @@ export default function Navbar() {
                 <Button variant="default" size="sm" className="hidden md:flex">
                   تسجيل الدخول
                 </Button>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="تسجيل الدخول">
+                  <User className="h-5 w-5" aria-hidden="true" />
                 </Button>
               </Link>
             )}
