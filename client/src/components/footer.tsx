@@ -161,6 +161,7 @@ export default function Footer() {
                 href="https://facebook.com/aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="تابعنا على فيسبوك"
                 className="p-2.5 bg-slate-800 hover:bg-blue-600 rounded-full transition-all hover:scale-110"
               >
                 <Facebook className="h-4 w-4" />
@@ -169,6 +170,7 @@ export default function Footer() {
                 href="https://instagram.com/aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="تابعنا على إنستغرام"
                 className="p-2.5 bg-slate-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full transition-all hover:scale-110"
               >
                 <Instagram className="h-4 w-4" />
@@ -177,6 +179,7 @@ export default function Footer() {
                 href="https://youtube.com/@aquavoiq"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="اشترك في قناتنا على يوتيوب"
                 className="p-2.5 bg-slate-800 hover:bg-red-600 rounded-full transition-all hover:scale-110"
               >
                 <Youtube className="h-4 w-4" />
@@ -185,6 +188,7 @@ export default function Footer() {
                 href="https://wa.me/9647700000000"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="تواصل معنا على واتساب"
                 className="p-2.5 bg-slate-800 hover:bg-green-600 rounded-full transition-all hover:scale-110"
               >
                 <MessageCircle className="h-4 w-4" />

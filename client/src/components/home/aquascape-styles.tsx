@@ -58,6 +58,8 @@ export function AquascapeStyles() {
                                     src={currentStyle.imageUrl}
                                     alt={currentStyle.title}
                                     className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-105"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
 
                                 {/* Navigation Overlay */}
