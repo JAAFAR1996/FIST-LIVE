@@ -149,9 +149,10 @@ export function AIChatBot() {
                         <Button
                             onClick={() => setIsOpen(true)}
                             className="w-14 h-14 rounded-full shadow-2xl bg-gradient-to-br from-primary via-cyan-500 to-blue-600 hover:from-primary/90 hover:to-blue-700 p-0"
+                            aria-label="فتح مساعد AQUAVO الذكي"
                         >
                             <div className="relative">
-                                <MessageCircle className="w-6 h-6" />
+                                <MessageCircle className="w-6 h-6" aria-hidden="true" />
                                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                             </div>
                         </Button>
@@ -198,16 +199,18 @@ export function AIChatBot() {
                                             size="icon"
                                             className="h-7 w-7 text-white hover:bg-white/20"
                                             onClick={() => setIsMinimized(!isMinimized)}
+                                            aria-label="تصغير نافذة المحادثة"
                                         >
-                                            <Minimize2 className="w-4 h-4" />
+                                            <Minimize2 className="w-4 h-4" aria-hidden="true" />
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             className="h-7 w-7 text-white hover:bg-white/20"
                                             onClick={() => setIsOpen(false)}
+                                            aria-label="إغلاق المحادثة"
                                         >
-                                            <X className="w-4 h-4" />
+                                            <X className="w-4 h-4" aria-hidden="true" />
                                         </Button>
                                     </div>
                                 </div>
@@ -361,11 +364,12 @@ export function AIChatBot() {
                                                 disabled={!input.trim() || chatMutation.isPending}
                                                 size="icon"
                                                 className="h-9 w-9"
+                                                aria-label="إرسال الرسالة"
                                             >
                                                 {chatMutation.isPending ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                                                 ) : (
-                                                    <Send className="w-4 h-4" />
+                                                    <Send className="w-4 h-4" aria-hidden="true" />
                                                 )}
                                             </Button>
                                         </div>
