@@ -74,7 +74,7 @@ export default function Footer() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-8 border-b border-slate-800/50">
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800/80 transition-colors">
             <div className="p-2 bg-primary/20 rounded-full">
               <Truck className="h-5 w-5 text-primary" />
             </div>
@@ -83,7 +83,7 @@ export default function Footer() {
               <p className="text-xs text-slate-400">لجميع أنحاء العراق</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800/80 transition-colors">
             <div className="p-2 bg-green-500/20 rounded-full">
               <Shield className="h-5 w-5 text-green-500" />
             </div>
@@ -92,7 +92,7 @@ export default function Footer() {
               <p className="text-xs text-slate-400">منتجات أصلية 100%</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800/80 transition-colors">
             <div className="p-2 bg-amber-500/20 rounded-full">
               <CreditCard className="h-5 w-5 text-amber-500" />
             </div>
@@ -101,7 +101,7 @@ export default function Footer() {
               <p className="text-xs text-slate-400">أو التحويل البنكي</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-800/60 hover:bg-slate-800/80 transition-colors">
             <div className="p-2 bg-blue-500/20 rounded-full">
               <Clock className="h-5 w-5 text-blue-500" />
             </div>
