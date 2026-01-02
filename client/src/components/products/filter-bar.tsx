@@ -53,7 +53,7 @@ function QuickFilterChip({
         <button
             onClick={onClick}
             className={cn(
-                "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium",
+                "inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium",
                 "border transition-all duration-200",
                 "hover:shadow-md active:scale-95",
                 colorClasses[color]
@@ -103,13 +103,13 @@ export function FilterBar({
     };
 
     return (
-        <div className="flex items-center gap-3 py-4 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-2 sm:gap-3 py-2 sm:py-4 overflow-x-auto scrollbar-hide">
             {/* Main Filters Button */}
             <Button
                 variant="outline"
                 onClick={onOpenFilterModal}
                 className={cn(
-                    "relative rounded-full border-2 gap-2 px-4 py-2 h-auto",
+                    "relative rounded-full border-2 gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 h-auto text-xs sm:text-sm",
                     "hover:shadow-md transition-all",
                     activeFiltersCount > 0 && "border-primary bg-primary/5"
                 )}
@@ -131,7 +131,7 @@ export function FilterBar({
                     <Button
                         variant="outline"
                         className={cn(
-                            "rounded-full border-2 gap-2 px-4 py-2 h-auto",
+                            "rounded-full border-2 gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 h-auto text-xs sm:text-sm",
                             "hover:shadow-md transition-all",
                             isPriceActive && "border-primary bg-primary/5"
                         )}
