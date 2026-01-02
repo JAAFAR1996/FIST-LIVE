@@ -187,10 +187,15 @@ export default function Navbar() {
           </div>
 
           {/* Actions - Mobile Optimized */}
-          <div className="nav-actions flex items-center gap-3 sm:gap-4">
+          <div className="nav-actions flex items-center gap-2 sm:gap-3">
             <ThemeSwitcher />
-            <NavbarStyleSwitcher />
-            <FontSizeControllerCompact />
+            {/* Hide on mobile to prevent icon overlap */}
+            <div className="hidden sm:block">
+              <NavbarStyleSwitcher />
+            </div>
+            <div className="hidden md:block">
+              <FontSizeControllerCompact />
+            </div>
 
             {user ? (
               <DropdownMenu>
