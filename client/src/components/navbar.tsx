@@ -186,9 +186,12 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Actions - Mobile Optimized */}
-          <div className="nav-actions flex items-center gap-2 sm:gap-3">
-            <ThemeSwitcher />
+          {/* Actions - Mobile Optimized: Only essential icons on mobile */}
+          <div className="nav-actions flex items-center gap-1 xs:gap-1.5 sm:gap-3">
+            {/* Hide theme switcher on very small screens */}
+            <div className="hidden xs:block">
+              <ThemeSwitcher />
+            </div>
             {/* Hide on mobile to prevent icon overlap */}
             <div className="hidden sm:block">
               <NavbarStyleSwitcher />

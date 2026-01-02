@@ -209,125 +209,129 @@ export function CategoryScrollBar({
             {/* Decorative gradient line at top */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-            {/* Left Arrow */}
-            {showLeftArrow && (
-                <div className="absolute right-0 top-0 bottom-0 z-10 flex items-center">
-                    <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background via-background/90 to-transparent pointer-events-none" />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="relative h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary/10 hover:scale-110 shadow-lg border border-border/50 transition-all duration-300"
-                        onClick={() => scroll('left')}
+            {/* ===== MOBILE LAYOUT: Compact horizontal with icons ===== */}
+            <div className="sm:hidden py-2 px-2 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <div className="flex items-center gap-3 min-w-max px-2">
+                    {/* All Categories - Mobile */}
+                    <button
+                        onClick={() => selectedCategories.forEach(cat => onCategoryToggle(cat))}
+                        className={cn(
+                            "flex flex-col items-center justify-center gap-0.5 min-w-[52px] p-2 rounded-xl transition-all",
+                            selectedCategories.length === 0
+                                ? "bg-primary text-white shadow-md"
+                                : "bg-card/60 border border-border/40"
+                        )}
                     >
-                        <ChevronRight className="h-4 w-4" />
-                    </Button>
-                </div>
-            )}
+                        <LayoutGrid className="w-5 h-5" />
+                        <span className="text-[9px] font-medium">الكل</span>
+                    </button>
 
-            {/* Right Arrow */}
-            {showRightArrow && (
-                <div className="absolute left-0 top-0 bottom-0 z-10 flex items-center">
-                    <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background via-background/90 to-transparent pointer-events-none" />
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="relative h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary/10 hover:scale-110 shadow-lg border border-border/50 transition-all duration-300"
-                        onClick={() => scroll('right')}
-                    >
-                        <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                </div>
-            )}
-
-            {/* Scrollable Categories */}
-            <div
-                ref={scrollRef}
-                className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide py-3 sm:py-4 px-3 sm:px-6"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-                {/* All Categories Option - Premium Design */}
-                <button
-                    onClick={() => {
-                        selectedCategories.forEach(cat => onCategoryToggle(cat));
-                    }}
-                    className={cn(
-                        "relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 whitespace-nowrap",
-                        "text-xs sm:text-sm font-semibold group overflow-hidden",
-                        selectedCategories.length === 0
-                            ? "bg-gradient-to-r from-primary via-cyan-500 to-primary text-white shadow-lg shadow-primary/30 scale-105"
-                            : "bg-background/60 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 hover:scale-[1.02] hover:shadow-md"
-                    )}
-                >
-                    {/* Animated gradient overlay for selected state */}
-                    {selectedCategories.length === 0 && (
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shimmer" />
-                    )}
-                    <LayoutGrid className={cn(
-                        "w-4.5 h-4.5 transition-all duration-300",
-                        selectedCategories.length === 0 ? "text-white" : "text-primary group-hover:scale-110"
-                    )} />
-                    <span>الكل</span>
-                </button>
-
-                {/* Elegant Divider */}
-                <div className="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent mx-1" />
-
-                {/* Organized Category Groups - Premium Cards */}
-                {organizedCategories.map(({ key, config, rawCategories, totalCount }) => {
-                    const Icon = config.icon;
-                    const isSelected = isGroupSelected(rawCategories);
-
-                    return (
-                        <button
-                            key={key}
-                            onClick={() => toggleGroup(rawCategories)}
-                            className={cn(
-                                "relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 whitespace-nowrap",
-                                "text-xs sm:text-sm font-medium group overflow-hidden",
-                                isSelected
-                                    ? "bg-gradient-to-r from-primary/90 to-cyan-500/90 text-white shadow-lg shadow-primary/25 scale-[1.03]"
-                                    : "bg-background/60 backdrop-blur-sm border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/5 hover:to-cyan-500/5 hover:scale-[1.02] hover:shadow-md"
-                            )}
-                        >
-                            {/* Shimmer effect for selected */}
-                            {isSelected && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full animate-shimmer" />
-                            )}
-
-                            {/* Icon with glow effect */}
-                            <div className={cn(
-                                "relative transition-all duration-300",
-                                !isSelected && "group-hover:scale-110"
-                            )}>
-                                <Icon className={cn(
-                                    "w-4 h-4 transition-all duration-300",
-                                    isSelected ? "text-white drop-shadow-sm" : config.color
-                                )} />
-                                {/* Subtle glow behind icon */}
-                                {!isSelected && (
-                                    <div className={cn(
-                                        "absolute inset-0 blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300",
-                                        config.color
-                                    )} />
-                                )}
-                            </div>
-
-                            <span className="relative">{config.label}</span>
-
-                            {/* Badge with premium styling */}
-                            {totalCount > 0 && (
-                                <span className={cn(
-                                    "text-[10px] px-2 py-0.5 rounded-full font-medium transition-all duration-300",
+                    {/* Category Icons - Mobile */}
+                    {organizedCategories.map(({ key, config, rawCategories }) => {
+                        const Icon = config.icon;
+                        const isSelected = isGroupSelected(rawCategories);
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => toggleGroup(rawCategories)}
+                                className={cn(
+                                    "flex flex-col items-center justify-center gap-0.5 min-w-[52px] p-2 rounded-xl transition-all",
                                     isSelected
-                                        ? "bg-white/25 text-white backdrop-blur-sm"
-                                        : "bg-muted/80 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
-                                )}>
-                                    {totalCount}
-                                </span>
-                            )}
-                        </button>
-                    );
-                })}
+                                        ? "bg-primary text-white shadow-md"
+                                        : "bg-card/60 border border-border/40"
+                                )}
+                            >
+                                <Icon className={cn("w-5 h-5", !isSelected && config.color)} />
+                                <span className="text-[9px] font-medium">{config.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* ===== DESKTOP LAYOUT: Horizontal Scroll ===== */}
+            <div className="hidden sm:block relative">
+                {/* Left Arrow */}
+                {showLeftArrow && (
+                    <div className="absolute right-0 top-0 bottom-0 z-10 flex items-center">
+                        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background via-background/90 to-transparent pointer-events-none" />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary/10 shadow-lg border border-border/50"
+                            onClick={() => scroll('left')}
+                        >
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                )}
+
+                {/* Right Arrow */}
+                {showRightArrow && (
+                    <div className="absolute left-0 top-0 bottom-0 z-10 flex items-center">
+                        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background via-background/90 to-transparent pointer-events-none" />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary/10 shadow-lg border border-border/50"
+                            onClick={() => scroll('right')}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                    </div>
+                )}
+
+                {/* Scrollable Categories - Desktop */}
+                <div
+                    ref={scrollRef}
+                    className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-4 px-6"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                    {/* All Categories */}
+                    <button
+                        onClick={() => selectedCategories.forEach(cat => onCategoryToggle(cat))}
+                        className={cn(
+                            "flex items-center gap-2.5 px-5 py-2.5 rounded-2xl transition-all whitespace-nowrap text-sm font-semibold",
+                            selectedCategories.length === 0
+                                ? "bg-gradient-to-r from-primary to-cyan-500 text-white shadow-lg"
+                                : "bg-background/60 border border-border/50 text-muted-foreground hover:border-primary/30"
+                        )}
+                    >
+                        <LayoutGrid className="w-4 h-4" />
+                        <span>الكل</span>
+                    </button>
+
+                    <div className="w-px h-8 bg-border/50 mx-1" />
+
+                    {/* Category Buttons */}
+                    {organizedCategories.map(({ key, config, rawCategories, totalCount }) => {
+                        const Icon = config.icon;
+                        const isSelected = isGroupSelected(rawCategories);
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => toggleGroup(rawCategories)}
+                                className={cn(
+                                    "flex items-center gap-2.5 px-4 py-2.5 rounded-2xl transition-all whitespace-nowrap text-sm font-medium",
+                                    isSelected
+                                        ? "bg-gradient-to-r from-primary/90 to-cyan-500/90 text-white shadow-lg"
+                                        : "bg-background/60 border border-border/40 text-muted-foreground hover:border-primary/40"
+                                )}
+                            >
+                                <Icon className={cn("w-4 h-4", isSelected ? "text-white" : config.color)} />
+                                <span>{config.label}</span>
+                                {totalCount > 0 && (
+                                    <span className={cn(
+                                        "text-[10px] px-2 py-0.5 rounded-full",
+                                        isSelected ? "bg-white/25" : "bg-muted/80"
+                                    )}>
+                                        {totalCount}
+                                    </span>
+                                )}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Decorative gradient line at bottom */}

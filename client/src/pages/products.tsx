@@ -209,11 +209,11 @@ export default function Products() {
       <OrganizationSchema />
       <Navbar />
 
-      <main id="main-content" className="flex-1 container mx-auto px-4 py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
-        <div className="text-center space-y-3 mb-8">
-          <h1 className="text-4xl font-bold text-foreground">جميع المنتجات</h1>
-          <p className="text-lg text-muted-foreground">تصفح مجموعتنا الكاملة من المنتجات عالية الجودة</p>
+        <div className="text-center space-y-2 sm:space-y-3 mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-foreground">جميع المنتجات</h1>
+          <p className="text-sm sm:text-lg text-muted-foreground">تصفح مجموعتنا الكاملة من المنتجات عالية الجودة</p>
         </div>
 
         {/* Airbnb-style Category Scroll Bar */}
@@ -227,7 +227,7 @@ export default function Products() {
         </div>
 
         {/* Filter Bar with Quick Filters */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
           <FilterBar
             filters={filters}
             onFiltersChange={setFilters}
@@ -238,7 +238,7 @@ export default function Products() {
           />
 
           {/* Sort & View Toggle */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 justify-between sm:justify-end">
             <Tabs defaultValue="grid" className="hidden sm:block">
               <TabsList className="h-9">
                 <TabsTrigger value="grid" className="text-xs">الشبكة</TabsTrigger>
@@ -246,10 +246,10 @@ export default function Products() {
               </TabsList>
             </Tabs>
 
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+            <div className="flex items-center gap-1 sm:gap-2">
+              <ArrowUpDown className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
               <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-                <SelectTrigger className="w-[160px] h-9 text-sm">
+                <SelectTrigger className="w-[120px] sm:w-[160px] h-8 sm:h-9 text-xs sm:text-sm">
                   <SelectValue placeholder="ترتيب حسب" />
                 </SelectTrigger>
                 <SelectContent>
