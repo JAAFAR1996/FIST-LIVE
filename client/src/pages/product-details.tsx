@@ -173,7 +173,7 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
       <MetaTags
         title={product.name}
         description={product.specs?.substring(0, 160) || `تسوق ${product.name} من AQUAVO بأفضل الأسعار.`}
@@ -196,8 +196,8 @@ export default function ProductDetails() {
       <BreadcrumbSchema items={breadcrumbItems} />
 
       <Navbar />
-      <main id="main-content" className="flex-1 py-8 md:py-12">
-        <div className="container mx-auto px-4">
+      <main id="main-content" className="flex-1 py-8 md:py-12 overflow-x-hidden">
+        <div className="container mx-auto px-4 max-w-full">
           <>
             {/* Breadcrumbs */}
             <Breadcrumb className="mb-6">
@@ -225,7 +225,7 @@ export default function ProductDetails() {
               </div>
             )}
 
-            <div className="grid md:grid-cols-2 gap-12">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-12">
               {/* Product Image Gallery with Zoom */}
               <div className="relative">
                 {/* Product Badges */}
@@ -475,8 +475,8 @@ export default function ProductDetails() {
             </div>
 
             {/* Detailed Information Tabs */}
-            <Tabs defaultValue="benefits" className="mb-12">
-              <TabsList className="w-full justify-start gap-2 flex-wrap h-auto p-2">
+            <Tabs defaultValue="benefits" className="mb-12 w-full overflow-x-hidden">
+              <TabsList className="w-full justify-start gap-1 sm:gap-2 flex-wrap h-auto p-2 overflow-x-auto">
                 <TabsTrigger value="benefits" className="rounded-full">لماذا هذا المنتج؟</TabsTrigger>
                 <TabsTrigger value="specs" className="rounded-full">المواصفات الفنية</TabsTrigger>
                 <TabsTrigger value="reviews" className="rounded-full">التقييمات ({product.reviewCount})</TabsTrigger>
