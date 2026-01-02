@@ -159,13 +159,13 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" aria-label="الصفحة الرئيسية - AQUAVO">
-            <div className="nav-logo flex items-center gap-3 cursor-pointer group">
+            <div className="nav-logo flex items-center gap-1 sm:gap-2 cursor-pointer group">
               <img
                 src="/logo_aquavo_icon.webp"
                 alt="AQUAVO Logo"
-                className="h-10 w-10 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
+                className="h-8 w-8 sm:h-10 sm:w-10 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
               />
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-500 tracking-tight">
+              <span className="hidden xs:inline text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-500 tracking-tight">
                 AQUAVO
               </span>
             </div>
