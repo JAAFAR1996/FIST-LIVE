@@ -14,6 +14,7 @@ const TARGET_FOLDERS = [
     'cylinder-air-stone',
     'sponge-filter',
     'battery-air-pump',
+    'YEE Ultra-Clear Glass Tank',
 ];
 
 // Quality settings

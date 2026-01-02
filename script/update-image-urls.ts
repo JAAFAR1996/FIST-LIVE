@@ -1,5 +1,5 @@
 /**
- * Update Database Image URLs from .png to .webp
+ * Update Database Image URLs from .png/.jpg to .webp
  * Run after optimize-images.ts
  */
 
@@ -11,11 +11,11 @@ dotenv.config({ path: '.env.production' });
 const sql = neon(process.env.DATABASE_URL!);
 
 async function updateImageUrls() {
-    console.log('🔄 Updating database image URLs from .png to .webp...\n');
+  console.log('🔄 Updating database image URLs to .webp...\\n');
 
-    try {
-        // Update products table - main images (column is 'images' not 'image')
-        const productsResult = await sql`
+  try {
+    // Update products table - PNG files
+    const pngResult = await sql`
       UPDATE products 
       SET 
         images = REPLACE(images::text, '.png', '.webp')::jsonb,
@@ -23,41 +23,37 @@ async function updateImageUrls() {
       WHERE 
         (images::text LIKE '%/yee/%' AND images::text LIKE '%.png')
         OR (thumbnail LIKE '%/yee/%' AND thumbnail LIKE '%.png')
-      RETURNING id, name, thumbnail
+      RETURNING id, name
     `;
 
-        console.log(`✅ Updated ${productsResult.length} products main images`);
+    console.log(`✅ Updated ${pngResult.length} products (.png → .webp)`);
 
-        // Update product_images table
-        const imagesResult = await sql`
-      UPDATE product_images 
-      SET url = REPLACE(url, '.png', '.webp')
+    // Update products table - JPG files
+    const jpgResult = await sql`
+      UPDATE products 
+      SET 
+        images = REPLACE(images::text, '.jpg', '.webp')::jsonb,
+        thumbnail = REPLACE(thumbnail, '.jpg', '.webp')
       WHERE 
-        url LIKE '%/yee/%' 
-        AND url LIKE '%.png'
-      RETURNING id, url
+        (images::text LIKE '%/yee/%' AND images::text LIKE '%.jpg')
+        OR (thumbnail LIKE '%/yee/%' AND thumbnail LIKE '%.jpg')
+      RETURNING id, name
     `;
 
-        console.log(`✅ Updated ${imagesResult.length} product gallery images`);
+    console.log(`✅ Updated ${jpgResult.length} products (.jpg → .webp)`);
 
-        // Summary
-        console.log('\n📊 SUMMARY');
-        console.log('='.repeat(40));
-        console.log(`Products updated: ${productsResult.length}`);
-        console.log(`Gallery images updated: ${imagesResult.length}`);
+    // Summary
+    console.log('\\n📊 SUMMARY');
+    console.log('='.repeat(40));
+    console.log(`PNG products updated: ${pngResult.length}`);
+    console.log(`JPG products updated: ${jpgResult.length}`);
+    console.log(`Total: ${pngResult.length + jpgResult.length}`);
 
-        // Show some examples
-        if (productsResult.length > 0) {
-            console.log('\n📦 Sample updated products:');
-            productsResult.slice(0, 5).forEach((p: any) => {
-                console.log(`  - ${p.name}: ${p.image}`);
-            });
-        }
-
-    } catch (error) {
-        console.error('❌ Error updating database:', error);
-        process.exit(1);
-    }
+  } catch (error) {
+    console.error('❌ Error updating database:', error);
+    process.exit(1);
+  }
 }
 
 updateImageUrls();
+
