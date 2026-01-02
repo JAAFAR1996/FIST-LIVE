@@ -242,7 +242,7 @@ export function CategoryScrollBar({
             {/* Scrollable Categories */}
             <div
                 ref={scrollRef}
-                className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-4 px-6"
+                className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide py-3 sm:py-4 px-3 sm:px-6"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {/* All Categories Option - Premium Design */}
@@ -251,8 +251,8 @@ export function CategoryScrollBar({
                         selectedCategories.forEach(cat => onCategoryToggle(cat));
                     }}
                     className={cn(
-                        "relative flex items-center gap-2.5 px-5 py-2.5 rounded-2xl transition-all duration-300 whitespace-nowrap",
-                        "text-sm font-semibold group overflow-hidden",
+                        "relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 whitespace-nowrap",
+                        "text-xs sm:text-sm font-semibold group overflow-hidden",
                         selectedCategories.length === 0
                             ? "bg-gradient-to-r from-primary via-cyan-500 to-primary text-white shadow-lg shadow-primary/30 scale-105"
                             : "bg-background/60 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 hover:scale-[1.02] hover:shadow-md"
@@ -282,8 +282,8 @@ export function CategoryScrollBar({
                             key={key}
                             onClick={() => toggleGroup(rawCategories)}
                             className={cn(
-                                "relative flex items-center gap-2.5 px-4 py-2.5 rounded-2xl transition-all duration-300 whitespace-nowrap",
-                                "text-sm font-medium group overflow-hidden",
+                                "relative flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 whitespace-nowrap",
+                                "text-xs sm:text-sm font-medium group overflow-hidden",
                                 isSelected
                                     ? "bg-gradient-to-r from-primary/90 to-cyan-500/90 text-white shadow-lg shadow-primary/25 scale-[1.03]"
                                     : "bg-background/60 backdrop-blur-sm border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-gradient-to-r hover:from-primary/5 hover:to-cyan-500/5 hover:scale-[1.02] hover:shadow-md"
