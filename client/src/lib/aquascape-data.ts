@@ -21,7 +21,7 @@ export const aquascapeStyles: AquascapeStyle[] = [
         id: "dutch",
         title: "النمط الهولندي (Dutch Style)",
         description: "يتميز النمط الهولندي بكثافة النباتات وتنوع ألوانها وأشكالها، حيث يتم ترتيبها في مجموعات متباينة لتشكيل لوحة فنية حية. يعتمد على تقنيات الزراعة والتقليم الدقيق، وغالباً ما يخلو من الصخور أو الأخشاب، مع التركيز الكامل على جمال النباتات المائية.",
-        imageUrl: "/images/aquascape-styles/dutch.png",
+        imageUrl: "/images/aquascape-styles/dutch.webp",
         features: ["كثافة نباتية عالية", "تنوع لوني مذهل", "بدون صخور أو أخشاب بارزة"],
         difficulty: "متقدم"
     },
@@ -29,7 +29,7 @@ export const aquascapeStyles: AquascapeStyle[] = [
         id: "iwagumi",
         title: "نمط الإيواغومي (Iwagumi)",
         description: "يعكس نمط الإيواغومي فلسفة الحدائق الصخرية اليابانية، حيث يعتمد على ترتيب عدد فردي من الصخور (عادة ثلاثة) بطريقة متوازنة ومريحة للعين. يتميز بالبساطة واستخدام نباتات تغطية التربة (السجاد) لخلق مساحات مفتوحة وهادئة توحي بالسكينة.",
-        imageUrl: "/images/aquascape-styles/iwagumi.png",
+        imageUrl: "/images/aquascape-styles/iwagumi_aquascape_1765676307763.webp",
         features: ["تصميم صخري", "بساطة (Minimalism)", "نباتات سجادية"],
         difficulty: "متوسط"
     },
@@ -37,7 +37,7 @@ export const aquascapeStyles: AquascapeStyle[] = [
         id: "jungle",
         title: "نمط الأدغال (Jungle Style)",
         description: "يحاكي هذا النمط الطبيعة البرية غير المروضة، حيث تتداخل النباتات الكبيرة والجذور والأخشاب لتشكل بيئة كثيفة وغامضة تشبه قاع الغابات الاستوائية. يتميز بالعشوائية المدروسة والإضاءة الخافتة أحياناً، مما يوفر بيئة مثالية للأسماك.",
-        imageUrl: "/images/aquascape-styles/jungle.png",
+        imageUrl: "/images/aquascape-styles/jungle.webp",
         features: ["مظهر بري", "نباتات كبيرة وأخشاب", "صيانة أقل نسبياً"],
         difficulty: "مبتدئ"
     },
@@ -45,7 +45,7 @@ export const aquascapeStyles: AquascapeStyle[] = [
         id: "biotope",
         title: "البيوتوب (Biotope)",
         description: "يركز هذا النمط على استنساخ بيئة طبيعية محددة (مثل نهر الأمازون) بدقة متناهية، بما في ذلك نوعية المياه والتربة والنباتات والأسماك المتواجدة في تلك المنطقة. يهدف إلى توفير الظروف المثالية للكائنات الحية ومراقبة سلوكها الطبيعي.",
-        imageUrl: "/images/aquascape-styles/biotope.png",
+        imageUrl: "/images/aquascape-styles/biotope_aquascape_1765676346067.webp",
         features: ["محاكاة بيئة دقيقة", "مياه ومواد طبيعية", "مثالي لصحة الأسماك"],
         difficulty: "متوسط"
     }

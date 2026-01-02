@@ -9,6 +9,9 @@ import fs from 'fs';
 import path from 'path';
 
 const IMAGES_DIR = './client/public/images/products/yee';
+const ADDITIONAL_FOLDERS = [
+    './client/public/images/aquascape-styles',
+];
 const TARGET_FOLDERS = [
     'Bare side stream tank 601515cm 6mm water pump',
     'cylinder-air-stone',
@@ -113,6 +116,15 @@ async function main() {
     for (const folder of TARGET_FOLDERS) {
         const folderPath = path.join(IMAGES_DIR, folder);
         console.log(`\n📁 Processing: ${folder}`);
+        console.log('-'.repeat(50));
+
+        const results = await processFolder(folderPath);
+        allResults.push(...results);
+    }
+
+    // Process additional folders (full paths)
+    for (const folderPath of ADDITIONAL_FOLDERS) {
+        console.log(`\n📁 Processing: ${folderPath}`);
         console.log('-'.repeat(50));
 
         const results = await processFolder(folderPath);
