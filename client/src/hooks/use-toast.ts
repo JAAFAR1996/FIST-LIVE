@@ -6,7 +6,17 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 3000
+const TOAST_REMOVE_DELAY_MOBILE = 1500  // 1.5 seconds for mobile
+const TOAST_REMOVE_DELAY_DESKTOP = 5000 // 5 seconds for desktop
+
+// Detect if mobile device
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Get appropriate delay based on device
+const getToastDelay = () => isMobileDevice() ? TOAST_REMOVE_DELAY_MOBILE : TOAST_REMOVE_DELAY_DESKTOP;
 
 type ToasterToast = ToastProps & {
   id: string
@@ -66,7 +76,7 @@ const addToRemoveQueue = (toastId: string) => {
       type: "REMOVE_TOAST",
       toastId: toastId,
     })
-  }, TOAST_REMOVE_DELAY)
+  }, getToastDelay())
 
   toastTimeouts.set(toastId, timeout)
 }
