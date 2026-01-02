@@ -395,10 +395,11 @@ export default function ProductDetails() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-3 w-full">
                       <Button
                         size="lg"
-                        className={`flex-1 gap-2 text-lg h-12 transition-all duration-300 ${isAddedToCart ? 'bg-green-500 hover:bg-green-600' : ''
+                        className={`w-full gap-2 text-lg h-12 transition-all duration-300 ${isAddedToCart ? 'bg-green-500 hover:bg-green-600' : ''
                           }`}
                         onClick={handleAddToCart}
                       >
@@ -418,10 +419,11 @@ export default function ProductDetails() {
                         product={product}
                         variant="default"
                         size="lg"
-                        className="gap-2"
+                        className="w-full gap-2"
                       />
-                      <Button size="lg" variant="outline" onClick={handleShare}>
+                      <Button size="lg" variant="outline" onClick={handleShare} className="w-full gap-2">
                         <Share2 className="w-5 h-5" />
+                        مشاركة المنتج
                       </Button>
                     </div>
                   </div>
