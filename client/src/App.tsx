@@ -49,6 +49,7 @@ const Compare = lazy(() => import("@/pages/compare"));
 const AquariumWizard = lazy(() => import("@/pages/aquarium-wizard"));
 const FishCompatibility = lazy(() => import("@/pages/fish-compatibility"));
 const MergeProductsPage = lazy(() => import("@/pages/admin/merge-products"));
+const InvestPage = lazy(() => import("@/pages/invest"));
 
 
 // Medium-weight pages (direct imports for faster navigation)
@@ -270,6 +271,17 @@ function Router() {
           <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
               <BlogPost />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+      </Route>
+
+      {/* Invest Page */}
+      <Route path="/invest">
+        {() => (
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>
+              <InvestPage />
             </Suspense>
           </ErrorBoundary>
         )}
