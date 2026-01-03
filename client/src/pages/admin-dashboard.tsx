@@ -272,7 +272,8 @@ export default function AdminDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products", {
+      // Fetch all products for admin dashboard (override default 50 limit)
+      const response = await fetch("/api/products?limit=1000", {
         credentials: "include",
       });
 
