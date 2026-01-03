@@ -1,52 +1,34 @@
-/**
- * check-products.ts
- * Quick script to check current products in database
- */
+import { neon } from '@neondatabase/serverless';
 
-import { neon } from "@neondatabase/serverless";
-
-const DATABASE_URL = process.env.DATABASE_URL;
-if (!DATABASE_URL) {
-  console.error("❌ DATABASE_URL not found");
-  process.exit(1);
-}
-
+const DATABASE_URL = 'postgresql://neondb_owner:npg_N7dEzt2pWjCi@ep-quiet-moon-a4h7tdze-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require';
 const sql = neon(DATABASE_URL);
 
-async function checkProducts() {
-  console.log("📊 Checking current products in database...\n");
+async function check() {
+  console.log('=== BRANDS & CATEGORIES ===\n');
 
-  // Get counts by category
-  const categoryCounts = await sql`
-        SELECT category, COUNT(*) as total 
-        FROM products 
-        WHERE deleted_at IS NULL 
-        GROUP BY category 
-        ORDER BY total DESC
-    `;
+  const brandCategories = await sql`
+    SELECT brand, category, COUNT(*) as count 
+    FROM products 
+    GROUP BY brand, category 
+    ORDER BY count DESC 
+    LIMIT 20
+  `;
 
-  console.log("📦 Products by Category:");
-  console.log("─".repeat(40));
-  let total = 0;
-  for (const row of categoryCounts) {
-    console.log(`  ${row.category}: ${row.total}`);
-    total += parseInt(row.total);
-  }
-  console.log("─".repeat(40));
-  console.log(`  📊 Total: ${total} products\n`);
+  brandCategories.forEach((p: any) =>
+    console.log(`${p.brand} | ${p.category} | ${p.count} products`)
+  );
 
-  // Get sample products
-  const samples = await sql`
-        SELECT id, name, category, price, stock 
-        FROM products 
-        WHERE deleted_at IS NULL 
-        LIMIT 5
-    `;
+  console.log('\n=== TOTAL PRODUCTS ===');
+  const total = await sql`SELECT COUNT(*) as total FROM products`;
+  console.log(`Total: ${total[0].total} products`);
 
-  console.log("🔍 Sample Products:");
-  for (const p of samples) {
-    console.log(`  - ${p.name} (${p.category}) - ${p.price} IQD`);
-  }
+  console.log('\n=== UNIQUE CATEGORIES ===');
+  const cats = await sql`SELECT DISTINCT category FROM products ORDER BY category`;
+  cats.forEach((c: any) => console.log(`- ${c.category}`));
+
+  console.log('\n=== UNIQUE BRANDS ===');
+  const brands = await sql`SELECT DISTINCT brand FROM products ORDER BY brand LIMIT 15`;
+  brands.forEach((b: any) => console.log(`- ${b.brand}`));
 }
 
-checkProducts().catch(console.error);
+check().then(() => process.exit(0)).catch(console.error);
