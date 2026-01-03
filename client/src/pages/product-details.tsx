@@ -105,7 +105,7 @@ export default function ProductDetails() {
 
     const shareData = {
       title: product.name,
-      text: `${product.name} - ${product.price.toLocaleString()} د.ع`,
+      text: `${product.name} - ${product.price.toLocaleString('en-US')} د.ع`,
       url: window.location.href,
     };
 
@@ -173,7 +173,7 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-background">
       <MetaTags
         title={product.name}
         description={product.specs?.substring(0, 160) || `تسوق ${product.name} من AQUAVO بأفضل الأسعار.`}
@@ -196,8 +196,8 @@ export default function ProductDetails() {
       <BreadcrumbSchema items={breadcrumbItems} />
 
       <Navbar />
-      <main id="main-content" className="flex-1 py-8 md:py-12 overflow-x-hidden">
-        <div className="container mx-auto px-4 max-w-full">
+      <main id="main-content" className="flex-1 py-8 md:py-12">
+        <div className="container mx-auto px-4">
           <>
             {/* Breadcrumbs */}
             <Breadcrumb className="mb-6">
@@ -225,7 +225,7 @@ export default function ProductDetails() {
               </div>
             )}
 
-            <div className="grid md:grid-cols-2 gap-6 md:gap-12">
+            <div className="grid md:grid-cols-2 gap-12">
               {/* Product Image Gallery with Zoom */}
               <div className="relative">
                 {/* Product Badges */}
@@ -294,7 +294,7 @@ export default function ProductDetails() {
                   </div>
                   {displayOriginalPrice && displayOriginalPrice > displayPrice && (
                     <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-1">
-                      وفّر {(displayOriginalPrice - displayPrice).toLocaleString()} د.ع
+                      وفّر {(displayOriginalPrice - displayPrice).toLocaleString('en-US')} د.ع
                     </p>
                   )}
                 </div>
@@ -395,11 +395,10 @@ export default function ProductDetails() {
                     </div>
 
                     {/* Action Buttons */}
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-3 w-full">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Button
                         size="lg"
-                        className={`w-full gap-2 text-lg h-12 transition-all duration-300 ${isAddedToCart ? 'bg-green-500 hover:bg-green-600' : ''
+                        className={`flex-1 gap-2 text-lg h-12 transition-all duration-300 ${isAddedToCart ? 'bg-green-500 hover:bg-green-600' : ''
                           }`}
                         onClick={handleAddToCart}
                       >
@@ -419,11 +418,10 @@ export default function ProductDetails() {
                         product={product}
                         variant="default"
                         size="lg"
-                        className="w-full gap-2"
+                        className="gap-2"
                       />
-                      <Button size="lg" variant="outline" onClick={handleShare} className="w-full gap-2">
+                      <Button size="lg" variant="outline" onClick={handleShare}>
                         <Share2 className="w-5 h-5" />
-                        مشاركة المنتج
                       </Button>
                     </div>
                   </div>
@@ -475,8 +473,8 @@ export default function ProductDetails() {
             </div>
 
             {/* Detailed Information Tabs */}
-            <Tabs defaultValue="benefits" className="mb-12 w-full overflow-x-hidden">
-              <TabsList className="w-full justify-start gap-1 sm:gap-2 flex-wrap h-auto p-2 overflow-x-auto">
+            <Tabs defaultValue="benefits" className="mb-12">
+              <TabsList className="w-full justify-start gap-2 flex-wrap h-auto p-2">
                 <TabsTrigger value="benefits" className="rounded-full">لماذا هذا المنتج؟</TabsTrigger>
                 <TabsTrigger value="specs" className="rounded-full">المواصفات الفنية</TabsTrigger>
                 <TabsTrigger value="reviews" className="rounded-full">التقييمات ({product.reviewCount})</TabsTrigger>
@@ -532,8 +530,8 @@ export default function ProductDetails() {
                         <div className="space-y-4">
                           <h4 className="font-bold">الفوائد الرئيسية:</h4>
                           <ul className="space-y-2 text-sm text-muted-foreground">
-                            {product.specifications.benefits.map((benefit: string) => (
-                              <li key={benefit} className="flex items-start gap-2">
+                            {product.specifications.benefits.map((benefit: string, index: number) => (
+                              <li key={index} className="flex items-start gap-2">
                                 <div className="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
                                 <span>{benefit}</span>
                               </li>

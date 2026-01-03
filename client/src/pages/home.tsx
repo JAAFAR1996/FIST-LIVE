@@ -74,12 +74,12 @@ export default function Home() {
       <Navbar />
 
       <SpotlightEffect />
-      <main id="main-content" className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 sm:pb-12 flex-grow z-10 relative">
+      <main id="main-content" className="container mx-auto px-4 pt-24 pb-12 flex-grow z-10 relative">
         {/* Bento Grid Layout - Gen Z Style */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 auto-rows-[minmax(150px,auto)] sm:auto-rows-[minmax(180px,auto)] gap-3 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 auto-rows-[minmax(180px,auto)] gap-4 md:gap-6">
 
           {/* 1. Hero & Video Section (Wide Box: 8 cols, 2 rows) */}
-          <div className="lg:col-span-8 lg:row-span-2 rounded-2xl sm:rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md min-h-[280px] sm:min-h-[400px] md:min-h-[500px]">
+          <div className="lg:col-span-8 lg:row-span-2 rounded-[2.5rem] overflow-hidden relative group shadow-2xl shadow-primary/10 border border-white/10 bg-white/5 backdrop-blur-md min-h-[400px] md:min-h-[500px]">
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             {/* Video Background */}
             <video
@@ -100,20 +100,20 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent opacity-60"></div>
 
             {/* Overlay Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 md:p-12 z-20 text-right">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-primary px-2.5 sm:px-4 py-0.5 sm:py-1 rounded-full text-black font-extrabold mb-2 sm:mb-4 text-[10px] sm:text-sm md:text-base animate-pulse-glow">
+            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 z-20 text-right">
+              <div className="inline-flex items-center gap-2 bg-primary px-4 py-1 rounded-full text-black font-extrabold mb-4 text-sm md:text-base animate-pulse-glow">
                 <span className="uppercase tracking-widest">جديد 2025</span>
-                <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
+                <Crown className="w-4 h-4" />
               </div>
-              <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-none drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] mb-2 sm:mb-4">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-none drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] mb-4">
                 حول <span className="text-primary text-stroke-sm">حوضك</span> <br />
                 إلى <span className="text-accent">تحفة فنية</span>.
               </h1>
 
-              <div className="flex flex-wrap gap-2 sm:gap-4 justify-end mt-3 sm:mt-6">
+              <div className="flex flex-wrap gap-4 justify-end mt-6">
                 <Button
                   size="lg"
-                  className="rounded-full bg-primary text-black hover:bg-primary/90 font-bold text-sm sm:text-lg px-4 sm:px-8 py-3 sm:py-6 h-auto shadow-[0_0_20px_rgba(204,255,0,0.4)] transition-all hover:scale-105 active:scale-95"
+                  className="rounded-full bg-primary text-black hover:bg-primary/90 font-bold text-lg px-8 py-6 h-auto shadow-[0_0_20px_rgba(204,255,0,0.4)] transition-all hover:scale-105 active:scale-95"
                   onClick={() => setLocation("/products")}
                 >
                   تسوق الآن <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
@@ -124,7 +124,7 @@ export default function Home() {
           </div>
 
           {/* 2. Best Sellers List (Tall Box: 4 cols, 3 rows) */}
-          <div className="lg:col-span-4 lg:row-span-3 rounded-2xl sm:rounded-[2.5rem] bg-card/80 dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-xl p-4 sm:p-6 flex flex-col shadow-xl overflow-hidden relative min-h-[400px] lg:min-h-[600px]">
+          <div className="lg:col-span-4 lg:row-span-3 rounded-[2.5rem] bg-card/80 dark:bg-white/5 border border-border dark:border-white/10 backdrop-blur-xl p-6 flex flex-col shadow-xl overflow-hidden relative min-h-[600px]">
             <div className="flex justify-between items-center mb-6 z-10 relative">
               <Link href="/products?sort=best-selling">
                 <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">المزيد</Button>
@@ -149,12 +149,12 @@ export default function Home() {
                 <div key={product.id} className="group flex items-center gap-4 p-3 rounded-2xl hover:bg-muted/50 dark:hover:bg-white/10 transition-colors cursor-pointer border border-transparent hover:border-border dark:hover:border-white/5" onClick={() => setLocation(`/products/${product.slug}`)}>
                   <div className="text-4xl font-black text-muted-foreground/20 dark:text-white/10 italic w-8 text-center group-hover:text-primary/50 transition-colors">#{idx + 1}</div>
                   <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-muted/20 dark:bg-black/20">
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain p-1 transform group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" />
+                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain p-1 transform group-hover:scale-110 transition-transform duration-500" />
                   </div>
                   <div className="flex-1 text-right">
                     <h3 className="font-bold text-foreground dark:text-gray-100 line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
                     <div className="flex items-center justify-end gap-2 text-sm">
-                      <span className="font-mono font-bold text-accent">{product.price.toLocaleString()} د.ع</span>
+                      <span className="font-mono font-bold text-accent">{product.price.toLocaleString('en-US')} د.ع</span>
                     </div>
                   </div>
                 </div>
@@ -174,8 +174,8 @@ export default function Home() {
           </div>
 
           {/* 3. Product of the Day (Small Box: 4 cols, 1 row) */}
-          <div className="lg:col-span-4 lg:row-span-1 rounded-2xl sm:rounded-[2.5rem] bg-card dark:bg-[#0a0f1c] border border-border dark:border-border/50 p-4 sm:p-6 flex relative overflow-hidden group hover:border-primary/50 transition-colors min-h-[150px] sm:min-h-[180px]">
-            <div className="absolute top-0 right-0 bg-accent text-white px-3 sm:px-4 py-0.5 sm:py-1 rounded-bl-xl sm:rounded-bl-2xl font-bold text-xs sm:text-sm shadow-lg z-10">صفقة الأسبوع</div>
+          <div className="lg:col-span-4 lg:row-span-1 rounded-[2.5rem] bg-card dark:bg-[#0a0f1c] border border-border dark:border-border/50 p-6 flex relative overflow-hidden group hover:border-primary/50 transition-colors min-h-[180px]">
+            <div className="absolute top-0 right-0 bg-accent text-white px-4 py-1 rounded-bl-2xl font-bold text-sm shadow-lg z-10">صفقة الأسبوع</div>
             {salesIsLoading || !featuredProduct ? (
               <div className="flex w-full gap-4">
                 <Skeleton className="w-24 h-24 rounded-2xl" />
@@ -187,12 +187,12 @@ export default function Home() {
             ) : (
               <div className="flex w-full items-center gap-4 relative z-10 cursor-pointer" onClick={() => setLocation(`/products/${featuredProduct.slug}`)}>
                 <div className="w-28 h-28 p-2 rounded-2xl bg-muted/20 dark:bg-white/5 border border-border dark:border-white/10 group-hover:scale-105 transition-transform duration-300">
-                  <img src={featuredProduct.images[0]} alt={featuredProduct.name} className="w-full h-full object-contain" loading="lazy" decoding="async" />
+                  <img src={featuredProduct.images[0]} alt={featuredProduct.name} className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 text-right space-y-2">
                   <h3 className="text-xl font-bold leading-tight text-foreground dark:text-white">{featuredProduct.name}</h3>
                   <div className="flex gap-2 justify-end items-baseline">
-                    <span className="text-2xl font-black text-primary font-mono">{featuredProduct.price.toLocaleString()}</span>
+                    <span className="text-2xl font-black text-primary font-mono">{featuredProduct.price.toLocaleString('en-US')}</span>
                     <span className="text-xs text-muted-foreground">د.ع</span>
                   </div>
 

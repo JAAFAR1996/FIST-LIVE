@@ -397,7 +397,7 @@ export default function AquariumWizard() {
                                                 <h4 className="font-semibold truncate">{product.name}</h4>
                                                 <p className="text-sm text-muted-foreground">{product.category}</p>
                                                 <p className="text-primary font-bold">
-                                                    {product.price.toLocaleString()} د.ع
+                                                    {product.price.toLocaleString('en-US')} د.ع
                                                 </p>
                                             </div>
                                         </div>
@@ -421,7 +421,7 @@ export default function AquariumWizard() {
                                                         المنتجات المختارة: {selectedProducts.size}
                                                     </p>
                                                     <p className="text-2xl font-bold text-primary">
-                                                        {totalPrice.toLocaleString()} د.ع
+                                                        {totalPrice.toLocaleString('en-US')} د.ع
                                                     </p>
                                                 </div>
                                                 <Button size="lg" onClick={handleAddAllToCart} className="gap-2">

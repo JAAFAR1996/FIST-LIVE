@@ -186,6 +186,12 @@ export default function AdminDashboard() {
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  // Filter states
+  const [filterBrand, setFilterBrand] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -253,9 +259,7 @@ export default function AdminDashboard() {
           if (result.data.specifications && result.data.specifications.length > 0) {
             setCommonSpecs(result.data.specifications);
           }
-          if (import.meta.env.DEV) {
-            console.log(`[Admin] Loaded metadata: ${result.data.categories.length} categories, ${result.data.brands.length} brands, ${result.data.specifications.length} specs`);
-          }
+          console.log(`[Admin] Loaded metadata: ${result.data.categories.length} categories, ${result.data.brands.length} brands, ${result.data.specifications.length} specs`);
         }
       } else {
         console.warn("[Admin] Failed to fetch metadata, using defaults");
@@ -576,12 +580,46 @@ export default function AdminDashboard() {
     });
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      // Search filter
+      const matchesSearch = searchTerm === "" ||
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // Brand filter
+      const matchesBrand = filterBrand === "all" || product.brand === filterBrand;
+
+      // Category filter
+      const matchesCategory = filterCategory === "all" || product.category === filterCategory;
+
+      return matchesSearch && matchesBrand && matchesCategory;
+    });
+  }, [products, searchTerm, filterBrand, filterCategory]);
+
+  // Pagination calculations
+  const totalFilteredProducts = filteredProducts.length;
+  const totalPages = Math.ceil(totalFilteredProducts / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalFilteredProducts);
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterBrand, filterCategory]);
+
+  // Get unique brands and categories from products
+  const uniqueBrands = useMemo(() => {
+    const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)));
+    return brands.sort();
+  }, [products]);
+
+  const uniqueCategories = useMemo(() => {
+    const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
+    return categories.sort();
+  }, [products]);
 
   // Calculate statistics
   const totalProducts = products.length;
@@ -721,8 +759,9 @@ export default function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Search Bar */}
-              <div className="mb-6">
+              {/* Search and Filters Bar */}
+              <div className="mb-6 space-y-4">
+                {/* Search */}
                 <div className="relative">
                   <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -732,6 +771,75 @@ export default function AdminDashboard() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-10"
                   />
+                </div>
+
+                {/* Filters Row */}
+                <div className="flex flex-wrap gap-4 items-center">
+                  {/* Brand Filter */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">العلامة التجارية:</Label>
+                    <Select value={filterBrand} onValueChange={setFilterBrand}>
+                      <SelectTrigger className="w-[150px]">
+                        <SelectValue placeholder="الكل" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">الكل</SelectItem>
+                        {uniqueBrands.map((brand) => (
+                          <SelectItem key={brand} value={brand}>
+                            {brand}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Category Filter */}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm text-muted-foreground">الفئة:</Label>
+                    <Select value={filterCategory} onValueChange={setFilterCategory}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="الكل" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">الكل</SelectItem>
+                        {uniqueCategories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Clear Filters */}
+                  {(filterBrand !== "all" || filterCategory !== "all" || searchTerm) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setFilterBrand("all");
+                        setFilterCategory("all");
+                        setSearchTerm("");
+                      }}
+                      className="text-muted-foreground"
+                    >
+                      <X className="h-4 w-4 ml-1" />
+                      مسح الفلاتر
+                    </Button>
+                  )}
+                </div>
+
+                {/* Results Counter */}
+                <div className="flex justify-between items-center text-sm text-muted-foreground">
+                  <span>
+                    عرض {totalFilteredProducts > 0 ? startIndex + 1 : 0}-{endIndex} من {totalFilteredProducts} منتج
+                    {totalFilteredProducts !== products.length && (
+                      <span className="mr-2">(من إجمالي {products.length} منتج)</span>
+                    )}
+                  </span>
+                  {totalPages > 1 && (
+                    <span>صفحة {currentPage} من {totalPages}</span>
+                  )}
                 </div>
               </div>
 
@@ -764,7 +872,7 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredProducts.map((product) => (
+                      paginatedProducts.map((product) => (
                         <TableRow key={product.id}>
                           <TableCell>
                             <div className="w-16 h-16 flex items-center justify-center bg-muted/30 rounded-lg overflow-hidden border border-border">
@@ -787,7 +895,7 @@ export default function AdminDashboard() {
                           <TableCell>{product.brand}</TableCell>
                           <TableCell>{product.subcategory}</TableCell>
                           <TableCell>
-                            {Number(product.price).toLocaleString()} {product.currency}
+                            {Number(product.price).toLocaleString('en-US')} {product.currency}
                           </TableCell>
                           <TableCell>
                             <Badge
@@ -845,6 +953,72 @@ export default function AdminDashboard() {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                  >
+                    الأولى
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    السابق
+                  </Button>
+
+                  {/* Page Numbers */}
+                  <div className="flex gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="w-10"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    التالي
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                  >
+                    الأخيرة
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

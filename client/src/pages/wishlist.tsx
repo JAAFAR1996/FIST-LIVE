@@ -154,12 +154,12 @@ export default function Wishlist() {
                   {/* Price */}
                   <div className="flex items-baseline gap-2">
                     <span className="text-xl font-bold text-primary">
-                      {item.price.toLocaleString()}{" "}
+                      {item.price.toLocaleString('en-US')}{" "}
                       <span className="text-sm font-normal text-muted-foreground">د.ع</span>
                     </span>
                     {item.originalPrice && (
                       <span className="text-sm text-muted-foreground line-through">
-                        {item.originalPrice.toLocaleString()}
+                        {item.originalPrice.toLocaleString('en-US')}
                       </span>
                     )}
                   </div>
