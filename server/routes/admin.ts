@@ -499,25 +499,68 @@ export function createAdminRouter(): RouterType {
             const { id } = req.params as { id: string };
             const updates = req.body;
 
-            // Handle image upload if provided
+            // Get existing product to merge images
+            const existingProduct = await storage.getProduct(id);
+            if (!existingProduct) {
+                res.status(404).json({ message: "Product not found" });
+                return;
+            }
+
+            // Handle single main image upload (from ImageUpload component)
             if (updates.imageBase64) {
                 try {
                     const { uploadImage } = await import("../utils/cloudinary.js");
                     const imageUrl = await uploadImage(updates.imageBase64);
 
-                    // Append to existing images or replace? 
-                    // For now, let's treat it as "add/replace main image" logic or simple replace
-                    // Based on typical admin usage, likely replacing the main image
-                    // But let's verify if we want to keep array.
-                    // The simple approach: Replace
-                    updates.images = [imageUrl];
+                    // Set as primary thumbnail and add to images
                     updates.thumbnail = imageUrl;
+
+                    // If there's no images array yet, create one
+                    if (!updates.images || !Array.isArray(updates.images)) {
+                        updates.images = existingProduct.images ? [...existingProduct.images] : [];
+                    }
+
+                    // Add the new image at the beginning
+                    updates.images = [imageUrl, ...updates.images.filter((img: string) => !img.startsWith('data:'))];
                 } catch (error) {
-                    console.error("Image upload failed:", error);
+                    console.error("Main image upload failed:", error);
                     throw new Error("Image upload failed. Please check your internet connection or Cloudinary configuration.");
                 }
 
                 delete updates.imageBase64;
+            }
+
+            // Handle multiple images in the images array (from MultipleImageUpload component)
+            // Check if any images are base64 and need to be uploaded
+            if (updates.images && Array.isArray(updates.images)) {
+                const { uploadImage } = await import("../utils/cloudinary.js");
+                const processedImages: string[] = [];
+
+                for (const image of updates.images) {
+                    if (typeof image === 'string') {
+                        if (image.startsWith('data:image/')) {
+                            // This is a base64 image, upload to Cloudinary
+                            try {
+                                const imageUrl = await uploadImage(image);
+                                processedImages.push(imageUrl);
+                                console.log(`Uploaded base64 image to Cloudinary: ${imageUrl.substring(0, 50)}...`);
+                            } catch (error) {
+                                console.error("Failed to upload image to Cloudinary:", error);
+                                // Skip this image but continue with others
+                            }
+                        } else {
+                            // This is already a URL, keep it
+                            processedImages.push(image);
+                        }
+                    }
+                }
+
+                updates.images = processedImages;
+
+                // Update thumbnail if not set or if it was a base64 image
+                if (!updates.thumbnail || updates.thumbnail.startsWith('data:')) {
+                    updates.thumbnail = processedImages[0] || existingProduct.thumbnail;
+                }
             }
 
             const product = await storage.updateProduct(id, updates);
